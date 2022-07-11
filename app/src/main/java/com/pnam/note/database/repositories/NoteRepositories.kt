@@ -3,7 +3,9 @@ package com.pnam.note.database.repositories
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
 import io.reactivex.rxjava3.core.Single
+import javax.inject.Singleton
 
+@Singleton
 interface NoteRepositories {
     fun getNotes(): Single<PagingList<Note>>
     fun getNoteDetail(): Single<Note>

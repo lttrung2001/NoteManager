@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Note</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="password_hint">Password</string>
+    <string name="no_internet">No internet connection</string>
 </resources>
