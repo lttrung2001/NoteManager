@@ -1,6 +1,5 @@
 package com.pnam.note.database.repositories
 
-import com.pnam.note.database.data.locals.CurrentUser
 import com.pnam.note.database.data.locals.LoginLocals
 import com.pnam.note.database.data.models.Login
 import com.pnam.note.database.data.networks.LoginNetworks
@@ -11,7 +10,6 @@ import javax.inject.Singleton
 interface LoginRepositories {
     val locals: LoginLocals
     val networks: LoginNetworks
-//    val currentUser: CurrentUser
     fun login(email: String, password: String): Single<Login>
     fun register(email: String, password: String): Single<Login>
     fun forgotPassword(email: String): Single<Unit>

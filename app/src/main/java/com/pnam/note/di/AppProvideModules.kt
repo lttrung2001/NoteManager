@@ -1,13 +1,18 @@
 package com.pnam.note.di
 
+import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.pnam.note.MainActivity
 import com.pnam.note.database.data.locals.AppDatabase
 import com.pnam.note.database.data.locals.LoginLocals
+import com.pnam.note.database.data.networks.BaseAuthorizationInterceptor
 import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
 import com.pnam.note.database.data.networks.impl.NetworkConnectionInterceptor
+import com.pnam.note.utils.AppUtils.Companion.APP_NAME
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RoomUtils.Companion.DB_NAME
 import dagger.Module
@@ -90,4 +95,10 @@ class AppProvideModules {
     @Singleton
     fun provideLoginService(retrofit: Retrofit): LoginRetrofitServiceImpl.Service =
         retrofit.create(LoginRetrofitServiceImpl.Service::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences(APP_NAME,Context.MODE_PRIVATE)
+    }
 }

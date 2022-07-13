@@ -3,6 +3,7 @@ package com.pnam.note.ui.login
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.pnam.note.MainActivity
@@ -42,9 +43,12 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.login.observe(this) {
             when (it) {
                 is Resource.Loading -> {
+                    Toast.makeText(this,"Loading",Toast.LENGTH_SHORT).show()
                     binding.loginError.visibility = View.INVISIBLE
                 }
                 is Resource.Success -> {
+                    Toast.makeText(this,"Success",Toast.LENGTH_SHORT).show()
+                    binding.loginError.visibility = View.INVISIBLE
                     val data: Intent = Intent(this,MainActivity::class.java).apply {
                         // it la Resource<Login>
                         putExtra(UID,it.data.id)
@@ -52,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(data)
                 }
                 is Resource.Error -> {
+                    Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show()
                     binding.loginError.visibility = View.VISIBLE
                     binding.loginError.text = "Wrong password"
                 }

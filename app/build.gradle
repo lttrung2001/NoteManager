@@ -50,6 +50,7 @@ dependencies {
     daggerHilt()
     retrofit()
     room()
+    jwt()
 }
 
 private void test() {
@@ -82,4 +83,8 @@ private void room() {
     def room_version = "2.4.2"
     dependencies.implementation "androidx.room:room-runtime:$room_version"
     dependencies.kapt "androidx.room:room-compiler:$room_version"
+}
+
+private void jwt() {
+    dependencies.implementation 'com.auth0.android:jwtdecode:2.0.1'
 }
