@@ -3,7 +3,9 @@ package com.pnam.note.database.data.networks
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
 import io.reactivex.rxjava3.core.Single
+import javax.inject.Singleton
 
+@Singleton
 interface NoteNetworks {
     fun fetchNotes(): Single<PagingList<Note>>
     fun fetchNoteDetail(): Single<Note>
