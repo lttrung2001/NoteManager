@@ -25,13 +25,13 @@ class LoginRetrofitServiceImpl @Inject constructor(
     interface Service {
         @POST("/login")
         fun login(@Body map: Map<String, String>)
-                : Single<Response<APIResult>>
+                : Single<Response<APIResult<String>>>
 
         @FormUrlEncoded
         @POST("/register")
         fun register(
             @Field("email") email: String, @Field("password") password: String
-        ): Single<Response<APIResult>>
+        ): Single<Response<APIResult<String>>>
     }
 
     override fun login(email: String, password: String): Single<Login> {

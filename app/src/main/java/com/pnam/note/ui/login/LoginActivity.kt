@@ -11,7 +11,9 @@ import com.pnam.note.databinding.ActivityLoginBinding
 import com.pnam.note.ui.dashboard.DashboardActivity
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding

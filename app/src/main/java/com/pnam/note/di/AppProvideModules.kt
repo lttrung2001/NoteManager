@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder
 import com.pnam.note.database.data.locals.AppDatabase
 import com.pnam.note.database.data.locals.LoginLocals
 import com.pnam.note.database.data.locals.NoteLocals
+import com.pnam.note.database.data.networks.impl.BaseAuthorizationInterceptor
 import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
 import com.pnam.note.database.data.networks.impl.NetworkConnectionInterceptor
 import com.pnam.note.database.data.networks.impl.NoteRetrofitServiceImpl

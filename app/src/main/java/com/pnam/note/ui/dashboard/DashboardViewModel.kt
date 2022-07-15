@@ -11,6 +11,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +43,7 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
             composite.remove(it)
             it.dispose()
         }
-        dashboardDisposable = useCase.getNotes().observeOn(AndroidSchedulers.mainThread())
+        dashboardDisposable = useCase.getNotes().observeOn(Schedulers.io())
             .subscribe(observerDashboard, this::loadNotesError)
         composite.add(dashboardDisposable)
     }
@@ -61,6 +62,6 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
 
     override fun onCleared() {
         super.onCleared()
-        composite.dispose()
+        composite.clear()
     }
 }

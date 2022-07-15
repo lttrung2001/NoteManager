@@ -2,7 +2,6 @@ package com.pnam.note.database.data.networks.impl
 
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.pnam.note.database.data.models.APIResult
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
@@ -15,27 +14,27 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
-import java.lang.reflect.Type
 import javax.inject.Inject
 
 class NoteRetrofitServiceImpl @Inject constructor(
-    private val service: Service
+    private val service: Service,
+    private val gson: Gson
 ) : NoteNetworks {
     interface Service {
         @GET("/get-notes")
-        fun fetchNotes(): Single<Response<APIResult>>
+        fun fetchNotes(): Single<Response<APIResult<PagingList<Note>>>>
 
         @GET("get-note-detail")
-        fun fetchNoteDetail(noteId: String): Single<Response<APIResult>>
+        fun fetchNoteDetail(noteId: String): Single<Response<APIResult<Note>>>
 
         @PUT("/add-note")
-        fun addNote(note: Note): Single<Response<APIResult>>
+        fun addNote(note: Note): Single<Response<APIResult<Note>>>
 
         @POST("/edit-note")
-        fun editNote(note: Note): Single<Response<APIResult>>
+        fun editNote(note: Note): Single<Response<APIResult<Note>>>
 
         @DELETE("/delete-note")
-        fun deleteNote(note: Note): Single<Response<APIResult>>
+        fun deleteNote(note: Note): Single<Response<APIResult<Note>>>
     }
 
     override fun fetchNotes(): Single<PagingList<Note>> =
@@ -43,9 +42,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == NOT_FOUND) {
                 throw NotFoundException()
             } else {
-                Log.d("test", it.body()!!.data.toString())
-                val type: Type = object : TypeToken<PagingList<Note>>() {}.type
-                Gson().fromJson(it.body()!!.data.toString(), type)
+                it.body()!!.data
             }
         }
 

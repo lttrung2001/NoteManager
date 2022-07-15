@@ -1,5 +1,6 @@
 package com.pnam.note.di
 
+import com.pnam.note.database.data.networks.BaseAuthorizationInterceptor
 import com.pnam.note.database.data.networks.LoginNetworks
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
@@ -16,6 +17,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.jetbrains.annotations.NotNull
 
 @Module
 @InstallIn(SingletonComponent::class)
