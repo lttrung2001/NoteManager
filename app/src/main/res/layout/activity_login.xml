@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -9,29 +10,44 @@
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:layout_centerVertical="true">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textSize="40dp"
+            android:textColor="@color/primaryColor"
+            android:textStyle="bold"/>
         <EditText
             android:id="@+id/edt_email"
             android:hint="@string/email_hint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/primaryColor"/>
         <EditText
             android:id="@+id/edt_password"
             android:hint="@string/password_hint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/primaryColor"/>
         <TextView
             android:id="@+id/login_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_login"
             android:text="@string/login"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <Button
+            android:layout_height="wrap_content"
+            android:background="@drawable/corner_150dp"
+            app:backgroundTint="@color/primaryColor"
+            android:layout_marginBottom="8dp"/>
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_register"
             android:text="@string/register"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/primaryColor"
+            android:background="@drawable/corner_150dp"
+            />
     </LinearLayout>
 </RelativeLayout>

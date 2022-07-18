@@ -3,6 +3,7 @@ package com.pnam.note.database.data.networks.impl
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
 import com.pnam.note.database.data.models.APIResult
@@ -31,6 +32,13 @@ interface BaseAuthorizationInterceptor : Interceptor {
     ) : BaseAuthorizationInterceptor {
 
         override fun intercept(chain: Interceptor.Chain): Response {
+            Log.d("test", sharedPreferences.all.toString())
+            val request = chain.request()
+            if (request.url.encodedPath.equals("/login",true) ||
+                    request.url.encodedPath.equals("/register", true) &&
+                    request.method.equals("post", true)) {
+                return chain.proceed(request)
+            }
             val newRequestBuilder: Request.Builder = chain.request().newBuilder()
             val accessToken = sharedPreferences.getString(ACCESS_TOKEN, "")!!
             val token = try {
@@ -38,7 +46,7 @@ interface BaseAuthorizationInterceptor : Interceptor {
                     val jwtToken = JWT(accessToken)
                     val exp = jwtToken.expiresAt
                     // Nếu access token hết hạn
-                    if ((exp?.time ?: 0) > TIMES_OUT + System.currentTimeMillis()) {
+                    if ((exp?.time ?: 0) < TIMES_OUT + System.currentTimeMillis()) {
                         fetchAccessToken().also { token ->
                             sharedPreferences.edit().putString(ACCESS_TOKEN, token).apply()
                         }
@@ -51,6 +59,7 @@ interface BaseAuthorizationInterceptor : Interceptor {
                     }
                 }
             } catch (e: Throwable) {
+                Log.d("test", e.message.toString())
                 sharedPreferences.edit().remove(LOGIN_TOKEN).apply()
                 // Trở về màn hình login
                 context.startActivity(Intent(context, LoginActivity::class.java).also {
@@ -65,12 +74,16 @@ interface BaseAuthorizationInterceptor : Interceptor {
 
         private fun fetchAccessToken(): String {
             val loginToken = sharedPreferences.getString(LOGIN_TOKEN, "")!!
-            val jwtToken = JWT(loginToken)
-            val exp = jwtToken.expiresAt
-            // Token hết hạn
-            return if ((exp?.time ?: 0) > TIMES_OUT + System.currentTimeMillis()) {
-                // Throw token expired error
-                throw Exception("Token expired error")
+            return if (loginToken.isNotBlank()) {
+                val jwtToken = JWT(loginToken)
+                val exp = jwtToken.expiresAt
+                // Token hết hạn
+                if ((exp?.time ?: 0) < TIMES_OUT + System.currentTimeMillis()) {
+                    // Throw token expired error
+                    throw Exception("Token expired error")
+                } else {
+                    fetchAccessToken(loginToken)
+                }
             } else {
                 fetchAccessToken(loginToken)
             }
@@ -79,7 +92,7 @@ interface BaseAuthorizationInterceptor : Interceptor {
         private fun fetchAccessToken(loginToken: String): String {
             val url = "${BASE_URL}get-access-token"
             val request = Request.Builder()
-                .addHeader("authorization", loginToken)
+                .addHeader("Authorization", "Bearer $loginToken")
                 .url(url)
                 .build()
             val client = OkHttpClient.Builder()
@@ -96,5 +109,4 @@ interface BaseAuthorizationInterceptor : Interceptor {
             }
         }
     }
-
 }

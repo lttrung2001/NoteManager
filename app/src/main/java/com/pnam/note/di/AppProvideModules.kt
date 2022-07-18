@@ -50,9 +50,11 @@ class AppProvideModules {
     @Provides
     @Singleton
     fun providerOkHttp(
+        authorizationInterceptor: BaseAuthorizationInterceptor.AuthorizationInterceptor,
         interceptor: NetworkConnectionInterceptor,
         logging: HttpLoggingInterceptor
     ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(authorizationInterceptor)
         .addInterceptor(logging)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)

@@ -23,6 +23,7 @@
             android:theme="@style/Theme.Note.NoActionBar" />
         <activity
             android:name=".ui.login.LoginActivity"
+            android:theme="@style/Theme.Note.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

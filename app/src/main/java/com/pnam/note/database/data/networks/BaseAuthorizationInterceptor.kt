@@ -79,7 +79,7 @@ interface BaseAuthorizationInterceptor : Interceptor {
         private fun fetchAccessToken(loginToken: String): String {
             val url = "${BASE_URL}get-access-token"
             val request = Request.Builder()
-                .addHeader("authorization", loginToken)
+                .addHeader("Authorization", loginToken)
                 .url(url)
                 .build()
             val client = OkHttpClient.Builder()

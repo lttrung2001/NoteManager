@@ -43,7 +43,7 @@ class LoginRetrofitServiceImpl @Inject constructor(
             if (it.code() == NOT_FOUND || it.code() == INTERNAL_SERVER_ERROR) {
                 throw NotFoundException()
             } else {
-                val loginToken = it.body()!!.data.toString()
+                val loginToken = it.body()!!.data
                 // Save token into local
                 sharedPreferences.edit().putString(LOGIN_TOKEN, loginToken).apply()
                 // Decode token get login info

@@ -15,6 +15,7 @@
         android:theme="@style/Theme.Note.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:background="@color/primaryColor"
             android:id="@+id/toolbar_layout"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
@@ -29,21 +30,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
+                android:backgroundTint="@color/primaryColor"
                 app:popupTheme="@style/Theme.Note.PopupOverlay" />
-
-            <Button
-                android:id="@+id/btn_logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom | end"
-                android:text="@string/logout" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -64,7 +57,9 @@
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:srcCompat="@drawable/ic_add" />
+            app:srcCompat="@drawable/ic_add"
+            android:backgroundTint="@color/primaryColor"
+            android:contentDescription="@string/app_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

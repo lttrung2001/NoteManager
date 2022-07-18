@@ -52,11 +52,11 @@ class DashboardActivity : AppCompatActivity() {
             Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
         }
 
+        setSupportActionBar(findViewById(R.id.toolbar))
+        binding.toolbarLayout.title = title
+
         Thread {
             dashboardViewModel.getNotes(0, 0)
         }.start()
-
-        setSupportActionBar(findViewById(R.id.toolbar))
-        binding.toolbarLayout.title = title
     }
 }
