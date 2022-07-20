@@ -29,38 +29,79 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
+                app:layout_collapseMode="parallax"
                 android:backgroundTint="@color/primaryColor"
                 app:popupTheme="@style/Theme.Note.PopupOverlay" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".ui.dashboard.DashboardActivity"
         tools:showIn="@layout/activity_scrolling">
+        <LinearLayout
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/corner_50dp">
+            <ImageView
+                android:id="@+id/btn_menu"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_menu"
+                app:tint="@color/gray"
+                android:contentDescription="@string/app_name" />
+            <EditText
+                android:id="@+id/edt_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/search"
+                android:autofillHints=""
+                android:inputType="text" />
+            <ImageView
+                android:id="@+id/btn_logout"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_logout"
+                app:tint="@color/gray"
+                android:contentDescription="@string/app_name" />
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_notes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/search_bar"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
             tools:itemCount="5"
             tools:listitem="@layout/note_container" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btn_add_note"
+            android:id="@+id/btn_start_add_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             app:srcCompat="@drawable/ic_add"
             android:backgroundTint="@color/primaryColor"
+            app:borderWidth="0dp"
             android:contentDescription="@string/app_name" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

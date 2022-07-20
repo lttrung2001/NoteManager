@@ -7,8 +7,8 @@ import javax.inject.Singleton
 
 @Singleton
 interface NoteLocals {
-    fun findNotes(): Single<PagingList<Note>>
-    fun findNoteDetail(): Single<Note>
+    fun findNotes(keySearch: String): Single<PagingList<Note>>
+    fun findNoteDetail(id: String): Single<Note>
     fun addNote(note: Note): Single<Note>
     fun editNote(note: Note): Single<Note>
     fun deleteNote(note: Note): Single<Note>

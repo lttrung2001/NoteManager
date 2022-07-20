@@ -86,6 +86,7 @@ private void room() {
     def room_version = "2.4.2"
     dependencies.implementation "androidx.room:room-runtime:$room_version"
     dependencies.kapt "androidx.room:room-compiler:$room_version"
+    dependencies.implementation("androidx.room:room-rxjava3:$room_version")
 }
 
 private void jwt() {

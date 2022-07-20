@@ -3,17 +3,16 @@ package com.pnam.note.database.data.networks.impl
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.util.Log
 import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
 import com.pnam.note.database.data.models.APIResult
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppUtils.Companion.ACCESS_TOKEN
 import com.pnam.note.utils.AppUtils.Companion.LOGIN_TOKEN
-import com.pnam.note.utils.NetworkUtils.Companion.TIMES_OUT
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RetrofitUtils.SUCCESS
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -31,12 +30,13 @@ interface BaseAuthorizationInterceptor : Interceptor {
         private val httpLoggingInterceptor: HttpLoggingInterceptor
     ) : BaseAuthorizationInterceptor {
 
+        @OptIn(ExperimentalCoroutinesApi::class)
         override fun intercept(chain: Interceptor.Chain): Response {
-            Log.d("test", sharedPreferences.all.toString())
             val request = chain.request()
-            if (request.url.encodedPath.equals("/login",true) ||
-                    request.url.encodedPath.equals("/register", true) &&
-                    request.method.equals("post", true)) {
+            if (request.url.encodedPath.equals("/login", true) ||
+                request.url.encodedPath.equals("/register", true) &&
+                request.method.equals("post", true)
+            ) {
                 return chain.proceed(request)
             }
             val newRequestBuilder: Request.Builder = chain.request().newBuilder()
@@ -46,7 +46,7 @@ interface BaseAuthorizationInterceptor : Interceptor {
                     val jwtToken = JWT(accessToken)
                     val exp = jwtToken.expiresAt
                     // Nếu access token hết hạn
-                    if ((exp?.time ?: 0) < TIMES_OUT + System.currentTimeMillis()) {
+                    if ((exp?.time ?: 0) < System.currentTimeMillis()) {
                         fetchAccessToken().also { token ->
                             sharedPreferences.edit().putString(ACCESS_TOKEN, token).apply()
                         }
@@ -59,7 +59,6 @@ interface BaseAuthorizationInterceptor : Interceptor {
                     }
                 }
             } catch (e: Throwable) {
-                Log.d("test", e.message.toString())
                 sharedPreferences.edit().remove(LOGIN_TOKEN).apply()
                 // Trở về màn hình login
                 context.startActivity(Intent(context, LoginActivity::class.java).also {
@@ -78,14 +77,14 @@ interface BaseAuthorizationInterceptor : Interceptor {
                 val jwtToken = JWT(loginToken)
                 val exp = jwtToken.expiresAt
                 // Token hết hạn
-                if ((exp?.time ?: 0) < TIMES_OUT + System.currentTimeMillis()) {
+                if ((exp?.time ?: 0) < System.currentTimeMillis()) {
                     // Throw token expired error
                     throw Exception("Token expired error")
                 } else {
                     fetchAccessToken(loginToken)
                 }
             } else {
-                fetchAccessToken(loginToken)
+                throw Exception("Login token not found")
             }
         }
 
@@ -96,8 +95,8 @@ interface BaseAuthorizationInterceptor : Interceptor {
                 .url(url)
                 .build()
             val client = OkHttpClient.Builder()
-                .readTimeout(TIMES_OUT.toLong(), TimeUnit.MILLISECONDS)
-                .connectTimeout(TIMES_OUT.toLong(), TimeUnit.MILLISECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(httpLoggingInterceptor)
                 .build()
             val response = client.newCall(request).execute()

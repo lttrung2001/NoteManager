@@ -7,7 +7,6 @@ import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
@@ -15,7 +14,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCase) : ViewModel() {
+class DashboardViewModel @Inject constructor(
+    private val useCase: DashboardUseCase
+) : ViewModel() {
     val internetError: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }

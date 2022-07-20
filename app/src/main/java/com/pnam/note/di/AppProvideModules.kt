@@ -46,6 +46,7 @@ class AppProvideModules {
     @Singleton
     fun provideNoteLocals(appDatabase: AppDatabase): NoteLocals =
         appDatabase.noteDao()
+
     // Retrofit
     @Provides
     @Singleton
@@ -101,6 +102,7 @@ class AppProvideModules {
     @Singleton
     fun provideLoginService(retrofit: Retrofit): LoginRetrofitServiceImpl.Service =
         retrofit.create(LoginRetrofitServiceImpl.Service::class.java)
+
     @Provides
     @Singleton
     fun provideNoteService(retrofit: Retrofit): NoteRetrofitServiceImpl.Service =
@@ -109,6 +111,6 @@ class AppProvideModules {
     @Provides
     @Singleton
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(APP_NAME,Context.MODE_PRIVATE)
+        return context.getSharedPreferences(APP_NAME, Context.MODE_PRIVATE)
     }
 }

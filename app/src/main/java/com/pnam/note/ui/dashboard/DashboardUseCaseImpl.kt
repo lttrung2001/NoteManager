@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class DashboardUseCaseImpl @Inject constructor(
     private val repositories: NoteRepositories
-    ) : DashboardUseCase {
+) : DashboardUseCase {
     override fun getNotes(): Single<PagingList<Note>> {
         return repositories.getNotes()
     }
