@@ -9,11 +9,11 @@ import com.pnam.note.throwable.NotFoundException
 import com.pnam.note.utils.AppUtils.Companion.LOGIN_TOKEN
 import com.pnam.note.utils.RetrofitUtils.INTERNAL_SERVER_ERROR
 import com.pnam.note.utils.RetrofitUtils.NOT_FOUND
+import com.pnam.note.utils.RetrofitUtils.SUCCESS
+import com.pnam.note.utils.RetrofitUtils.UNAUTHORIZED
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import javax.inject.Inject
 
@@ -27,11 +27,15 @@ class LoginRetrofitServiceImpl @Inject constructor(
         fun login(@Body map: Map<String, String>)
                 : Single<Response<APIResult<String>>>
 
-        @FormUrlEncoded
         @POST("/register")
         fun register(
-            @Field("email") email: String, @Field("password") password: String
-        ): Single<Response<APIResult<String>>>
+            @Body map: Map<String, String>
+        ): Single<Response<APIResult<Login>>>
+
+        @POST("/change-password")
+        fun changePassword(
+            @Body map: Map<String, String>
+        ): Single<Response<APIResult<Login>>>
     }
 
     override fun login(email: String, password: String): Single<Login> {
@@ -39,27 +43,36 @@ class LoginRetrofitServiceImpl @Inject constructor(
         body["email"] = email
         body["password"] = password
         return service.login(body).map {
-            // Đưa lỗi 500 tạm vào đây, tách ra sau
-            if (it.code() == NOT_FOUND || it.code() == INTERNAL_SERVER_ERROR) {
-                throw NotFoundException()
-            } else {
+            if (it.code() == SUCCESS) {
                 val loginToken = it.body()!!.data
                 // Save token into local
                 sharedPreferences.edit().putString(LOGIN_TOKEN, loginToken).apply()
                 // Decode token get login info
-                val jwtToken =  JWT(loginToken)
+                val jwtToken = JWT(loginToken)
                 val login = Login(
                     jwtToken.getClaim("id").asObject(String::class.java)!!,
                     jwtToken.getClaim("email").asObject(String::class.java)!!,
                     jwtToken.getClaim("password").asObject(String::class.java)!!
                 )
+                // Save login info to locals
                 login
+            } else {
+                throw NotFoundException("UNAUTHORIZED")
             }
         }
     }
 
     override fun register(email: String, password: String): Single<Login> {
-        TODO("Not yet implemented")
+        val body = HashMap<String, String>()
+        body["email"] = email
+        body["password"] = password
+        return service.register(body).map {
+            if (it.code() == SUCCESS) {
+                it.body()!!.data
+            } else {
+                throw Exception("INTERNAL_SERVER_ERROR")
+            }
+        }
     }
 
     override fun forgotPassword(email: String): Single<Unit> {
@@ -71,6 +84,16 @@ class LoginRetrofitServiceImpl @Inject constructor(
         oldPassword: String,
         newPassword: String
     ): Single<Login> {
-        TODO("Not yet implemented")
+        val body = HashMap<String, String>()
+        body["email"] = email
+        body["oldPassword"] = oldPassword
+        body["newPassword"] = newPassword
+        return service.changePassword(body).map {
+            if (it.code() == SUCCESS) {
+                it.body()!!.data
+            } else {
+                throw Exception("INTERNAL_SERVER_ERROR")
+            }
+        }
     }
 }

@@ -9,11 +9,15 @@ import javax.inject.Inject
 class DashboardUseCaseImpl @Inject constructor(
     private val repositories: NoteRepositories
 ) : DashboardUseCase {
-    override fun getNotes(): Single<PagingList<Note>> {
-        return repositories.getNotes()
+    override fun getNotes(page: Int, limit: Int): Single<PagingList<Note>> {
+        return repositories.getNotes(page, limit)
     }
 
     override fun deleteNote(note: Note): Single<Note> {
-        TODO("Not yet implemented")
+        return repositories.deleteNote(note)
+    }
+
+    override fun searchNotes(keySearch: String): Single<MutableList<Note>> {
+        return repositories.searchNotes(keySearch)
     }
 }

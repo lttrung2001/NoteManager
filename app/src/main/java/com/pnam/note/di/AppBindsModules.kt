@@ -8,21 +8,28 @@ import com.pnam.note.database.repositories.LoginRepositories
 import com.pnam.note.database.repositories.NoteRepositories
 import com.pnam.note.database.repositories.impl.LoginRepositoriesImpl
 import com.pnam.note.database.repositories.impl.NoteRepositoriesImpl
+<<<<<<< Updated upstream
+=======
+import com.pnam.note.ui.addnote.AddNoteUseCase
+import com.pnam.note.ui.addnote.AddNoteUseCaseImpl
+import com.pnam.note.ui.changepassword.ChangePasswordUseCase
+import com.pnam.note.ui.changepassword.ChangePasswordUseCaseImpl
+>>>>>>> Stashed changes
 import com.pnam.note.ui.dashboard.DashboardUseCase
 import com.pnam.note.ui.dashboard.DashboardUseCaseImpl
 import com.pnam.note.ui.login.LoginUseCase
 import com.pnam.note.ui.login.LoginUseCaseImpl
+import com.pnam.note.ui.register.RegisterUseCase
+import com.pnam.note.ui.register.RegisterUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AppBindsModules {
-
-    // Datastore current user
-
     // Database
     @Binds
     abstract fun getLoginNetworks(networks: LoginRetrofitServiceImpl): LoginNetworks
@@ -40,6 +47,12 @@ abstract class AppBindsModules {
     // Usecase
     @Binds
     abstract fun getLoginUseCase(useCase: LoginUseCaseImpl): LoginUseCase
+
+    @Binds
+    abstract fun getRegisterUseCase(useCase: RegisterUseCaseImpl): RegisterUseCase
+
+    @Binds
+    abstract fun getChangePasswordUseCase(useCase: ChangePasswordUseCaseImpl): ChangePasswordUseCase
 
     @Binds
     abstract fun getDashboardUseCase(useCase: DashboardUseCaseImpl): DashboardUseCase

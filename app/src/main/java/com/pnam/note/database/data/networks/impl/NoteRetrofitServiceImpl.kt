@@ -17,27 +17,29 @@ class NoteRetrofitServiceImpl @Inject constructor(
 ) : NoteNetworks {
     interface Service {
         @GET("/get-notes")
-        fun fetchNotes(): Single<Response<APIResult<PagingList<Note>>>>
+        fun fetchNotes(@Query("page") page: Int,
+                       @Query("limit") limit: Int): Single<Response<APIResult<PagingList<Note>>>>
 
-        @GET("get-note-detail")
+        @GET("/get-note-detail")
         fun fetchNoteDetail(noteId: String): Single<Response<APIResult<Note>>>
 
         @PUT("/add-note")
         fun addNote(@Body note: Note): Single<Response<APIResult<Note>>>
 
         @POST("/edit-note")
-        fun editNote(@Body note: Note): Single<Response<APIResult<Note>>>
+        fun editNote(@Query("id") id: String,
+                     @Body map: Map<String, String>): Single<Response<APIResult<Note>>>
 
         @DELETE("/delete-note")
-        fun deleteNote(@Body note: Note): Single<Response<APIResult<Note>>>
+        fun deleteNote(@Query("id") noteId: String): Single<Response<APIResult<Note>>>
     }
 
-    override fun fetchNotes(): Single<PagingList<Note>> {
-        return service.fetchNotes().map {
-            if (it.code() == NOT_FOUND) {
-                throw NotFoundException()
-            } else {
+    override fun fetchNotes(page: Int, limit: Int): Single<PagingList<Note>> {
+        return service.fetchNotes(page, limit).map {
+            if (it.code() == SUCCESS) {
                 it.body()!!.data
+            } else {
+                throw Exception("Can not fetch notes")
             }
         }
     }
@@ -51,10 +53,33 @@ class NoteRetrofitServiceImpl @Inject constructor(
     }
 
     override fun editNote(note: Note): Single<Note> {
+<<<<<<< Updated upstream
         TODO("Not yet implemented")
     }
 
     override fun deleteNote(note: Note): Single<Note> {
         TODO("Not yet implemented")
+=======
+        val body = HashMap<String, String>()
+        body["title"] = note.title
+        body["description"] = note.description
+        return service.editNote(note.id, body).map {
+            if (it.code() == SUCCESS) {
+                it.body()!!.data
+            } else {
+                throw Exception("Unknown error")
+            }
+        }
+    }
+
+    override fun deleteNote(note: Note): Single<Note> {
+        return service.deleteNote(note.id).map {
+            if (it.code() == SUCCESS) {
+                it.body()!!.data
+            } else {
+                throw Exception("Unknown error")
+            }
+        }
+>>>>>>> Stashed changes
     }
 }

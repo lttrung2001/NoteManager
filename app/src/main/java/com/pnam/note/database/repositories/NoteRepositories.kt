@@ -11,9 +11,10 @@ import javax.inject.Singleton
 interface NoteRepositories {
     val locals: NoteLocals
     val networks: NoteNetworks
-    fun getNotes(): Single<PagingList<Note>>
+    fun getNotes(page: Int, limit: Int): Single<PagingList<Note>>
     fun getNoteDetail(): Single<Note>
     fun addNote(note: Note): Single<Note>
     fun editNote(note: Note): Single<Note>
     fun deleteNote(note: Note): Single<Note>
+    fun searchNotes(keySearch: String): Single<MutableList<Note>>
 }

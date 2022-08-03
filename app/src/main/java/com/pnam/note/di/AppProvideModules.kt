@@ -3,11 +3,15 @@ package com.pnam.note.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.pnam.note.database.data.locals.AppDatabase
 import com.pnam.note.database.data.locals.LoginLocals
 import com.pnam.note.database.data.locals.NoteLocals
+import com.pnam.note.database.data.locals.dao.LoginDao
+import com.pnam.note.database.data.locals.dao.NoteDao
 import com.pnam.note.database.data.networks.impl.BaseAuthorizationInterceptor
 import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
 import com.pnam.note.database.data.networks.impl.NetworkConnectionInterceptor
@@ -15,6 +19,7 @@ import com.pnam.note.database.data.networks.impl.NoteRetrofitServiceImpl
 import com.pnam.note.utils.AppUtils.Companion.APP_NAME
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RoomUtils.Companion.DB_NAME
+import com.pnam.note.utils.RoomUtils.Companion.DB_VER
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +31,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -35,17 +41,32 @@ class AppProvideModules {
     @Provides
     @Singleton
     fun provideRoomDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME).build()
+        Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
+            .build()
 
     @Provides
     @Singleton
-    fun provideLoginLocals(appDatabase: AppDatabase): LoginLocals =
-        appDatabase.loginDao()
+    fun provideLoginDao(database: AppDatabase): LoginDao {
+        return database.loginDao()
+    }
 
     @Provides
     @Singleton
-    fun provideNoteLocals(appDatabase: AppDatabase): NoteLocals =
-        appDatabase.noteDao()
+    fun provideNoteDao(database: AppDatabase): NoteDao {
+        return database.noteDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoginLocals(appDatabase: AppDatabase): LoginLocals {
+        return appDatabase.loginDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNoteLocals(appDatabase: AppDatabase): NoteLocals {
+        return appDatabase.noteDao()
+    }
 
     // Retrofit
     @Provides

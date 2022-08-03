@@ -1,27 +1,25 @@
 package com.pnam.note.database.data.locals.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.Update
+import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
 import com.pnam.note.database.data.locals.LoginLocals
-import com.pnam.note.database.data.models.Login
+import com.pnam.note.database.data.models.EmailPassword
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface LoginDao : LoginLocals {
-    @Insert
-    override fun login(email: String, password: String): Single<Login> {
-        TODO("Not yet implemented")
-    }
+    @Insert(onConflict = REPLACE)
+    override fun login(emailPassword: EmailPassword): Completable
 
-    @Delete
-    override fun deleteLogin(id: String): Single<Login> {
-        TODO("Not yet implemented")
-    }
+    @Query("DELETE FROM EmailPassword WHERE email = :email")
+    override fun deleteLogin(email: String): Completable
 
-    @Update
-    override fun changePassword(id: String, newPassword: String): Single<Login> {
-        TODO("Not yet implemented")
-    }
+    @Query("UPDATE EmailPassword SET password = :newPassword WHERE email = :email")
+    override fun changePassword(email: String, newPassword: String): Completable
+
+    @Query("SELECT * FROM EmailPassword ORDER BY email")
+    fun getAllLogin(): Single<MutableList<EmailPassword>>
 }

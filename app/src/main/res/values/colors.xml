@@ -11,4 +11,6 @@
     <color name="secondaryColor">#FEEFC3</color>
     <color name="searchBarColor">#F1F3F4</color>
     <color name="gray">#5E5E5E</color>
+    <color name="errorColor">#d11a2a</color>
+    <color name="lightGray">#BABABA</color>
 </resources>

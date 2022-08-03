@@ -18,24 +18,51 @@
         android:theme="@style/Theme.Note"
         tools:targetApi="31">
         <activity
+<<<<<<< Updated upstream
+=======
+            android:name=".ui.register.RegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Note.NoActionBar" />
+        <activity
+>>>>>>> Stashed changes
             android:name=".ui.editnote.EditNoteActivity"
+            android:exported="false"
             android:parentActivityName=".ui.dashboard.DashboardActivity"
+<<<<<<< Updated upstream
             android:theme="@style/Theme.Note.NoActionBar"
             android:exported="false" />
+=======
+            android:theme="@style/Theme.Note.NoActionBar" />
+        <activity
+            android:name=".ui.addnote.AddNoteActivity"
+>>>>>>> Stashed changes
             android:exported="false"
             android:label="@string/title_activity_scrolling"
             android:theme="@style/Theme.Note.NoActionBar" />
         <activity
             android:name=".ui.login.LoginActivity"
+<<<<<<< Updated upstream
             android:theme="@style/Theme.Note.NoActionBar"
             android:exported="true">
+=======
+            android:exported="false"
+            android:theme="@style/Theme.Note.NoActionBar" />
+        <activity
+            android:name=".ui.dashboard.DashboardActivity"
+            android:exported="true"
+            android:label="@string/title_activity_scrolling"
+            android:theme="@style/Theme.Note.NoActionBar">
+>>>>>>> Stashed changes
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< Updated upstream
         <activity android:name=".MainActivity" />
+=======
+>>>>>>> Stashed changes
     </application>
 
 </manifest>

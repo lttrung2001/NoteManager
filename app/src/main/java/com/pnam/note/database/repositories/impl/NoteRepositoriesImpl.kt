@@ -14,8 +14,10 @@ class NoteRepositoriesImpl @Inject constructor(
     override val locals: NoteLocals,
     override val networks: NoteNetworks
 ) : NoteRepositories {
-    override fun getNotes(): Single<PagingList<Note>> {
-        return networks.fetchNotes()
+    override fun getNotes(page: Int, limit: Int): Single<PagingList<Note>> {
+        return networks.fetchNotes(page, limit).doOnSuccess {
+            locals.addNote(it.data)
+        }
     }
 
     override fun getNoteDetail(): Single<Note> {
@@ -23,15 +25,32 @@ class NoteRepositoriesImpl @Inject constructor(
     }
 
     override fun addNote(note: Note): Single<Note> {
+<<<<<<< Updated upstream
         TODO("Not yet implemented")
     }
 
     override fun editNote(note: Note): Single<Note> {
         TODO("Not yet implemented")
+=======
+        return networks.addNote(note).doOnSuccess {
+            locals.addNote(note)
+        }
+    }
+
+    override fun editNote(note: Note): Single<Note> {
+        return networks.editNote(note).doOnSuccess {
+            locals.editNote(it)
+        }
+>>>>>>> Stashed changes
     }
 
     override fun deleteNote(note: Note): Single<Note> {
-        TODO("Not yet implemented")
+        return networks.deleteNote(note).doOnSuccess {
+            locals.deleteNote(it)
+        }
     }
 
+    override fun searchNotes(keySearch: String): Single<MutableList<Note>> {
+        return locals.searchNotes(keySearch)
+    }
 }

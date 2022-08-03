@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,8 +34,8 @@ interface BaseAuthorizationInterceptor : Interceptor {
         @OptIn(ExperimentalCoroutinesApi::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
-            if (request.url.encodedPath.equals("/login", true) ||
-                request.url.encodedPath.equals("/register", true) &&
+            if ((request.url.encodedPath.equals("/login", true) ||
+                request.url.encodedPath.equals("/register", true)) &&
                 request.method.equals("post", true)
             ) {
                 return chain.proceed(request)
@@ -59,13 +60,15 @@ interface BaseAuthorizationInterceptor : Interceptor {
                     }
                 }
             } catch (e: Throwable) {
+                sharedPreferences.edit().remove(ACCESS_TOKEN).apply()
                 sharedPreferences.edit().remove(LOGIN_TOKEN).apply()
+                sharedPreferences.edit().remove(LoginActivity.EMAIL).apply()
                 // Trở về màn hình login
                 context.startActivity(Intent(context, LoginActivity::class.java).also {
-                    it.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    it.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or
                             Intent.FLAG_ACTIVITY_NEW_TASK
                 })
-                throw Exception()
+                throw Exception("Session expired")
             }
             newRequestBuilder.addHeader("Authorization", "Bearer $token")
             return chain.proceed(newRequestBuilder.build())
@@ -79,12 +82,12 @@ interface BaseAuthorizationInterceptor : Interceptor {
                 // Token hết hạn
                 if ((exp?.time ?: 0) < System.currentTimeMillis()) {
                     // Throw token expired error
-                    throw Exception("Token expired error")
+                    throw Exception("Token expired")
                 } else {
                     fetchAccessToken(loginToken)
                 }
             } else {
-                throw Exception("Login token not found")
+                throw Exception("Login token is required")
             }
         }
 
