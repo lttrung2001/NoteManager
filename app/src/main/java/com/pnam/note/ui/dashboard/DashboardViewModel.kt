@@ -2,11 +2,9 @@ package com.pnam.note.ui.dashboard
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.room.rxjava3.RxRoom
 import com.pnam.note.database.data.locals.dao.NoteDao
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
-import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.AppUtils.Companion.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
@@ -15,13 +13,13 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val useCase: DashboardUseCase,
-    val noteDao: NoteDao,
-    private val noteNetworks: NoteNetworks
+    val noteDao: NoteDao
 ) : ViewModel() {
     var page = 0
     val internetError: MutableLiveData<String> by lazy {
@@ -96,12 +94,19 @@ class DashboardViewModel @Inject constructor(
         searchNotesDisposable = if (keySearch.isBlank()) {
             noteDao.findNotes(page, LIMIT_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observerSearchNotes, this::loadNotesError)
+                .subscribeOn(Schedulers.io())
+                .subscribe(observerSearchNotes) {
+                    _searchNotes.postValue(Resource.Error(it.message ?: ""))
+                }
         } else {
             useCase.searchNotes(keySearch)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observerSearchNotes, this::loadNotesError)
+                .subscribeOn(Schedulers.io())
+                .subscribe(observerSearchNotes) {
+                    _searchNotes.postValue(Resource.Error(it.message ?: ""))
+                }
         }
+        composite.add(searchNotesDisposable)
     }
 
     private fun loadNotesError(t: Throwable) {

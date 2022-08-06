@@ -1,10 +1,8 @@
 package com.pnam.note.database.repositories.impl
 
-import com.pnam.note.database.data.locals.LoginLocals
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
-import com.pnam.note.database.data.networks.LoginNetworks
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.database.repositories.NoteRepositories
 import io.reactivex.rxjava3.core.Single
@@ -25,13 +23,6 @@ class NoteRepositoriesImpl @Inject constructor(
     }
 
     override fun addNote(note: Note): Single<Note> {
-<<<<<<< Updated upstream
-        TODO("Not yet implemented")
-    }
-
-    override fun editNote(note: Note): Single<Note> {
-        TODO("Not yet implemented")
-=======
         return networks.addNote(note).doOnSuccess {
             locals.addNote(note)
         }
@@ -41,7 +32,6 @@ class NoteRepositoriesImpl @Inject constructor(
         return networks.editNote(note).doOnSuccess {
             locals.editNote(it)
         }
->>>>>>> Stashed changes
     }
 
     override fun deleteNote(note: Note): Single<Note> {

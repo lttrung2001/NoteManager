@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -83,7 +84,7 @@ class EditNoteActivity : AppCompatActivity() {
                     }
                 }
                 is Resource.Error -> {
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error when saving note", Toast.LENGTH_SHORT).show()
                 }
             }
         }

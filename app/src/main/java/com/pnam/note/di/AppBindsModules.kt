@@ -8,15 +8,14 @@ import com.pnam.note.database.repositories.LoginRepositories
 import com.pnam.note.database.repositories.NoteRepositories
 import com.pnam.note.database.repositories.impl.LoginRepositoriesImpl
 import com.pnam.note.database.repositories.impl.NoteRepositoriesImpl
-<<<<<<< Updated upstream
-=======
 import com.pnam.note.ui.addnote.AddNoteUseCase
 import com.pnam.note.ui.addnote.AddNoteUseCaseImpl
 import com.pnam.note.ui.changepassword.ChangePasswordUseCase
 import com.pnam.note.ui.changepassword.ChangePasswordUseCaseImpl
->>>>>>> Stashed changes
 import com.pnam.note.ui.dashboard.DashboardUseCase
 import com.pnam.note.ui.dashboard.DashboardUseCaseImpl
+import com.pnam.note.ui.editnote.EditNoteUseCase
+import com.pnam.note.ui.editnote.EditNoteUseCaseImpl
 import com.pnam.note.ui.login.LoginUseCase
 import com.pnam.note.ui.login.LoginUseCaseImpl
 import com.pnam.note.ui.register.RegisterUseCase
@@ -56,4 +55,10 @@ abstract class AppBindsModules {
 
     @Binds
     abstract fun getDashboardUseCase(useCase: DashboardUseCaseImpl): DashboardUseCase
+
+    @Binds
+    abstract fun getAddNoteUseCase(useCase: AddNoteUseCaseImpl): AddNoteUseCase
+
+    @Binds
+    abstract fun getEditNoteUseCase(useCase: EditNoteUseCaseImpl): EditNoteUseCase
 }

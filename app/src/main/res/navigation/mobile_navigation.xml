@@ -7,13 +7,11 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.pnam.note.ui.dashboard.HomeFragment"
-        android:label="@string/home"
-        tools:layout="@layout/fragment_home" />
+        android:name="com.pnam.note.ui.dashboard.DashboardFragment"
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/nav_change_password"
         android:name="com.pnam.note.ui.changepassword.ChangePasswordFragment"
-        android:label="@string/change_password"
         tools:layout="@layout/fragment_change_password" />
 </navigation>

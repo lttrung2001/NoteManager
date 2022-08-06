@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingVertical="4dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingVertical="4dp">
+
     <TextView
         android:id="@+id/tv_email"
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
         android:paddingVertical="4dp"
-        android:textSize="16sp"
-        android:layout_marginStart="8dp"/>
+        android:textSize="16sp" />
+
     <ImageView
         android:id="@+id/btn_delete_login"
         android:layout_width="40dp"
         android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_baseline_delete_24"
-        app:tint="@color/gray"
-        android:layout_marginEnd="8dp"/>
+        app:tint="@color/gray" />
 </LinearLayout>

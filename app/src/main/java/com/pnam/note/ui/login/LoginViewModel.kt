@@ -9,7 +9,6 @@ import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
@@ -61,13 +60,9 @@ class LoginViewModel @Inject constructor(
             composite.remove(it)
             it.dispose()
         }
-<<<<<<< Updated upstream
-        loginDisposable = useCase.login(email,password).observeOn(AndroidSchedulers.mainThread())
-=======
         loginDisposable = useCase
             .login(email, password)
             .observeOn(AndroidSchedulers.mainThread())
->>>>>>> Stashed changes
             .subscribe(observerLogin, this::loginError)
         composite.add(loginDisposable)
     }
