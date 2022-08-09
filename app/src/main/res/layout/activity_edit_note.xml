@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
     android:orientation="vertical"
     tools:context=".ui.editnote.EditNoteActivity">
 
-    <Button
+    <TextView
         android:id="@+id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/transparent"
-        android:drawableLeft="@drawable/ic_back"
-        android:drawableTint="@color/primaryColor"
-        android:outlineAmbientShadowColor="@android:color/transparent"
-        android:outlineSpotShadowColor="@android:color/transparent"
-        android:shadowColor="@android:color/transparent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/edit_note"
-        android:textAllCaps="false"
         android:textColor="@color/primaryColor"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:drawableStartCompat="@drawable/ic_back"
+        app:drawableTint="@color/primaryColor" />
 
     <RelativeLayout
         android:layout_width="match_parent"

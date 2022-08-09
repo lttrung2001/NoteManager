@@ -2,11 +2,6 @@ package com.pnam.note.database.data.networks.impl
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.util.Log
-import androidx.core.content.getSystemService
 import com.pnam.note.throwable.NoConnectivityException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.Interceptor
@@ -15,7 +10,9 @@ import okhttp3.Response
 import java.io.IOException
 import javax.inject.Inject
 
-class NetworkConnectionInterceptor @Inject constructor(@ApplicationContext private val context: Context) :
+class NetworkConnectionInterceptor @Inject constructor(
+    @ApplicationContext private val context: Context
+) :
     Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -29,9 +26,9 @@ class NetworkConnectionInterceptor @Inject constructor(@ApplicationContext priva
 
     private val isConnected: Boolean
         get() {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
-            as ConnectivityManager
-        val netInfo = connectivityManager.activeNetworkInfo
-        return netInfo != null && netInfo.isConnected
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+                    as ConnectivityManager
+            val netInfo = connectivityManager.activeNetworkInfo
+            return netInfo != null && netInfo.isConnected
         }
 }

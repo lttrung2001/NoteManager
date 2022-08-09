@@ -3,8 +3,6 @@ package com.pnam.note.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.pnam.note.database.data.locals.AppDatabase
@@ -19,7 +17,6 @@ import com.pnam.note.database.data.networks.impl.NoteRetrofitServiceImpl
 import com.pnam.note.utils.AppUtils.Companion.APP_NAME
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RoomUtils.Companion.DB_NAME
-import com.pnam.note.utils.RoomUtils.Companion.DB_VER
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +28,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module

@@ -5,6 +5,7 @@ import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.database.repositories.NoteRepositories
+import com.pnam.note.throwable.NoConnectivityException
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
@@ -13,8 +14,8 @@ class NoteRepositoriesImpl @Inject constructor(
     override val networks: NoteNetworks
 ) : NoteRepositories {
     override fun getNotes(page: Int, limit: Int): Single<PagingList<Note>> {
-        return networks.fetchNotes(page, limit).doOnSuccess {
-            locals.addNote(it.data)
+        return networks.fetchNotes(page, limit).doOnSuccess { netNotes ->
+            locals.addNote(netNotes.data)
         }
     }
 

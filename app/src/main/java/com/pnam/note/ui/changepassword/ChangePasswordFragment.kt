@@ -62,6 +62,7 @@ class ChangePasswordFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     Toast.makeText(activity,"Change password successfully",Toast.LENGTH_SHORT).show()
+                    binding.load.visibility = View.INVISIBLE
                     activity?.onBackPressed()
                 }
                 is Resource.Error -> {
@@ -69,6 +70,11 @@ class ChangePasswordFragment : Fragment() {
                     binding.load.visibility = View.INVISIBLE
                 }
             }
+        }
+
+        viewModel.internetError.observe(viewLifecycleOwner) {
+            binding.changePasswordError.text = "No internet connection"
+            binding.load.visibility = View.INVISIBLE
         }
     }
 }

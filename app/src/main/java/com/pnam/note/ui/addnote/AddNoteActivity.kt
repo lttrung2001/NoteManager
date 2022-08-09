@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.pnam.note.base.BaseActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
 import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
@@ -19,23 +19,24 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class AddNoteActivity : AppCompatActivity() {
+class AddNoteActivity : BaseActivity() {
     private lateinit var binding: ActivityAddNoteBinding
     private val viewModel: AddNoteViewModel by viewModels()
     private val addListener: View.OnClickListener by lazy {
         View.OnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 val note = Note(
-                    "",
+                    System.currentTimeMillis().toString(),
                     binding.inputNoteTitle.text.toString().trim(),
                     binding.inputNoteDesc.text.toString().trim(),
-                    0,
-                    0
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis()
                 )
                 viewModel.addNote(note)
             }
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
@@ -63,7 +64,7 @@ class AddNoteActivity : AppCompatActivity() {
                     supportFinishAfterTransition()
                 }
                 is Resource.Error -> {
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

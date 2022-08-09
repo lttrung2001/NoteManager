@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/try_again"
+        android:textAllCaps="false"
         android:visibility="gone" />
 
     <LinearLayout
@@ -47,9 +48,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search_bar"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginBottom="8dp"
         tools:itemCount="10"
+        android:paddingTop="8dp"
         tools:listitem="@layout/note_container" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator

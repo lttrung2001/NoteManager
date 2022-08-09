@@ -3,7 +3,6 @@ package com.pnam.note.ui.dashboard
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,11 +33,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
     private lateinit var binding: FragmentDashboardBinding
-    private lateinit var notesAdapter: NoteAdapter
+    private var notesAdapter: NoteAdapter? = null
     private val viewModel: DashboardViewModel by viewModels()
-    private val bundle: Bundle by lazy {
-        Bundle()
-    }
 
     private val addNoteListener: View.OnClickListener by lazy {
         View.OnClickListener {
@@ -89,7 +85,7 @@ class DashboardFragment : Fragment() {
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.deleteNote(note)
                 }
-                notesAdapter.removeAt(position)
+                notesAdapter?.removeAt(position)
             }
         }
     }
@@ -106,7 +102,7 @@ class DashboardFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentDashboardBinding.inflate(layoutInflater)
         binding.btnTryAgain.setOnClickListener(tryAgainListener)
         binding.btnStartAddNote.setOnClickListener(addNoteListener)
@@ -117,15 +113,19 @@ class DashboardFragment : Fragment() {
         }
         initRecycleView()
         initObservers()
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.getNotes()
+        if ((notesAdapter?.itemCount ?: 0) == 0) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.getNotes()
+            }
         }
         return binding.root
     }
 
     private fun initRecycleView() {
-        val notes = mutableListOf<Note>()
-        notesAdapter = NoteAdapter(notes, noteClickListener)
+        if (notesAdapter == null) {
+            val notes = mutableListOf<Note>()
+            notesAdapter = NoteAdapter(notes, noteClickListener)
+        }
         binding.rcvNotes.adapter = notesAdapter
         binding.rcvNotes.layoutManager = LinearLayoutManager(context)
         binding.rcvNotes.addOnScrollListener(onScrollListener)
@@ -139,9 +139,11 @@ class DashboardFragment : Fragment() {
                     binding.btnTryAgain.visibility = View.INVISIBLE
                 }
                 is Resource.Success -> {
-                    val start = notesAdapter.list.size
-                    notesAdapter.list.addAll(it.data.data)
-                    notesAdapter.notifyItemRangeInserted(start, notesAdapter.itemCount)
+                    notesAdapter?.let { adapter ->
+                        val start = adapter.list.size
+                        adapter.list.addAll(it.data.data)
+                        adapter.notifyItemRangeInserted(start, adapter.itemCount)
+                    }
                     binding.loadMore.visibility = View.INVISIBLE
                     binding.btnTryAgain.visibility = View.INVISIBLE
                 }
@@ -177,9 +179,9 @@ class DashboardFragment : Fragment() {
                     binding.loadMore.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
-                    notesAdapter.list.clear()
-                    notesAdapter.list.addAll(it.data)
-                    notesAdapter.notifyDataSetChanged()
+                    notesAdapter!!.list.clear()
+                    notesAdapter!!.list.addAll(it.data)
+                    notesAdapter!!.notifyDataSetChanged()
                     binding.loadMore.visibility = View.INVISIBLE
                 }
                 is Resource.Error -> {
@@ -206,10 +208,10 @@ class DashboardFragment : Fragment() {
             data!!.extras.let {
                 val note = it!!.getSerializable(AppUtils.NOTE_CHANGE) as Note
                 if (requestCode == 1) {
-                    notesAdapter.insertAt(note, 0)
+                    notesAdapter!!.insertAt(note, 0)
                 } else {
                     val position = it.getInt(AppUtils.NOTE_POSITION)
-                    notesAdapter.editAt(note, position)
+                    notesAdapter!!.editAt(note, position)
                 }
             }
         }

@@ -2,7 +2,10 @@ package com.pnam.note.ui.addnote
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,12 +13,14 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddNoteViewModel @Inject constructor(
-    private val addNoteUseCase: AddNoteUseCase
+    private val addNoteUseCase: AddNoteUseCase,
+    private val noteLocals: NoteLocals
 ) : ViewModel() {
     val internetError: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -42,20 +47,26 @@ class AddNoteViewModel @Inject constructor(
             it.dispose()
         }
         disposable = addNoteUseCase.addNote(note).observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe(observer, this::addNoteError)
+            .subscribe(observer) { t ->
+                when (t) {
+                    is NoConnectivityException -> {
+                        // Cần phát ra item đã lưu trong local để cập nhật lên giao diện
+                        viewModelScope.launch(Dispatchers.IO) {
+                            noteLocals.addNote(note)
+                            noteLocals.addNoteStatus(NoteStatus(note.id,1))
+                            disposable = noteLocals.findNoteDetail(note.id)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(observer) { localError ->
+                                    addNote.postValue(Resource.Error(localError.message ?: ""))
+                                }
+                        }
+                    }
+                    else -> {
+                        addNote.postValue(Resource.Error(t.message ?: ""))
+                    }
+                }
+                t.printStackTrace()
+            }
         composite.add(disposable)
-    }
-
-    private fun addNoteError(t: Throwable) {
-        when (t) {
-            is NoConnectivityException -> {
-                internetError.postValue("")
-            }
-            else -> {
-                addNote.postValue(Resource.Error(t.message ?: ""))
-            }
-        }
-        t.printStackTrace()
     }
 }

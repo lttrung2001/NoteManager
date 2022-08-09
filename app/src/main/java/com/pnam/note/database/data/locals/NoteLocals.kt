@@ -1,6 +1,8 @@
 package com.pnam.note.database.data.locals
 
 import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.models.NoteStatus
+import com.pnam.note.database.data.models.NoteAndStatus
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Singleton
 
@@ -13,4 +15,9 @@ interface NoteLocals {
     fun editNote(note: Note)
     fun deleteNote(note: Note)
     fun searchNotes(keySearch: String): Single<MutableList<Note>>
+    fun deleteAllNote()
+
+    fun addNoteStatus(noteStatus: NoteStatus)
+    fun deleteNoteStatus(noteStatus: NoteStatus)
+    fun findNotesWithStatus(): List<NoteAndStatus>
 }

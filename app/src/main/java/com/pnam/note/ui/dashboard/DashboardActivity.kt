@@ -15,6 +15,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.pnam.note.R
+import com.pnam.note.base.BaseActivity
 import com.pnam.note.databinding.ActivityScrollingBinding
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppUtils
@@ -27,7 +28,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class DashboardActivity : AppCompatActivity() {
+class DashboardActivity : BaseActivity() {
 
     private lateinit var binding: ActivityScrollingBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -82,7 +83,7 @@ class DashboardActivity : AppCompatActivity() {
             sp.edit().remove(AppUtils.ACCESS_TOKEN).apply()
             sp.edit().remove(AppUtils.LOGIN_TOKEN).apply()
             sp.edit().remove(LoginActivity.EMAIL).apply()
-            viewModel.noteDao.deleteAllNote()
+            viewModel.noteLocals.deleteAllNote()
         }
         startActivity(Intent(this, LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK

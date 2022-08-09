@@ -2,24 +2,29 @@ package com.pnam.note.ui.dashboard
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.pnam.note.database.data.locals.dao.NoteDao
+import androidx.lifecycle.viewModelScope
+import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.AppUtils.Companion.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val useCase: DashboardUseCase,
-    val noteDao: NoteDao
+    val noteLocals: NoteLocals
 ) : ViewModel() {
     var page = 0
     val internetError: MutableLiveData<String> by lazy {
@@ -58,8 +63,8 @@ class DashboardViewModel @Inject constructor(
         }
     }
     private val observerSearchNotes: Consumer<MutableList<Note>> by lazy {
-        Consumer<MutableList<Note>> {
-            _searchNotes.postValue(Resource.Success(it))
+        Consumer<MutableList<Note>> { list ->
+            _searchNotes.postValue(Resource.Success(list))
         }
     }
 
@@ -71,7 +76,25 @@ class DashboardViewModel @Inject constructor(
         }
         dashboardDisposable = useCase.getNotes(++page, LIMIT_ON_PAGE)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observerDashboard, this::loadNotesError)
+            .subscribe(observerDashboard) { t ->
+                when (t) {
+                    is NoConnectivityException -> {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            dashboardDisposable =
+                                noteLocals.findNotes(page, LIMIT_ON_PAGE).map { localNotes ->
+                                    PagingList(localNotes, hasNextPage = true, hasPrePage = false)
+                                }
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(observerDashboard)
+                        }
+                    }
+                    else -> {
+                        page--
+                        _dashboard.postValue(Resource.Error(t.message ?: ""))
+                    }
+                }
+                t.printStackTrace()
+            }
         composite.add(dashboardDisposable)
     }
 
@@ -82,7 +105,25 @@ class DashboardViewModel @Inject constructor(
         }
         deleteNoteDisposable = useCase.deleteNote(note)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observerDeleteNote, this::deleteNoteError)
+            .subscribe(observerDeleteNote) { t ->
+                when (t) {
+                    is NoConnectivityException -> {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            deleteNoteDisposable = noteLocals.findNoteDetail(note.id)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(observerDeleteNote) {
+                                    _deleteNote.postValue(Resource.Error(t.message ?: ""))
+                                }
+                            noteLocals.addNoteStatus(NoteStatus(note.id,3))
+                            noteLocals.deleteNote(note)
+                        }
+                    }
+                    else -> {
+                        _deleteNote.postValue(Resource.Error(t.message ?: ""))
+                    }
+                }
+                t.printStackTrace()
+            }
         composite.add(deleteNoteDisposable)
     }
 
@@ -92,7 +133,7 @@ class DashboardViewModel @Inject constructor(
             it.dispose()
         }
         searchNotesDisposable = if (keySearch.isBlank()) {
-            noteDao.findNotes(page, LIMIT_ON_PAGE)
+            noteLocals.findNotes(page, LIMIT_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(observerSearchNotes) {
@@ -107,31 +148,6 @@ class DashboardViewModel @Inject constructor(
                 }
         }
         composite.add(searchNotesDisposable)
-    }
-
-    private fun loadNotesError(t: Throwable) {
-        page--
-        when (t) {
-            is NoConnectivityException -> {
-                internetError.postValue("")
-            }
-            else -> {
-                _dashboard.postValue(Resource.Error(t.message ?: ""))
-            }
-        }
-        t.printStackTrace()
-    }
-
-    private fun deleteNoteError(t: Throwable) {
-        when (t) {
-            is NoConnectivityException -> {
-                internetError.postValue("")
-            }
-            else -> {
-                _deleteNote.postValue(Resource.Error(t.message ?: ""))
-            }
-        }
-        t.printStackTrace()
     }
 
     override fun onCleared() {
