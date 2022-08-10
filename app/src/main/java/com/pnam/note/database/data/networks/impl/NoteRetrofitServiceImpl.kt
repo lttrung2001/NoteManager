@@ -73,8 +73,8 @@ class NoteRetrofitServiceImpl @Inject constructor(
         }
     }
 
-    override fun deleteNote(note: Note): Single<Note> {
-        return service.deleteNote(note.id).map {
+    override fun deleteNote(id: String): Single<Note> {
+        return service.deleteNote(id).map {
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {

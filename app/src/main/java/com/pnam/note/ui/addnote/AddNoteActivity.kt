@@ -24,15 +24,25 @@ class AddNoteActivity : BaseActivity() {
     private val viewModel: AddNoteViewModel by viewModels()
     private val addListener: View.OnClickListener by lazy {
         View.OnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val note = Note(
-                    System.currentTimeMillis().toString(),
-                    binding.inputNoteTitle.text.toString().trim(),
-                    binding.inputNoteDesc.text.toString().trim(),
-                    System.currentTimeMillis(),
-                    System.currentTimeMillis()
-                )
-                viewModel.addNote(note)
+            val title = binding.inputNoteTitle.text.trim().toString()
+            val desc = binding.inputNoteDesc.text.trim().toString()
+            if (title.isEmpty() && desc.isEmpty()) {
+                Toast.makeText(
+                    this@AddNoteActivity,
+                    "Please write somethings to save",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val note = Note(
+                        System.currentTimeMillis().toString(),
+                        title,
+                        desc,
+                        System.currentTimeMillis(),
+                        System.currentTimeMillis()
+                    )
+                    viewModel.addNote(note)
+                }
             }
         }
     }

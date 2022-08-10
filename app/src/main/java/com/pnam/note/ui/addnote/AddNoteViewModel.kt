@@ -8,6 +8,7 @@ import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.Resource
+import com.pnam.note.utils.RoomUtils.Companion.ADD_NOTE_STATUS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -52,8 +53,7 @@ class AddNoteViewModel @Inject constructor(
                     is NoConnectivityException -> {
                         // Cần phát ra item đã lưu trong local để cập nhật lên giao diện
                         viewModelScope.launch(Dispatchers.IO) {
-                            noteLocals.addNote(note)
-                            noteLocals.addNoteStatus(NoteStatus(note.id,1))
+                            noteLocals.addNoteAndStatus(note)
                             disposable = noteLocals.findNoteDetail(note.id)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(observer) { localError ->

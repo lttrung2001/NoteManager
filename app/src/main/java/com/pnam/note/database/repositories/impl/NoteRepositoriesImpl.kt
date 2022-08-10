@@ -5,7 +5,6 @@ import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.database.repositories.NoteRepositories
-import com.pnam.note.throwable.NoConnectivityException
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
@@ -36,7 +35,7 @@ class NoteRepositoriesImpl @Inject constructor(
     }
 
     override fun deleteNote(note: Note): Single<Note> {
-        return networks.deleteNote(note).doOnSuccess {
+        return networks.deleteNote(note.id).doOnSuccess {
             locals.deleteNote(it)
         }
     }

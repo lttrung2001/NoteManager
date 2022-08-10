@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="password"
             android:backgroundTint="@color/primaryColor"
-            android:hint="@string/password_hint"
+            android:hint="@string/re_enter_password"
             android:inputType="textPassword" />
 
         <TextView

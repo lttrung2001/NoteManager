@@ -86,7 +86,7 @@ class LoginViewModel @Inject constructor(
                 internetError.postValue("No internet connection")
             }
             else -> {
-                _login.postValue(Resource.Error(t.message ?: "Unknown error"))
+                internetError.postValue(t.message ?: "Unknown error")
             }
         }
         t.printStackTrace()

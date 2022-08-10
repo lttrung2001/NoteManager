@@ -5,14 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.AppUtils.Companion.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
@@ -112,10 +110,9 @@ class DashboardViewModel @Inject constructor(
                             deleteNoteDisposable = noteLocals.findNoteDetail(note.id)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(observerDeleteNote) {
-                                    _deleteNote.postValue(Resource.Error(t.message ?: ""))
+                                    _deleteNote.postValue(Resource.Error(t.message))
                                 }
-                            noteLocals.addNoteStatus(NoteStatus(note.id,3))
-                            noteLocals.deleteNote(note)
+                            noteLocals.deleteNoteAndStatus(note)
                         }
                     }
                     else -> {

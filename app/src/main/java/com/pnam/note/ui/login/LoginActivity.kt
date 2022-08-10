@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
@@ -35,11 +36,18 @@ class LoginActivity : AppCompatActivity() {
 
     private val loginClick: View.OnClickListener by lazy {
         View.OnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.login(
-                    binding.edtEmail.text.toString().trim(),
-                    binding.edtPassword.text.toString().trim()
-                )
+            val email = binding.edtEmail.text.trim().toString()
+            val password = binding.edtPassword.text.trim().toString()
+            if (email.isEmpty() || password.isEmpty()) {
+                binding.loginError.visibility = View.VISIBLE
+                binding.loginError.text = "All input is required"
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.loginError.visibility = View.VISIBLE
+                binding.loginError.text = "Your email is invalid"
+            } else {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.login(email,password)
+                }
             }
         }
     }
@@ -102,15 +110,14 @@ class LoginActivity : AppCompatActivity() {
                 }
                 is Resource.Error -> {
                     binding.loginError.visibility = View.VISIBLE
-                    binding.loginError.text = "Wrong password"
                     binding.load.visibility = View.INVISIBLE
                 }
             }
         }
         viewModel.internetError.observe(this) {
             binding.loginError.visibility = View.VISIBLE
-            binding.loginError.setText(R.string.no_internet)
             binding.load.visibility = View.INVISIBLE
+            binding.loginError.text = viewModel.internetError.value
         }
     }
 

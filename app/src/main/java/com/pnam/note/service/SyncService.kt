@@ -3,11 +3,14 @@ package com.pnam.note.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import com.pnam.note.database.data.locals.NoteLocals
-import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.database.data.models.NoteAndStatus
+import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.database.data.networks.NoteNetworks
+import com.pnam.note.utils.RoomUtils.Companion.ADD_NOTE_STATUS
+import com.pnam.note.utils.RoomUtils.Companion.DELETE_NOTE_STATUS
+import com.pnam.note.utils.RoomUtils.Companion.EDIT_NOTE_STATUS
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +19,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SyncService : Service() {
-    @Inject lateinit var noteLocals: NoteLocals
-    @Inject lateinit var noteNetworks: NoteNetworks
+    @Inject
+    lateinit var noteLocals: NoteLocals
+    @Inject
+    lateinit var noteNetworks: NoteNetworks
     private lateinit var syncList: List<NoteAndStatus>
 
     override fun onBind(intent: Intent): IBinder? {
@@ -26,26 +31,47 @@ class SyncService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         CoroutineScope(Dispatchers.IO).launch {
-            syncList = noteLocals.findNotesWithStatus()
+            syncList = noteLocals.findNotesAndStatus()
+            Log.d("test", syncList.toString())
             if (syncList.isNotEmpty()) {
-                for (note in syncList) {
-                    val tmpNote =
-                        Note(note.id, note.title, note.description, note.createAt, note.editAt)
-                    when (note.status) {
-                        1 -> {
-                            noteNetworks.addNote(tmpNote).doOnSuccess {
-                                noteLocals.deleteNote(tmpNote)
-                                noteLocals.addNote(it)
+                for (i in syncList) {
+                    when (i.status.status) {
+                        ADD_NOTE_STATUS -> {
+                            i.note?.let {
+                                noteNetworks.addNote(it).doOnSuccess {
+                                    noteLocals.deleteNoteStatus(NoteStatus(i.note.id, ADD_NOTE_STATUS))
+                                }.doOnError {
+                                    onDestroy()
+                                }.subscribe()
                             }
                         }
-                        2 -> {
-                            noteNetworks.editNote(tmpNote).subscribe()
+                        EDIT_NOTE_STATUS -> {
+                            i.note?.let {
+                                noteNetworks.editNote(it).doOnSuccess {
+                                    noteLocals.deleteNoteStatus(
+                                        NoteStatus(
+                                            i.note.id,
+                                            EDIT_NOTE_STATUS
+                                        )
+                                    )
+                                }.doOnError {
+                                    onDestroy()
+                                }.subscribe()
+                            }
                         }
                         else -> {
-                            noteNetworks.deleteNote(tmpNote).subscribe()
+                            noteNetworks.deleteNote(i.status.id).doOnSuccess {
+                                noteLocals.deleteNoteStatus(
+                                    NoteStatus(
+                                        i.status.id,
+                                        DELETE_NOTE_STATUS
+                                    )
+                                )
+                            }.doOnError {
+                                onDestroy()
+                            }.subscribe()
                         }
                     }
-                    noteLocals.deleteNoteStatus(NoteStatus(note.id, note.status))
                 }
             } else {
                 onDestroy()

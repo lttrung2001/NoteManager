@@ -56,7 +56,7 @@ class ChangePasswordViewModel @Inject constructor(
                             internetError.postValue("No internet connection")
                         }
                         else -> {
-                            _changePassword.postValue(Resource.Error(t.message ?: "Unknown error"))
+                            internetError.postValue(t.message ?: "Unknown error")
                         }
                     }
                     t.printStackTrace()

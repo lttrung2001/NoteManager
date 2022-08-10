@@ -84,6 +84,7 @@ class DashboardActivity : BaseActivity() {
             sp.edit().remove(AppUtils.LOGIN_TOKEN).apply()
             sp.edit().remove(LoginActivity.EMAIL).apply()
             viewModel.noteLocals.deleteAllNote()
+            viewModel.noteLocals.deleteAllNoteStatus()
         }
         startActivity(Intent(this, LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK

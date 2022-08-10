@@ -56,7 +56,8 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/primaryColor"
                 android:hint="@string/email_hint"
-                android:importantForAutofill="no" />
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_logins"

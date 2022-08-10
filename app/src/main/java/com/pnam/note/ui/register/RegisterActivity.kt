@@ -2,6 +2,7 @@ package com.pnam.note.ui.register
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,11 +31,22 @@ class RegisterActivity : AppCompatActivity() {
     }
     private val registerClick: View.OnClickListener by lazy {
         View.OnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.register(
-                    binding.edtEmail.text.toString().trim(),
-                    binding.edtPassword.text.toString().trim()
-                )
+            val email = binding.edtEmail.text.trim().toString()
+            val password = binding.edtPassword.text.trim().toString()
+            val password2 = binding.edtPassword2.text.trim().toString()
+            if (email.isEmpty() || password.isEmpty() || password2.isEmpty()) {
+                binding.registerError.visibility = View.VISIBLE
+                binding.registerError.text = "All input is required"
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.registerError.visibility = View.VISIBLE
+                binding.registerError.text = "Your email is invalid"
+            } else if (!password.contentEquals(password2)) {
+                binding.registerError.visibility = View.VISIBLE
+                binding.registerError.text = "Password not matched"
+            } else {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.register(email, password)
+                }
             }
         }
     }
@@ -63,14 +75,14 @@ class RegisterActivity : AppCompatActivity() {
                 }
                 is Resource.Error -> {
                     binding.registerError.visibility = View.VISIBLE
-                    binding.registerError.text = "Password not match"
                     binding.load.visibility = View.INVISIBLE
                 }
             }
         }
         viewModel.internetError.observe(this) {
             binding.registerError.visibility = View.VISIBLE
-            binding.registerError.setText(R.string.no_internet)
+            binding.load.visibility = View.INVISIBLE
+            binding.registerError.text = viewModel.internetError.value
         }
     }
 }

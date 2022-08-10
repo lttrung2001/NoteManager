@@ -46,17 +46,17 @@ class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase
             .register(email, password)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observerLogin, this::loginError)
+            .subscribe(observerLogin, this::registerError)
         composite.add(registerDisposable)
     }
 
-    private fun loginError(t: Throwable) {
+    private fun registerError(t: Throwable) {
         when (t) {
             is NoConnectivityException -> {
                 internetError.postValue("")
             }
             else -> {
-                _register.postValue(Resource.Error(t.message ?: ""))
+                internetError.postValue(t.message ?: "")
             }
         }
         t.printStackTrace()

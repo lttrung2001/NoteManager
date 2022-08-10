@@ -52,8 +52,7 @@ class EditNoteViewModel @Inject constructor(
                 when (t) {
                     is NoConnectivityException -> {
                         viewModelScope.launch(Dispatchers.IO) {
-                            noteLocals.editNote(note)
-                            noteLocals.addNoteStatus(NoteStatus(note.id,2))
+                            noteLocals.editNoteAndStatus(note)
                             disposable = noteLocals.findNoteDetail(note.id)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(observer) { localError ->

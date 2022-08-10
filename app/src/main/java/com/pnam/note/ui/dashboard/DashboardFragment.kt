@@ -113,12 +113,16 @@ class DashboardFragment : Fragment() {
         }
         initRecycleView()
         initObservers()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if ((notesAdapter?.itemCount ?: 0) == 0) {
             lifecycleScope.launch(Dispatchers.IO) {
                 viewModel.getNotes()
             }
         }
-        return binding.root
     }
 
     private fun initRecycleView() {
@@ -163,12 +167,7 @@ class DashboardFragment : Fragment() {
                     binding.loadMore.visibility = View.GONE
                 }
                 is Resource.Error -> {
-                    binding.loadMore.visibility = View.GONE
-                    Toast.makeText(
-                        activity,
-                        it.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
+
                 }
             }
         }
@@ -185,12 +184,7 @@ class DashboardFragment : Fragment() {
                     binding.loadMore.visibility = View.INVISIBLE
                 }
                 is Resource.Error -> {
-                    binding.loadMore.visibility = View.INVISIBLE
-                    Toast.makeText(
-                        activity,
-                        it.message,
-                        Toast.LENGTH_SHORT
-                    ).show()
+
                 }
             }
         }

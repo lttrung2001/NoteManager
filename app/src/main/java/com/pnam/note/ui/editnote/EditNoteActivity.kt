@@ -29,16 +29,26 @@ class EditNoteActivity : BaseActivity() {
     private val viewModel: EditNoteViewModel by viewModels()
     private val editListener: View.OnClickListener by lazy {
         View.OnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val data = intent.extras?.getSerializable("note") as Note
-                val note = Note(
-                    data.id,
-                    binding.inputNoteTitle.text.toString().trim(),
-                    binding.inputNoteDesc.text.toString().trim(),
-                    data.createAt,
-                    System.currentTimeMillis()
-                )
-                viewModel.editNote(note)
+            val title = binding.inputNoteTitle.text.trim().toString()
+            val desc = binding.inputNoteDesc.text.trim().toString()
+            if (title.isEmpty() && desc.isEmpty()) {
+                Toast.makeText(
+                    this@EditNoteActivity,
+                    "Please write somethings to save",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val data = intent.extras?.getSerializable("note") as Note
+                    val note = Note(
+                        data.id,
+                        title,
+                        desc,
+                        data.createAt,
+                        System.currentTimeMillis()
+                    )
+                    viewModel.editNote(note)
+                }
             }
         }
     }

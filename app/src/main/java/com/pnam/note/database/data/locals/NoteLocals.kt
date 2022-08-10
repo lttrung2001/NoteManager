@@ -19,5 +19,9 @@ interface NoteLocals {
 
     fun addNoteStatus(noteStatus: NoteStatus)
     fun deleteNoteStatus(noteStatus: NoteStatus)
-    fun findNotesWithStatus(): List<NoteAndStatus>
+    fun deleteAllNoteStatus()
+    fun addNoteAndStatus(note: Note)
+    fun editNoteAndStatus(note: Note)
+    fun deleteNoteAndStatus(note: Note)
+    fun findNotesAndStatus(): List<NoteAndStatus>
 }

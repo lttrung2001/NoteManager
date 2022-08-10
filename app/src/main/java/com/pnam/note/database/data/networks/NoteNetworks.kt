@@ -11,5 +11,5 @@ interface NoteNetworks {
     fun fetchNoteDetail(): Single<Note>
     fun addNote(note: Note): Single<Note>
     fun editNote(note: Note): Single<Note>
-    fun deleteNote(note: Note): Single<Note>
+    fun deleteNote(id: String): Single<Note>
 }

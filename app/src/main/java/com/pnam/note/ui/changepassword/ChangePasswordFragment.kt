@@ -27,17 +27,19 @@ class ChangePasswordFragment : Fragment() {
 
     private val saveChangeClickListener: View.OnClickListener by lazy {
         View.OnClickListener {
-            val newPass = binding.edtNewPassword.text.toString()
-            val newPass2 = binding.edtNewPassword2.text.toString()
-            if (newPass.contentEquals(newPass2)) {
+            val currentPass = binding.edtCurrPassword.text.trim().toString()
+            val newPass = binding.edtNewPassword.text.trim().toString()
+            val newPass2 = binding.edtNewPassword2.text.trim().toString()
+            if (currentPass.isEmpty() || newPass.isEmpty() || newPass2.isEmpty()) {
+                binding.changePasswordError.text = "All input is required"
+            }
+            else if (newPass.contentEquals(newPass2)) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.changePassword(
-                        binding.edtCurrPassword.text.toString(),
-                        newPass
-                    )
+                    viewModel.changePassword(currentPass, newPass)
                 }
             } else {
-                Toast.makeText(activity,"New password not matched",Toast.LENGTH_SHORT).show()
+                binding.changePasswordError.visibility = View.VISIBLE
+                binding.changePasswordError.text = "New password not matched"
             }
         }
     }
@@ -46,7 +48,7 @@ class ChangePasswordFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentChangePasswordBinding.inflate(layoutInflater)
         binding.btnBack.setOnClickListener(backClickListener)
         binding.btnSaveChange.setOnClickListener(saveChangeClickListener)
@@ -66,15 +68,15 @@ class ChangePasswordFragment : Fragment() {
                     activity?.onBackPressed()
                 }
                 is Resource.Error -> {
-                    Toast.makeText(activity,"Error",Toast.LENGTH_SHORT).show()
                     binding.load.visibility = View.INVISIBLE
                 }
             }
         }
 
         viewModel.internetError.observe(viewLifecycleOwner) {
-            binding.changePasswordError.text = "No internet connection"
             binding.load.visibility = View.INVISIBLE
+            binding.changePasswordError.visibility = View.VISIBLE
+            binding.changePasswordError.text = viewModel.internetError.value
         }
     }
 }
