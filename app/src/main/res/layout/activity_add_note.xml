@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:transitionName="transition_fab"
     tools:context=".ui.addnote.AddNoteActivity">
 
     <TextView
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/add_note"
+        android:text="@string/dashboard"
         android:textColor="@color/primaryColor"
         android:textSize="16sp"
         app:drawableStartCompat="@drawable/ic_back"
@@ -66,6 +67,6 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:text="@string/add" />
+            android:text="@string/add_note" />
     </RelativeLayout>
 </LinearLayout>

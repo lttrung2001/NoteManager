@@ -36,7 +36,7 @@ class NoteRepositoriesImpl @Inject constructor(
 
     override fun deleteNote(note: Note): Single<Note> {
         return networks.deleteNote(note.id).doOnSuccess {
-            locals.deleteNote(it)
+            locals.deleteNote(note)
         }
     }
 

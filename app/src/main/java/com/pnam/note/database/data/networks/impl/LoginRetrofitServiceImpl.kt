@@ -36,6 +36,9 @@ class LoginRetrofitServiceImpl @Inject constructor(
         fun changePassword(
             @Body map: Map<String, String>
         ): Single<Response<APIResult<Login>>>
+
+        @POST("/forgot-password")
+        fun forgotPassword(@Body email: String): Single<APIResult<Any>>
     }
 
     override fun login(email: String, password: String): Single<Login> {
@@ -70,13 +73,19 @@ class LoginRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception("INTERNAL_SERVER_ERROR")
+                throw Exception(it.message())
             }
         }
     }
 
     override fun forgotPassword(email: String): Single<Unit> {
-        TODO("Not yet implemented")
+        return service.forgotPassword(email).map {
+            if (it.code == SUCCESS) {
+
+            } else {
+                throw Exception(it.message)
+            }
+        }
     }
 
     override fun changePassword(
@@ -92,7 +101,7 @@ class LoginRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception("INTERNAL_SERVER_ERROR")
+                throw Exception(it.message())
             }
         }
     }

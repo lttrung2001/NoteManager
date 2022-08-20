@@ -19,7 +19,7 @@ class ChangePasswordViewModel @Inject constructor(
     private val useCase: ChangePasswordUseCase,
     private val sp: SharedPreferences
 ) : ViewModel() {
-    val internetError: MutableLiveData<String> by lazy {
+    val error: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
@@ -53,13 +53,12 @@ class ChangePasswordViewModel @Inject constructor(
                 .subscribe(changePasswordObserver) { t ->
                     when (t) {
                         is NoConnectivityException -> {
-                            internetError.postValue("No internet connection")
+                            error.postValue("No internet connection")
                         }
                         else -> {
-                            internetError.postValue(t.message ?: "Unknown error")
+                            _changePassword.postValue(Resource.Error(t.message?: "Unknown error"))
                         }
                     }
-                    t.printStackTrace()
                 }
         }
     }

@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase) : ViewModel() {
-    val internetError: MutableLiveData<String> by lazy {
+    val error: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
@@ -53,13 +53,12 @@ class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase
     private fun registerError(t: Throwable) {
         when (t) {
             is NoConnectivityException -> {
-                internetError.postValue("")
+                error.postValue("")
             }
             else -> {
-                internetError.postValue(t.message ?: "")
+                _register.postValue(Resource.Error(t.message?: "Unknown error"))
             }
         }
-        t.printStackTrace()
     }
 
     override fun onCleared() {

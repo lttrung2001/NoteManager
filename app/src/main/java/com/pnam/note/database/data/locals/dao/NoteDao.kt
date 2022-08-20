@@ -1,6 +1,5 @@
 package com.pnam.note.database.data.locals.dao
 
-import android.util.Log
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import com.pnam.note.database.data.locals.NoteLocals
@@ -50,10 +49,11 @@ interface NoteDao : NoteLocals {
 
     @Delete
     override fun deleteNoteStatus(noteStatus: NoteStatus)
+
     @Query("DELETE FROM NoteStatus")
     override fun deleteAllNoteStatus()
 
-    @Query("SELECT * FROM NoteStatus WHERE id = :id")
+    @Query("SELECT * FROM NoteStatus WHERE id = :id LIMIT 1")
     fun findNoteStatusById(id: String): List<NoteStatus>
 
     @Transaction
@@ -72,11 +72,15 @@ interface NoteDao : NoteLocals {
 
     @Transaction
     override fun deleteNoteAndStatus(note: Note) {
-        Log.d("test", note.toString())
-        if (findNoteStatusById(note.id).isEmpty()) {
+        deleteNote(note)
+        val list = findNoteStatusById(note.id)
+        if (list.isEmpty()) {
+            addNoteStatus(NoteStatus(note.id, DELETE_NOTE_STATUS))
+        } else if (list[0].status == ADD_NOTE_STATUS) {
+            deleteNoteStatus(NoteStatus(note.id, ADD_NOTE_STATUS))
+        } else if (list[0].status == EDIT_NOTE_STATUS) {
             addNoteStatus(NoteStatus(note.id, DELETE_NOTE_STATUS))
         }
-        deleteNote(note)
     }
 
     @Transaction

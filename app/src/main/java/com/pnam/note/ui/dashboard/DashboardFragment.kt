@@ -1,17 +1,21 @@
 package com.pnam.note.ui.dashboard
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
@@ -39,7 +44,12 @@ class DashboardFragment : Fragment() {
     private val addNoteListener: View.OnClickListener by lazy {
         View.OnClickListener {
             val intent = Intent(activity, AddNoteActivity::class.java)
-            startActivityForResult(intent, 1)
+            val options = activity?.let { act ->
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    act, binding.btnStartAddNote, "transition_fab"
+                )
+            }
+            startActivityForResult(intent, 1, options?.toBundle())
         }
     }
     private val onScrollListener: RecyclerView.OnScrollListener by lazy {
@@ -90,11 +100,29 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    private val tryAgainListener: View.OnClickListener by lazy {
-        View.OnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.getNotes()
+    private val textWatcher: TextWatcher by lazy {
+        object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                return
             }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                return
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.searchNotes(binding.edtSearch.text.toString())
+                }
+            }
+
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.getNotes()
         }
     }
 
@@ -104,62 +132,55 @@ class DashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDashboardBinding.inflate(layoutInflater)
-        binding.btnTryAgain.setOnClickListener(tryAgainListener)
         binding.btnStartAddNote.setOnClickListener(addNoteListener)
-        binding.edtSearch.addTextChangedListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.searchNotes(binding.edtSearch.text.toString())
-            }
-        }
         initRecycleView()
         initObservers()
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if ((notesAdapter?.itemCount ?: 0) == 0) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.getNotes()
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        binding.edtSearch.addTextChangedListener(textWatcher)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.edtSearch.removeTextChangedListener(textWatcher)
     }
 
     private fun initRecycleView() {
-        if (notesAdapter == null) {
-            val notes = mutableListOf<Note>()
-            notesAdapter = NoteAdapter(notes, noteClickListener)
-        }
+        notesAdapter = notesAdapter ?: NoteAdapter(mutableListOf(), noteClickListener)
         binding.rcvNotes.adapter = notesAdapter
         binding.rcvNotes.layoutManager = LinearLayoutManager(context)
         binding.rcvNotes.addOnScrollListener(onScrollListener)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initObservers() {
-        viewModel.dashboard.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Loading -> {
-                    binding.loadMore.visibility = View.VISIBLE
-                    binding.btnTryAgain.visibility = View.INVISIBLE
-                }
-                is Resource.Success -> {
-                    notesAdapter?.let { adapter ->
-                        val start = adapter.list.size
-                        adapter.list.addAll(it.data.data)
-                        adapter.notifyItemRangeInserted(start, adapter.itemCount)
+        viewModel.dashboard.observe(viewLifecycleOwner) { resource ->
+            if (viewLifecycleOwner.lifecycle.currentState ==  Lifecycle.State.RESUMED) {
+                when (resource) {
+                    is Resource.Loading -> {
+                        binding.loadMore.visibility = View.VISIBLE
                     }
-                    binding.loadMore.visibility = View.INVISIBLE
-                    binding.btnTryAgain.visibility = View.INVISIBLE
-                }
-                is Resource.Error -> {
-                    binding.loadMore.visibility = View.INVISIBLE
-                    binding.btnTryAgain.visibility = View.VISIBLE
+                    is Resource.Success -> {
+                        notesAdapter?.let { adapter ->
+                            val start = adapter.list.size
+                            adapter.list.addAll(resource.data.data)
+                            adapter.notifyItemRangeInserted(start, adapter.itemCount)
+                        }
+                        binding.loadMore.visibility = View.GONE
+                    }
+                    is Resource.Error -> {
+                        binding.loadMore.visibility = View.GONE
+                        Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
 
-        viewModel.deleteNote.observe(viewLifecycleOwner) {
-            when (it) {
+        viewModel.deleteNote.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
                 is Resource.Loading -> {
                     binding.loadMore.visibility = View.VISIBLE
                 }
@@ -167,35 +188,39 @@ class DashboardFragment : Fragment() {
                     binding.loadMore.visibility = View.GONE
                 }
                 is Resource.Error -> {
-
+                    binding.loadMore.visibility = View.GONE
+                    Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        viewModel.searchNotes.observe(viewLifecycleOwner) {
-            when (it) {
+        viewModel.searchNotes.observe(viewLifecycleOwner) { resource ->
+            when (resource) {
                 is Resource.Loading -> {
                     binding.loadMore.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
-                    notesAdapter!!.list.clear()
-                    notesAdapter!!.list.addAll(it.data)
-                    notesAdapter!!.notifyDataSetChanged()
-                    binding.loadMore.visibility = View.INVISIBLE
+                    notesAdapter?.let { adapter ->
+                        adapter.list.clear()
+                        adapter.list.addAll(resource.data)
+                        adapter.notifyDataSetChanged()
+                    }
+                    binding.loadMore.visibility = View.GONE
                 }
                 is Resource.Error -> {
-
+                    binding.loadMore.visibility = View.GONE
+                    Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        viewModel.internetError.observe(viewLifecycleOwner) {
-            binding.loadMore.visibility = View.INVISIBLE
-            binding.btnTryAgain.visibility = View.VISIBLE
-            Toast.makeText(activity, "No internet connection", Toast.LENGTH_SHORT).show()
+        viewModel.error.observe(viewLifecycleOwner) {
+            binding.loadMore.visibility = View.GONE
+            Toast.makeText(activity, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -209,5 +234,10 @@ class DashboardFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.edtSearch.removeTextChangedListener(textWatcher)
     }
 }

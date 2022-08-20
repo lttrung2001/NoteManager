@@ -16,6 +16,8 @@ import com.pnam.note.ui.dashboard.DashboardUseCase
 import com.pnam.note.ui.dashboard.DashboardUseCaseImpl
 import com.pnam.note.ui.editnote.EditNoteUseCase
 import com.pnam.note.ui.editnote.EditNoteUseCaseImpl
+import com.pnam.note.ui.forgotpassword.ForgotPasswordUseCase
+import com.pnam.note.ui.forgotpassword.ForgotPasswordUseCaseImpl
 import com.pnam.note.ui.login.LoginUseCase
 import com.pnam.note.ui.login.LoginUseCaseImpl
 import com.pnam.note.ui.register.RegisterUseCase
@@ -61,4 +63,7 @@ abstract class AppBindsModules {
 
     @Binds
     abstract fun getEditNoteUseCase(useCase: EditNoteUseCaseImpl): EditNoteUseCase
+
+    @Binds
+    abstract fun getForgotPasswordUseCase(useCase: ForgotPasswordUseCaseImpl): ForgotPasswordUseCase
 }

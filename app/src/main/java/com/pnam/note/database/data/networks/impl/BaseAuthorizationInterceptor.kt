@@ -34,9 +34,10 @@ interface BaseAuthorizationInterceptor : Interceptor {
         @OptIn(ExperimentalCoroutinesApi::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
-            if ((request.url.encodedPath.equals("/login", true) ||
-                request.url.encodedPath.equals("/register", true)) &&
-                request.method.equals("post", true)
+            if ((request.url.encodedPath.equals("/login", true)
+                        || request.url.encodedPath.equals("/register", true)
+                        || request.url.encodedPath.equals("/forgot-password",true))
+                && request.method.equals("post", true)
             ) {
                 return chain.proceed(request)
             }

@@ -19,7 +19,7 @@ class LoginViewModel @Inject constructor(
     private val useCase: LoginUseCase,
     val loginDao: LoginDao
 ) : ViewModel() {
-    val internetError: MutableLiveData<String> by lazy {
+    val error: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
@@ -75,7 +75,7 @@ class LoginViewModel @Inject constructor(
         }
         savedLoginDisposable = loginDao.getAllLogin()
             .subscribe(observerSavedLogin) {
-                _savedLogin.postValue(Resource.Error(it.message ?: ""))
+                _savedLogin.postValue(Resource.Error(it.message ?: "Unknown error"))
             }
         composite.add(savedLoginDisposable)
     }
@@ -83,13 +83,12 @@ class LoginViewModel @Inject constructor(
     private fun loginError(t: Throwable) {
         when (t) {
             is NoConnectivityException -> {
-                internetError.postValue("No internet connection")
+                error.postValue("No internet connection")
             }
             else -> {
-                internetError.postValue(t.message ?: "Unknown error")
+                _login.postValue(Resource.Error(t.message?: "Unknown error"))
             }
         }
-        t.printStackTrace()
     }
 
     override fun onCleared() {

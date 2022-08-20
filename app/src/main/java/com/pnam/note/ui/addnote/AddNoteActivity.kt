@@ -63,6 +63,7 @@ class AddNoteActivity : BaseActivity() {
         viewModel.addNote.observe(this) {
             when (it) {
                 is Resource.Loading -> {
+
                 }
                 is Resource.Success -> {
                     val intent = Intent()
@@ -78,8 +79,8 @@ class AddNoteActivity : BaseActivity() {
                 }
             }
         }
-        viewModel.internetError.observe(this) {
-            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+        viewModel.error.observe(this) {
+            Toast.makeText(this, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
     }
 }

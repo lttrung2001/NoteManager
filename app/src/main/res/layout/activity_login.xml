@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -45,9 +44,9 @@
                 android:id="@+id/login_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="@string/login"
                 android:textColor="@color/primaryColor"
-                android:textSize="40dp"
+                android:textSize="40sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -75,7 +74,8 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/primaryColor"
                 android:hint="@string/password_hint"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:autofillHints="" />
 
             <TextView
                 android:id="@+id/login_error"
@@ -99,6 +99,15 @@
                 android:background="@drawable/corner_150dp"
                 android:text="@string/register"
                 app:backgroundTint="@color/primaryColor" />
+            <TextView
+                android:id="@+id/btn_forgot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgot_password_question"
+                android:layout_marginTop="8dp"
+                android:padding="4dp"
+                android:textSize="20sp"
+                android:layout_gravity="center"/>
         </LinearLayout>
 
         <com.google.android.material.progressindicator.CircularProgressIndicator

@@ -7,15 +7,6 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <Button
-        android:id="@+id/btn_try_again"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/try_again"
-        android:textAllCaps="false"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
@@ -48,8 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search_bar"
-        tools:itemCount="10"
         android:paddingTop="8dp"
+        tools:itemCount="10"
+        android:scrollbars="vertical"
         tools:listitem="@layout/note_container" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -71,6 +63,7 @@
         android:backgroundTint="@color/primaryColor"
         android:contentDescription="@string/app_name"
         app:borderWidth="0dp"
+        android:transitionName="transition_fab"
         app:srcCompat="@drawable/ic_add" />
 
 </RelativeLayout>

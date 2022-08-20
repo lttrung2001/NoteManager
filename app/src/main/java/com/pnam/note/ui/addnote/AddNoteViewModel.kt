@@ -23,7 +23,7 @@ class AddNoteViewModel @Inject constructor(
     private val addNoteUseCase: AddNoteUseCase,
     private val noteLocals: NoteLocals
 ) : ViewModel() {
-    val internetError: MutableLiveData<String> by lazy {
+    val error: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
@@ -57,12 +57,12 @@ class AddNoteViewModel @Inject constructor(
                             disposable = noteLocals.findNoteDetail(note.id)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(observer) { localError ->
-                                    addNote.postValue(Resource.Error(localError.message ?: ""))
+                                    addNote.postValue(Resource.Error(localError.message?: "Unknown error"))
                                 }
                         }
                     }
                     else -> {
-                        addNote.postValue(Resource.Error(t.message ?: ""))
+                        addNote.postValue(Resource.Error(t.message?: "Unknown error"))
                     }
                 }
                 t.printStackTrace()

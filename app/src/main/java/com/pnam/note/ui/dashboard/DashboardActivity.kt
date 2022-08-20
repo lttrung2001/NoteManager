@@ -3,10 +3,12 @@ package com.pnam.note.ui.dashboard
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -17,6 +19,7 @@ import com.google.android.material.navigation.NavigationView
 import com.pnam.note.R
 import com.pnam.note.base.BaseActivity
 import com.pnam.note.databinding.ActivityScrollingBinding
+import com.pnam.note.ui.changepassword.ChangePasswordFragment
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppUtils
 import com.pnam.note.utils.AppUtils.Companion.APP_NAME
@@ -68,6 +71,19 @@ class DashboardActivity : BaseActivity() {
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener {
             logout()
             true
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val backStateName = fragment::class.java.name
+        val manager = supportFragmentManager
+        val fragmentPopped = manager.popBackStackImmediate(backStateName, 0)
+        if (!fragmentPopped && manager.findFragmentByTag(backStateName) == null) {
+            val ft: FragmentTransaction = manager.beginTransaction()
+            ft.replace(R.id.nav_host_fragment_content_main, fragment, backStateName)
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            ft.addToBackStack(backStateName)
+            ft.commit()
         }
     }
 

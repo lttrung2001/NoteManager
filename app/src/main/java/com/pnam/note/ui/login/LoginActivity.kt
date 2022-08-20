@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import com.pnam.note.databinding.ActivityLoginBinding
 import com.pnam.note.ui.adapters.LoginAdapter
 import com.pnam.note.ui.adapters.LoginItemClickListener
 import com.pnam.note.ui.dashboard.DashboardActivity
+import com.pnam.note.ui.forgotpassword.ForgotPasswordActivity
 import com.pnam.note.ui.register.RegisterActivity
 import com.pnam.note.utils.AppUtils.Companion.APP_NAME
 import com.pnam.note.utils.Resource
@@ -45,6 +47,8 @@ class LoginActivity : AppCompatActivity() {
                 binding.loginError.visibility = View.VISIBLE
                 binding.loginError.text = "Your email is invalid"
             } else {
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.btnLogin.windowToken, 0)
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.login(email,password)
                 }
@@ -68,6 +72,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private val forgotClick: View.OnClickListener by lazy {
+        View.OnClickListener {
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -76,6 +86,7 @@ class LoginActivity : AppCompatActivity() {
         binding.let {
             it.btnLogin.setOnClickListener(loginClick)
             it.btnRegister.setOnClickListener(registerClick)
+            it.btnForgot.setOnClickListener(forgotClick)
             it.edtEmail.setOnClickListener(emailClick)
             it.edtEmail.addTextChangedListener {
                 binding.rcvLogins.visibility = View.GONE
@@ -109,15 +120,18 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(data)
                 }
                 is Resource.Error -> {
-                    binding.loginError.visibility = View.VISIBLE
                     binding.load.visibility = View.INVISIBLE
+                    binding.loginError.let { tvError ->
+                        tvError.visibility = View.VISIBLE
+                        tvError.text = it.message
+                    }
                 }
             }
         }
-        viewModel.internetError.observe(this) {
+        viewModel.error.observe(this) {
             binding.loginError.visibility = View.VISIBLE
             binding.load.visibility = View.INVISIBLE
-            binding.loginError.text = viewModel.internetError.value
+            binding.loginError.text = viewModel.error.value
         }
     }
 
@@ -153,7 +167,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
                 is Resource.Error -> {
-
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -32,44 +32,39 @@ class SyncService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         CoroutineScope(Dispatchers.IO).launch {
             syncList = noteLocals.findNotesAndStatus()
-            Log.d("test", syncList.toString())
             if (syncList.isNotEmpty()) {
                 for (i in syncList) {
                     when (i.status.status) {
                         ADD_NOTE_STATUS -> {
-                            i.note?.let {
-                                noteNetworks.addNote(it).doOnSuccess {
-                                    noteLocals.deleteNoteStatus(NoteStatus(i.note.id, ADD_NOTE_STATUS))
-                                }.doOnError {
+                            i.note?.let { localNote ->
+                                noteNetworks.addNote(localNote)
+                                    .subscribe({ successNote ->
+                                        noteLocals.deleteNoteAndStatus(localNote)
+                                        noteLocals.addNote(successNote)
+                                }, {
                                     onDestroy()
-                                }.subscribe()
+                                })
                             }
                         }
                         EDIT_NOTE_STATUS -> {
-                            i.note?.let {
-                                noteNetworks.editNote(it).doOnSuccess {
+                            i.note?.let { localNote ->
+                                noteNetworks.editNote(localNote).subscribe({ successNote ->
                                     noteLocals.deleteNoteStatus(
-                                        NoteStatus(
-                                            i.note.id,
-                                            EDIT_NOTE_STATUS
-                                        )
+                                        NoteStatus(successNote.id, EDIT_NOTE_STATUS)
                                     )
-                                }.doOnError {
+                                }, {
                                     onDestroy()
-                                }.subscribe()
+                                })
                             }
                         }
                         else -> {
-                            noteNetworks.deleteNote(i.status.id).doOnSuccess {
+                            noteNetworks.deleteNote(i.status.id).subscribe({ successNote ->
                                 noteLocals.deleteNoteStatus(
-                                    NoteStatus(
-                                        i.status.id,
-                                        DELETE_NOTE_STATUS
-                                    )
+                                    NoteStatus(successNote.id,DELETE_NOTE_STATUS)
                                 )
-                            }.doOnError {
+                            }, {
                                 onDestroy()
-                            }.subscribe()
+                            })
                         }
                     }
                 }

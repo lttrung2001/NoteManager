@@ -1,9 +1,11 @@
 package com.pnam.note.ui.register
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -45,6 +47,8 @@ class RegisterActivity : AppCompatActivity() {
                 binding.registerError.text = "Password not matched"
             } else {
                 lifecycleScope.launch(Dispatchers.IO) {
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.btnRegister.windowToken, 0)
                     viewModel.register(email, password)
                 }
             }
@@ -74,15 +78,18 @@ class RegisterActivity : AppCompatActivity() {
                     startActivity(data)
                 }
                 is Resource.Error -> {
-                    binding.registerError.visibility = View.VISIBLE
                     binding.load.visibility = View.INVISIBLE
+                    binding.registerError.let { tvError ->
+                        tvError.visibility = View.VISIBLE
+                        tvError.text = it.message
+                    }
                 }
             }
         }
-        viewModel.internetError.observe(this) {
+        viewModel.error.observe(this) {
             binding.registerError.visibility = View.VISIBLE
             binding.load.visibility = View.INVISIBLE
-            binding.registerError.text = viewModel.internetError.value
+            binding.registerError.text = viewModel.error.value
         }
     }
 }

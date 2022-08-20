@@ -60,6 +60,7 @@ class ChangePasswordFragment : Fragment() {
         viewModel.changePassword.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Loading -> {
+                    binding.changePasswordError.visibility = View.INVISIBLE
                     binding.load.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
@@ -69,14 +70,16 @@ class ChangePasswordFragment : Fragment() {
                 }
                 is Resource.Error -> {
                     binding.load.visibility = View.INVISIBLE
+                    binding.changePasswordError.visibility = View.VISIBLE
+                    binding.changePasswordError.text = it.message
                 }
             }
         }
 
-        viewModel.internetError.observe(viewLifecycleOwner) {
+        viewModel.error.observe(viewLifecycleOwner) {
             binding.load.visibility = View.INVISIBLE
             binding.changePasswordError.visibility = View.VISIBLE
-            binding.changePasswordError.text = viewModel.internetError.value
+            binding.changePasswordError.text = viewModel.error.value
         }
     }
 }

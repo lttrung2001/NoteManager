@@ -25,7 +25,7 @@ class DashboardViewModel @Inject constructor(
     val noteLocals: NoteLocals
 ) : ViewModel() {
     var page = 0
-    val internetError: MutableLiveData<String> by lazy {
+    val error: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
     private val _dashboard: MutableLiveData<Resource<PagingList<Note>>> by lazy {
@@ -80,18 +80,20 @@ class DashboardViewModel @Inject constructor(
                         viewModelScope.launch(Dispatchers.IO) {
                             dashboardDisposable =
                                 noteLocals.findNotes(page, LIMIT_ON_PAGE).map { localNotes ->
+                                    /* Tạo thêm DAO để check hasNextPage */
                                     PagingList(localNotes, hasNextPage = true, hasPrePage = false)
                                 }
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(observerDashboard)
+                                    .subscribe(observerDashboard) { localError ->
+                                        _dashboard.postValue(Resource.Error(localError.message ?: "Unknown error"))
+                                    }
                         }
                     }
                     else -> {
                         page--
-                        _dashboard.postValue(Resource.Error(t.message ?: ""))
+                        _dashboard.postValue(Resource.Error(t.message ?: "Unknown error"))
                     }
                 }
-                t.printStackTrace()
             }
         composite.add(dashboardDisposable)
     }
@@ -109,17 +111,17 @@ class DashboardViewModel @Inject constructor(
                         viewModelScope.launch(Dispatchers.IO) {
                             deleteNoteDisposable = noteLocals.findNoteDetail(note.id)
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(observerDeleteNote) {
-                                    _deleteNote.postValue(Resource.Error(t.message))
+                                .subscribe(observerDeleteNote) { localError ->
+                                    _deleteNote.postValue(Resource.Error(localError.message ?: "Unknown error"))
                                 }
+                            /* Để delete note ở đây không hợp lý */
                             noteLocals.deleteNoteAndStatus(note)
                         }
                     }
                     else -> {
-                        _deleteNote.postValue(Resource.Error(t.message ?: ""))
+                        _deleteNote.postValue(Resource.Error(t.message ?: "Unknown error"))
                     }
                 }
-                t.printStackTrace()
             }
         composite.add(deleteNoteDisposable)
     }
@@ -133,15 +135,15 @@ class DashboardViewModel @Inject constructor(
             noteLocals.findNotes(page, LIMIT_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(observerSearchNotes) {
-                    _searchNotes.postValue(Resource.Error(it.message ?: ""))
+                .subscribe(observerSearchNotes) { localError ->
+                    _searchNotes.postValue(Resource.Error(localError.message ?: "Unknown error"))
                 }
         } else {
             useCase.searchNotes(keySearch)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(observerSearchNotes) {
-                    _searchNotes.postValue(Resource.Error(it.message ?: ""))
+                .subscribe(observerSearchNotes) { t ->
+                    _searchNotes.postValue(Resource.Error(t.message ?: "Unknown error"))
                 }
         }
         composite.add(searchNotesDisposable)
@@ -149,6 +151,6 @@ class DashboardViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        composite.clear()
+        composite.dispose()
     }
 }

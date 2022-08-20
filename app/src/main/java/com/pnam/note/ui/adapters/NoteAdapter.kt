@@ -9,14 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pnam.note.R
 import com.pnam.note.database.data.models.Note
-import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
 class NoteAdapter constructor(
     val list: MutableList<Note>,
     private val listener: NoteItemClickListener,
-) : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>(), Serializable {
+) : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
     class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.note_title)
         val desc: TextView = itemView.findViewById(R.id.note_desc)

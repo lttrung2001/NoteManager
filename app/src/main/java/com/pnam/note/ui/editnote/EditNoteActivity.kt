@@ -78,6 +78,7 @@ class EditNoteActivity : BaseActivity() {
         viewModel.editNote.observe(this) {
             when (it) {
                 is Resource.Loading -> {
+
                 }
                 is Resource.Success -> {
                     lifecycleScope.launch(Dispatchers.Main) {
@@ -95,13 +96,13 @@ class EditNoteActivity : BaseActivity() {
                     }
                 }
                 is Resource.Error -> {
-                    Toast.makeText(this, "Error when saving note", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        viewModel.internetError.observe(this) {
-            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+        viewModel.error.observe(this) {
+            Toast.makeText(this, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
     }
 }
