@@ -112,7 +112,7 @@ class DashboardFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.searchNotes(binding.edtSearch.text.toString())
+                    viewModel.searchNotes(binding.edtSearch.text.trim().toString())
                 }
             }
 
@@ -152,13 +152,12 @@ class DashboardFragment : Fragment() {
         notesAdapter = notesAdapter ?: NoteAdapter(mutableListOf(), noteClickListener)
         binding.rcvNotes.adapter = notesAdapter
         binding.rcvNotes.layoutManager = LinearLayoutManager(context)
-        binding.rcvNotes.addOnScrollListener(onScrollListener)
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initObservers() {
         viewModel.dashboard.observe(viewLifecycleOwner) { resource ->
-            if (viewLifecycleOwner.lifecycle.currentState ==  Lifecycle.State.RESUMED) {
+            if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 when (resource) {
                     is Resource.Loading -> {
                         binding.loadMore.visibility = View.VISIBLE
@@ -168,6 +167,11 @@ class DashboardFragment : Fragment() {
                             val start = adapter.list.size
                             adapter.list.addAll(resource.data.data)
                             adapter.notifyItemRangeInserted(start, adapter.itemCount)
+                        }
+                        if (resource.data.hasNextPage) {
+                            binding.rcvNotes.addOnScrollListener(onScrollListener)
+                        } else {
+                            binding.rcvNotes.clearOnScrollListeners()
                         }
                         binding.loadMore.visibility = View.GONE
                     }

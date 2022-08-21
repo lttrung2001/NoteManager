@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -15,6 +16,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.pnam.note.R
 import com.pnam.note.base.BaseActivity
@@ -48,6 +50,10 @@ class DashboardActivity : BaseActivity() {
         initNavigationView()
     }
 
+    fun collapseToolbar() {
+        binding.appBarMain.appBar.setExpanded(false, true)
+    }
+
     private fun initFragmentController() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -71,19 +77,6 @@ class DashboardActivity : BaseActivity() {
         navView.menu.findItem(R.id.nav_logout).setOnMenuItemClickListener {
             logout()
             true
-        }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val backStateName = fragment::class.java.name
-        val manager = supportFragmentManager
-        val fragmentPopped = manager.popBackStackImmediate(backStateName, 0)
-        if (!fragmentPopped && manager.findFragmentByTag(backStateName) == null) {
-            val ft: FragmentTransaction = manager.beginTransaction()
-            ft.replace(R.id.nav_host_fragment_content_main, fragment, backStateName)
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            ft.addToBackStack(backStateName)
-            ft.commit()
         }
     }
 

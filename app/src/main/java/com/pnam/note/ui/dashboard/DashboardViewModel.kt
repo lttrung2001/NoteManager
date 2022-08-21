@@ -11,6 +11,7 @@ import com.pnam.note.utils.AppUtils.Companion.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
@@ -131,7 +132,7 @@ class DashboardViewModel @Inject constructor(
             composite.remove(it)
             it.dispose()
         }
-        searchNotesDisposable = if (keySearch.isBlank()) {
+        searchNotesDisposable = if (keySearch.isEmpty()) {
             noteLocals.findNotes(page, LIMIT_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

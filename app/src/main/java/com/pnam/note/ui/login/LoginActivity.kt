@@ -1,5 +1,6 @@
 package com.pnam.note.ui.login
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -14,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.pnam.note.R
 import com.pnam.note.database.data.models.EmailPassword
 import com.pnam.note.databinding.ActivityLoginBinding
 import com.pnam.note.ui.adapters.LoginAdapter
@@ -38,8 +38,8 @@ class LoginActivity : AppCompatActivity() {
 
     private val loginClick: View.OnClickListener by lazy {
         View.OnClickListener {
-            val email = binding.edtEmail.text.trim().toString()
-            val password = binding.edtPassword.text.trim().toString()
+            val email = binding.edtEmail.text?.trim().toString()
+            val password = binding.edtPassword.text?.trim().toString()
             if (email.isEmpty() || password.isEmpty()) {
                 binding.loginError.visibility = View.VISIBLE
                 binding.loginError.text = "All input is required"
@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(binding.btnLogin.windowToken, 0)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.login(email,password)
+                    viewModel.login(email, password)
                 }
             }
         }
@@ -78,6 +78,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -113,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
                         applicationContext.getSharedPreferences(
                             APP_NAME,
                             Context.MODE_PRIVATE
-                        ).edit().putString(EMAIL,it.data.email).apply()
+                        ).edit().putString(EMAIL, it.data.email).apply()
 
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
