@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,6 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -95,7 +95,7 @@ class DashboardFragment : Fragment() {
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.deleteNote(note)
                 }
-                notesAdapter?.removeAt(position)
+//                notesAdapter?.removeAt(position)
             }
         }
     }
@@ -164,11 +164,12 @@ class DashboardFragment : Fragment() {
                     }
                     is Resource.Success -> {
                         notesAdapter?.let { adapter ->
-                            val start = adapter.list.size
-                            adapter.list.addAll(resource.data.data)
-                            adapter.notifyItemRangeInserted(start, adapter.itemCount)
+                            val currentList = adapter.currentList.toMutableList()
+                            currentList.addAll(resource.data.data)
+                            adapter.submitList(currentList)
                         }
-                        if (resource.data.hasNextPage) {
+                        if (resource.data.hasNextPage)
+                        {
                             binding.rcvNotes.addOnScrollListener(onScrollListener)
                         } else {
                             binding.rcvNotes.clearOnScrollListeners()
@@ -189,6 +190,11 @@ class DashboardFragment : Fragment() {
                     binding.loadMore.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
+                    notesAdapter?.let { adapter ->
+                        val currentList =  adapter.currentList.toMutableList()
+                        currentList.remove(resource.data)
+                        adapter.submitList(currentList)
+                    }
                     binding.loadMore.visibility = View.GONE
                 }
                 is Resource.Error -> {
@@ -205,9 +211,10 @@ class DashboardFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     notesAdapter?.let { adapter ->
-                        adapter.list.clear()
-                        adapter.list.addAll(resource.data)
-                        adapter.notifyDataSetChanged()
+                        val currentList = adapter.currentList.toMutableList()
+                        currentList.clear()
+                        currentList.addAll(resource.data)
+                        adapter.submitList(currentList)
                     }
                     binding.loadMore.visibility = View.GONE
                 }
@@ -228,13 +235,22 @@ class DashboardFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            data!!.extras.let {
-                val note = it!!.getSerializable(AppUtils.NOTE_CHANGE) as Note
+            data!!.extras.let { bundle ->
+                val note = bundle!!.getSerializable(AppUtils.NOTE_CHANGE) as Note
                 if (requestCode == 1) {
-                    notesAdapter!!.insertAt(note, 0)
+                    notesAdapter?.let { adapter ->
+                        val currentList = adapter.currentList.toMutableList()
+                        currentList.add(0,note)
+                        adapter.submitList(currentList)
+                    }
                 } else {
-                    val position = it.getInt(AppUtils.NOTE_POSITION)
-                    notesAdapter!!.editAt(note, position)
+                    val position = bundle.getInt(AppUtils.NOTE_POSITION)
+                    notesAdapter?.let { adapter ->
+                        val currentList = adapter.currentList.toMutableList()
+                        currentList.removeAt(position)
+                        currentList.add(0, note)
+                        adapter.submitList(currentList)
+                    }
                 }
             }
         }

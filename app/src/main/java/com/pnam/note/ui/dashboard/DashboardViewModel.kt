@@ -133,6 +133,7 @@ class DashboardViewModel @Inject constructor(
             it.dispose()
         }
         searchNotesDisposable = if (keySearch.isEmpty()) {
+            /* Nếu rỗng thì để list như trước đó (How?) */
             noteLocals.findNotes(page, LIMIT_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
