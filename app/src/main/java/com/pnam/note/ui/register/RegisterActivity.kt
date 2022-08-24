@@ -26,9 +26,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private val loginClick: View.OnClickListener by lazy {
         View.OnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            })
+            onBackPressed()
         }
     }
     private val registerClick: View.OnClickListener by lazy {

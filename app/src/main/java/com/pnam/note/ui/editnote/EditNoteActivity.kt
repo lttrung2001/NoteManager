@@ -91,6 +91,7 @@ class EditNoteActivity : BaseActivity() {
                         )
                         newIntent.putExtras(bundle)
                         setResult(Activity.RESULT_OK, newIntent)
+                        removeHint()
                         finishActivity(2)
                         supportFinishAfterTransition()
                     }
@@ -104,5 +105,19 @@ class EditNoteActivity : BaseActivity() {
         viewModel.error.observe(this) {
             Toast.makeText(this, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun removeHint() {
+        val title = binding.inputNoteTitle.text.trim().toString()
+        val desc = binding.inputNoteDesc.text.trim().toString()
+        if (title.isEmpty()) {
+            binding.inputNoteTitle.hint = ""
+        } else if (desc.isEmpty()) {
+            binding.inputNoteDesc.hint = ""
+        }
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        removeHint()
     }
 }

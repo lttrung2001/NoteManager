@@ -18,6 +18,12 @@ class NoteRepositoriesImpl @Inject constructor(
         }
     }
 
+    override fun getNotes(limit: Int): Single<List<Note>> {
+        return networks.fetchNotes(limit).doOnSuccess { netNotes ->
+            locals.addNote(netNotes)
+        }
+    }
+
     override fun getNoteDetail(): Single<Note> {
         TODO("Not yet implemented")
     }

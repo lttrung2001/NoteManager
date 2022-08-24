@@ -20,6 +20,12 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var binding: ActivityForgotPasswordBinding
     private val viewModel: ForgotPasswordViewModel by viewModels()
 
+    private val loginClick: View.OnClickListener by lazy {
+        View.OnClickListener {
+            onBackPressed()
+        }
+    }
+
     private val resetPasswordCLick: View.OnClickListener by lazy {
         View.OnClickListener {
             val email = binding.edtEmail.text.toString()
@@ -43,6 +49,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         binding = ActivityForgotPasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.btnResetPassword.setOnClickListener(resetPasswordCLick)
+        binding.btnBack.setOnClickListener(loginClick)
         initObserver()
     }
 

@@ -20,4 +20,8 @@ class DashboardUseCaseImpl @Inject constructor(
     override fun searchNotes(keySearch: String): Single<MutableList<Note>> {
         return repositories.searchNotes(keySearch)
     }
+
+    override fun refreshNotes(limit: Int): Single<List<Note>> {
+        return repositories.getNotes(limit)
+    }
 }

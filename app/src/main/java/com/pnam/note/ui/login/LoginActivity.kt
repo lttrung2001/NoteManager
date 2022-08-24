@@ -66,9 +66,7 @@ class LoginActivity : AppCompatActivity() {
 
     private val registerClick: View.OnClickListener by lazy {
         View.OnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            })
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 

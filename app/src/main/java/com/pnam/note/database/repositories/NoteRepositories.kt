@@ -12,6 +12,7 @@ interface NoteRepositories {
     val locals: NoteLocals
     val networks: NoteNetworks
     fun getNotes(page: Int, limit: Int): Single<PagingList<Note>>
+    fun getNotes(limit: Int): Single<List<Note>>
     fun getNoteDetail(): Single<Note>
     fun addNote(note: Note): Single<Note>
     fun editNote(note: Note): Single<Note>

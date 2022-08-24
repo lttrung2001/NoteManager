@@ -3,6 +3,8 @@ package com.pnam.note.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -12,6 +14,7 @@ import com.pnam.note.R
 import com.pnam.note.database.data.models.Note
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class NoteAdapter constructor(
     val list: MutableList<Note>,
@@ -47,6 +50,18 @@ class NoteAdapter constructor(
         holder.btnDelete.setOnClickListener {
             listener.onDeleteClick(note, position)
         }
+//        val anim = ScaleAnimation(
+//            0.0f,
+//            1.0f,
+//            0.0f,
+//            1.0f,
+//            Animation.RELATIVE_TO_SELF,
+//            0.5f,
+//            Animation.RELATIVE_TO_SELF,
+//            0.5f
+//        )
+//        anim.duration = 250
+//        holder.itemView.startAnimation(anim)
     }
 
     class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

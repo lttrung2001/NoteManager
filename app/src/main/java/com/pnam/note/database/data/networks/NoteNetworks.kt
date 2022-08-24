@@ -8,6 +8,7 @@ import javax.inject.Singleton
 @Singleton
 interface NoteNetworks {
     fun fetchNotes(page: Int, limit: Int): Single<PagingList<Note>>
+    fun fetchNotes(limit: Int): Single<List<Note>>
     fun fetchNoteDetail(): Single<Note>
     fun addNote(note: Note): Single<Note>
     fun editNote(note: Note): Single<Note>

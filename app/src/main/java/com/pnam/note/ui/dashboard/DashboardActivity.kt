@@ -3,25 +3,21 @@ package com.pnam.note.ui.dashboard
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
+import android.provider.MediaStore
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.pnam.note.R
 import com.pnam.note.base.BaseActivity
 import com.pnam.note.databinding.ActivityScrollingBinding
-import com.pnam.note.ui.changepassword.ChangePasswordFragment
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppUtils
 import com.pnam.note.utils.AppUtils.Companion.APP_NAME
@@ -43,15 +39,24 @@ class DashboardActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityScrollingBinding.inflate(layoutInflater)
+//        binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.imageView).setOnClickListener {
+//            val getIntent = Intent(Intent.ACTION_GET_CONTENT)
+//            getIntent.type = "image/*"
+//
+//            val pickIntent =
+//                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//            pickIntent.type = "image/*"
+//
+//            val chooserIntent = Intent.createChooser(pickIntent, "Select Image")
+//            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
+//
+//            startActivityForResult(chooserIntent, 10)
+//        }
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
         initFragmentController()
         initNavigationView()
-    }
-
-    fun collapseToolbar() {
-        binding.appBarMain.appBar.setExpanded(false, true)
     }
 
     private fun initFragmentController() {

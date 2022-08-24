@@ -20,6 +20,9 @@ class NoteRetrofitServiceImpl @Inject constructor(
             @Query("limit") limit: Int
         ): Single<Response<APIResult<PagingList<Note>>>>
 
+        @GET("/refresh-notes")
+        fun fetchNotes(@Query("limit") limit: Int): Single<Response<APIResult<List<Note>>>>
+
         @GET("/get-note-detail")
         fun fetchNoteDetail(noteId: String): Single<Response<APIResult<Note>>>
 
@@ -41,7 +44,17 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception("Can not fetch notes")
+                throw Exception(it.message())
+            }
+        }
+    }
+
+    override fun fetchNotes(limit: Int): Single<List<Note>> {
+        return service.fetchNotes(limit).map {
+            if (it.code() == SUCCESS) {
+                it.body()!!.data
+            } else {
+                throw Exception(it.message())
             }
         }
     }
@@ -55,7 +68,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception("Unknown error")
+                throw Exception(it.message())
             }
         }
     }
@@ -68,7 +81,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception("Unknown error")
+                throw Exception(it.message())
             }
         }
     }
@@ -78,7 +91,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception("Unknown error")
+                throw Exception(it.message())
             }
         }
     }

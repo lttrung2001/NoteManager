@@ -3,6 +3,7 @@ package com.pnam.note.database.repositories.impl
 import com.pnam.note.database.data.locals.LoginLocals
 import com.pnam.note.database.data.models.EmailPassword
 import com.pnam.note.database.data.models.Login
+import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.LoginNetworks
 import com.pnam.note.database.repositories.LoginRepositories
 import io.reactivex.rxjava3.core.Single
