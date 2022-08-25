@@ -13,21 +13,22 @@ import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pnam.note.R
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.FragmentDashboardBinding
-import com.pnam.note.ui.adapters.NoteAdapter
-import com.pnam.note.ui.adapters.NoteItemClickListener
+import com.pnam.note.ui.adapters.note.NoteAdapter
+import com.pnam.note.ui.adapters.note.NoteItemClickListener
 import com.pnam.note.ui.addnote.AddNoteActivity
 import com.pnam.note.ui.editnote.EditNoteActivity
 import com.pnam.note.utils.AppUtils
+import com.pnam.note.utils.AppUtils.Companion.ADD_NOTE_REQUEST
+import com.pnam.note.utils.AppUtils.Companion.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +51,7 @@ class DashboardFragment : Fragment() {
                     act, binding.btnStartAddNote, "transition_fab"
                 )
             }
-            startActivityForResult(intent, 1, options?.toBundle())
+            startActivityForResult(intent, ADD_NOTE_REQUEST, options?.toBundle())
         }
     }
     private val onScrollListener: RecyclerView.OnScrollListener by lazy {
@@ -89,7 +90,7 @@ class DashboardFragment : Fragment() {
                     pairTitle,
                     pairDesc
                 )
-                startActivityForResult(intent, 2, options.toBundle())
+                startActivityForResult(intent, EDIT_NOTE_REQUEST, options.toBundle())
             }
 
             override fun onDeleteClick(note: Note, position: Int) {
@@ -160,10 +161,7 @@ class DashboardFragment : Fragment() {
     private fun initRecycleView() {
         notesAdapter = notesAdapter ?: NoteAdapter(mutableListOf(), noteClickListener)
         binding.rcvNotes.adapter = notesAdapter
-        binding.rcvNotes.layoutManager = StaggeredGridLayoutManager(
-            2,
-            StaggeredGridLayoutManager.VERTICAL,
-        )
+        binding.rcvNotes.layoutManager = LinearLayoutManager(context)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -255,6 +253,7 @@ class DashboardFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner) {
             binding.loadMore.visibility = View.GONE
+            binding.swipeLayout.isRefreshing = false
             Toast.makeText(activity, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
     }
@@ -265,13 +264,13 @@ class DashboardFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             data!!.extras.let { bundle ->
                 val note = bundle!!.getSerializable(AppUtils.NOTE_CHANGE) as Note
-                if (requestCode == 1) {
+                if (requestCode == ADD_NOTE_REQUEST) {
                     notesAdapter?.let { adapter ->
                         val currentList = adapter.currentList.toMutableList()
                         currentList.add(0, note)
                         adapter.submitList(currentList)
                     }
-                } else {
+                } else if (requestCode == EDIT_NOTE_REQUEST) {
                     val position = bundle.getInt(AppUtils.NOTE_POSITION)
                     notesAdapter?.let { adapter ->
                         val currentList = adapter.currentList.toMutableList()
@@ -279,6 +278,8 @@ class DashboardFragment : Fragment() {
                         currentList.add(0, note)
                         adapter.submitList(currentList)
                     }
+                } else {
+
                 }
             }
         }

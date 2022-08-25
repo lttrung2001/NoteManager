@@ -3,6 +3,7 @@ package com.pnam.note.database.data.locals
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.database.data.models.NoteAndStatus
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Singleton
 
@@ -20,8 +21,11 @@ interface NoteLocals {
     fun addNoteStatus(noteStatus: NoteStatus)
     fun deleteNoteStatus(noteStatus: NoteStatus)
     fun deleteAllNoteStatus()
-    fun addNoteAndStatus(note: Note)
-    fun editNoteAndStatus(note: Note)
-    fun deleteNoteAndStatus(note: Note)
-    fun findNotesAndStatus(): List<NoteAndStatus>
+    fun addNoteOffline(note: Note): Note?
+    fun afterAddNoteOffline(oldNote: Note, newNote: Note)
+    fun editNoteOffline(note: Note): Note?
+    fun aftereditNoteOffline(oldNote: Note, newNote: Note)
+    fun deleteNoteOffline(note: Note): Note?
+    fun afterDeleteNoteOffline(deletedNote: Note)
+    fun findUnsyncNotes(): List<NoteAndStatus>
 }

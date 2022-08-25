@@ -1,7 +1,9 @@
 package com.pnam.note.ui.dashboard
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ImageView
@@ -21,6 +23,7 @@ import com.pnam.note.databinding.ActivityScrollingBinding
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppUtils
 import com.pnam.note.utils.AppUtils.Companion.APP_NAME
+import com.pnam.note.utils.AppUtils.Companion.CAMERA_PIC_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,19 +42,11 @@ class DashboardActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityScrollingBinding.inflate(layoutInflater)
-//        binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.imageView).setOnClickListener {
-//            val getIntent = Intent(Intent.ACTION_GET_CONTENT)
-//            getIntent.type = "image/*"
-//
-//            val pickIntent =
-//                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//            pickIntent.type = "image/*"
-//
-//            val chooserIntent = Intent.createChooser(pickIntent, "Select Image")
-//            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
-//
-//            startActivityForResult(chooserIntent, 10)
-//        }
+        binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.imageView)
+            .setOnClickListener {
+                var cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST)
+            }
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
@@ -65,7 +60,7 @@ class DashboardActivity : BaseActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_change_password, R.id.nav_logout
+                R.id.nav_home, R.id.nav_change_password, R.id.nav_change_avatar, R.id.nav_logout
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -105,4 +100,15 @@ class DashboardActivity : BaseActivity() {
         })
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CAMERA_PIC_REQUEST) {
+                val image: Bitmap = data?.extras?.get("data") as Bitmap
+                val imageView = binding.navView.getHeaderView(0)
+                    .findViewById<ImageView>(R.id.imageView)
+                imageView.setImageBitmap(image)
+            }
+        }
+    }
 }

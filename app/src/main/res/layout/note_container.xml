@@ -7,7 +7,6 @@
     android:layout_marginHorizontal="8dp"
     android:layout_marginBottom="8dp"
     android:background="@drawable/small_note_container_gray_corner_8dp"
-    android:maxHeight="200dp"
     android:padding="8dp">
 
     <TextView
@@ -48,6 +47,8 @@
         android:text="@string/app_name"
         android:textColor="@color/black"
         android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="5"
         android:transitionName="noteDescription"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

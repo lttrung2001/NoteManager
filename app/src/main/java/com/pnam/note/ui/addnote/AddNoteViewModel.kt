@@ -5,10 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.Resource
-import com.pnam.note.utils.RoomUtils.Companion.ADD_NOTE_STATUS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -53,16 +51,26 @@ class AddNoteViewModel @Inject constructor(
                     is NoConnectivityException -> {
                         // Cần phát ra item đã lưu trong local để cập nhật lên giao diện
                         viewModelScope.launch(Dispatchers.IO) {
-                            noteLocals.addNoteAndStatus(note)
-                            disposable = noteLocals.findNoteDetail(note.id)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(observer) { localError ->
-                                    addNote.postValue(Resource.Error(localError.message?: "Unknown error"))
+                            when (noteLocals.addNoteOffline(note)) {
+                                null -> {
+                                    addNote.postValue(Resource.Error(t.message))
                                 }
+                                else -> {
+                                    disposable = noteLocals.findNoteDetail(note.id)
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(observer) { localError ->
+                                            addNote.postValue(
+                                                Resource.Error(
+                                                    localError.message ?: "Unknown error"
+                                                )
+                                            )
+                                        }
+                                }
+                            }
                         }
                     }
                     else -> {
-                        addNote.postValue(Resource.Error(t.message?: "Unknown error"))
+                        addNote.postValue(Resource.Error(t.message ?: "Unknown error"))
                     }
                 }
                 t.printStackTrace()

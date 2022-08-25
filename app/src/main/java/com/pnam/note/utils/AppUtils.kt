@@ -8,5 +8,9 @@ class AppUtils {
         const val ACCESS_TOKEN = "access_token"
         const val NOTE_CHANGE = "note_change"
         const val NOTE_POSITION = "note_position"
+        const val ADD_NOTE_REQUEST = 1
+        const val EDIT_NOTE_REQUEST = 2
+        const val CAMERA_PIC_REQUEST = 3
+        const val CHANGE_AVATAR_REQUEST = 4
     }
 }

@@ -17,8 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pnam.note.database.data.models.EmailPassword
 import com.pnam.note.databinding.ActivityLoginBinding
-import com.pnam.note.ui.adapters.LoginAdapter
-import com.pnam.note.ui.adapters.LoginItemClickListener
+import com.pnam.note.ui.adapters.login.LoginAdapter
+import com.pnam.note.ui.adapters.login.LoginItemClickListener
 import com.pnam.note.ui.dashboard.DashboardActivity
 import com.pnam.note.ui.forgotpassword.ForgotPasswordActivity
 import com.pnam.note.ui.register.RegisterActivity

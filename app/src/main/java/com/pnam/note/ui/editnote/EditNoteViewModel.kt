@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,16 +51,27 @@ class EditNoteViewModel @Inject constructor(
                 when (t) {
                     is NoConnectivityException -> {
                         viewModelScope.launch(Dispatchers.IO) {
-                            noteLocals.editNoteAndStatus(note)
-                            disposable = noteLocals.findNoteDetail(note.id)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(observer) { localError ->
-                                    editNote.postValue(Resource.Error(localError.message?: "Unknown error"))
+                            when (noteLocals.editNoteOffline(note)) {
+                                null -> {
+                                    editNote.postValue(Resource.Error(t.message))
                                 }
+                                else -> {
+                                    disposable = noteLocals.findNoteDetail(note.id)
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(observer) { localError ->
+                                            editNote.postValue(
+                                                Resource.Error(
+                                                    localError.message ?: "Unknown error"
+                                                )
+                                            )
+                                        }
+                                }
+                            }
+
                         }
                     }
                     else -> {
-                        editNote.postValue(Resource.Error(t.message?: "Unknown error"))
+                        editNote.postValue(Resource.Error(t.message ?: "Unknown error"))
                     }
                 }
             }

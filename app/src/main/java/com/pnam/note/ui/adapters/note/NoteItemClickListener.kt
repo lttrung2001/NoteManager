@@ -1,4 +1,4 @@
-package com.pnam.note.ui.adapters
+package com.pnam.note.ui.adapters.note
 
 import android.view.View
 import com.pnam.note.database.data.models.Note

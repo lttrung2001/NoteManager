@@ -9,7 +9,9 @@ import com.pnam.note.database.data.models.NoteStatus
 import com.pnam.note.utils.RoomUtils.Companion.ADD_NOTE_STATUS
 import com.pnam.note.utils.RoomUtils.Companion.DELETE_NOTE_STATUS
 import com.pnam.note.utils.RoomUtils.Companion.EDIT_NOTE_STATUS
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import java.lang.Exception
 
 @Dao
 interface NoteDao : NoteLocals {
@@ -57,33 +59,66 @@ interface NoteDao : NoteLocals {
     fun findNoteStatusById(id: String): List<NoteStatus>
 
     @Transaction
-    override fun addNoteAndStatus(note: Note) {
-        addNote(note)
-        addNoteStatus(NoteStatus(note.id, ADD_NOTE_STATUS))
-    }
-
-    @Transaction
-    override fun editNoteAndStatus(note: Note) {
-        editNote(note)
-        if (findNoteStatusById(note.id).isEmpty()) {
-            addNoteStatus(NoteStatus(note.id, EDIT_NOTE_STATUS))
+    override fun addNoteOffline(note: Note): Note? {
+        return try {
+            addNote(note)
+            addNoteStatus(NoteStatus(note.id, ADD_NOTE_STATUS))
+            note
+        } catch (ex: Exception) {
+            null
         }
     }
 
     @Transaction
-    override fun deleteNoteAndStatus(note: Note) {
-        deleteNote(note)
-        val list = findNoteStatusById(note.id)
-        if (list.isEmpty()) {
-            addNoteStatus(NoteStatus(note.id, DELETE_NOTE_STATUS))
-        } else if (list[0].status == ADD_NOTE_STATUS) {
-            deleteNoteStatus(NoteStatus(note.id, ADD_NOTE_STATUS))
-        } else if (list[0].status == EDIT_NOTE_STATUS) {
-            addNoteStatus(NoteStatus(note.id, DELETE_NOTE_STATUS))
+    override fun afterAddNoteOffline(oldNote: Note, newNote: Note) {
+        deleteNote(oldNote)
+        deleteNoteStatus(NoteStatus(oldNote.id, ADD_NOTE_STATUS))
+        addNote(newNote)
+    }
+
+    @Transaction
+    override fun editNoteOffline(note: Note): Note? {
+        return try {
+            editNote(note)
+            if (findNoteStatusById(note.id).isEmpty()) {
+                addNoteStatus(NoteStatus(note.id, EDIT_NOTE_STATUS))
+            }
+            note
+        } catch (ex: Exception) {
+            null
         }
     }
 
     @Transaction
+    override fun aftereditNoteOffline(oldNote: Note, newNote: Note) {
+        deleteNote(oldNote)
+        deleteNoteStatus(NoteStatus(oldNote.id, EDIT_NOTE_STATUS))
+        addNote(newNote)
+    }
+
+    @Transaction
+    override fun deleteNoteOffline(note: Note): Note? {
+        return try {
+            deleteNote(note)
+            val list = findNoteStatusById(note.id)
+            if (list.isEmpty()) {
+                addNoteStatus(NoteStatus(note.id, DELETE_NOTE_STATUS))
+            } else if (list[0].status == ADD_NOTE_STATUS) {
+                deleteNoteStatus(NoteStatus(note.id, ADD_NOTE_STATUS))
+            } else if (list[0].status == EDIT_NOTE_STATUS) {
+                addNoteStatus(NoteStatus(note.id, DELETE_NOTE_STATUS))
+            }
+            note
+        } catch (ex: Exception) {
+            null
+        }
+    }
+
+    @Transaction
+    override fun afterDeleteNoteOffline(deletedNote: Note) {
+        deleteNoteStatus(NoteStatus(deletedNote.id, DELETE_NOTE_STATUS))
+    }
+
     @Query("SELECT * FROM NoteStatus")
-    override fun findNotesAndStatus(): List<NoteAndStatus>
+    override fun findUnsyncNotes(): List<NoteAndStatus>
 }

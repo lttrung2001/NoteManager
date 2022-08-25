@@ -31,7 +31,7 @@ class SyncService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         CoroutineScope(Dispatchers.IO).launch {
-            syncList = noteLocals.findNotesAndStatus()
+            syncList = noteLocals.findUnsyncNotes()
             if (syncList.isNotEmpty()) {
                 for (i in syncList) {
                     when (i.status.status) {
@@ -39,8 +39,7 @@ class SyncService : Service() {
                             i.note?.let { localNote ->
                                 noteNetworks.addNote(localNote)
                                     .subscribe({ successNote ->
-                                        noteLocals.deleteNoteAndStatus(localNote)
-                                        noteLocals.addNote(successNote)
+                                        noteLocals.afterAddNoteOffline(localNote,successNote)
                                 }, {
                                     onDestroy()
                                 })
@@ -49,9 +48,7 @@ class SyncService : Service() {
                         EDIT_NOTE_STATUS -> {
                             i.note?.let { localNote ->
                                 noteNetworks.editNote(localNote).subscribe({ successNote ->
-                                    noteLocals.deleteNoteStatus(
-                                        NoteStatus(successNote.id, EDIT_NOTE_STATUS)
-                                    )
+                                    noteLocals.aftereditNoteOffline(localNote, successNote)
                                 }, {
                                     onDestroy()
                                 })
@@ -59,9 +56,7 @@ class SyncService : Service() {
                         }
                         else -> {
                             noteNetworks.deleteNote(i.status.id).subscribe({ successNote ->
-                                noteLocals.deleteNoteStatus(
-                                    NoteStatus(successNote.id,DELETE_NOTE_STATUS)
-                                )
+                                noteLocals.afterDeleteNoteOffline(successNote)
                             }, {
                                 onDestroy()
                             })

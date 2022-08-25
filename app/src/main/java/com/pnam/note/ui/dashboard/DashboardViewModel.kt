@@ -11,6 +11,7 @@ import com.pnam.note.utils.AppUtils.Companion.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
@@ -145,17 +146,27 @@ class DashboardViewModel @Inject constructor(
                 when (t) {
                     is NoConnectivityException -> {
                         viewModelScope.launch(Dispatchers.IO) {
-                            deleteNoteDisposable = noteLocals.findNoteDetail(note.id)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(observerDeleteNote) { localError ->
+                            when (noteLocals.deleteNoteOffline(note)) {
+                                null -> {
                                     _deleteNote.postValue(
                                         Resource.Error(
-                                            localError.message ?: "Unknown error"
+                                            t.message
                                         )
                                     )
                                 }
-                            /* Để delete note ở đây không hợp lý */
-                            noteLocals.deleteNoteAndStatus(note)
+                                else -> {
+                                    deleteNoteDisposable = Single.just(note)
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(observerDeleteNote) { localError ->
+                                            _deleteNote.postValue(
+                                                Resource.Error(
+                                                    localError.message ?: "Unknown error"
+                                                )
+                                            )
+                                        }
+                                }
+                            }
+
                         }
                     }
                     else -> {

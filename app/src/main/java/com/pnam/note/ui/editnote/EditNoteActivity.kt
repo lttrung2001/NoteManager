@@ -3,17 +3,14 @@ package com.pnam.note.ui.editnote
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.base.BaseActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityEditNoteBinding
-import com.pnam.note.utils.AppUtils
+import com.pnam.note.utils.AppUtils.Companion.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
 import com.pnam.note.utils.AppUtils.Companion.NOTE_POSITION
 import com.pnam.note.utils.Resource
@@ -52,6 +49,7 @@ class EditNoteActivity : BaseActivity() {
             }
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditNoteBinding.inflate(layoutInflater)
@@ -91,8 +89,7 @@ class EditNoteActivity : BaseActivity() {
                         )
                         newIntent.putExtras(bundle)
                         setResult(Activity.RESULT_OK, newIntent)
-                        removeHint()
-                        finishActivity(2)
+                        finishActivity(EDIT_NOTE_REQUEST)
                         supportFinishAfterTransition()
                     }
                 }
@@ -107,17 +104,4 @@ class EditNoteActivity : BaseActivity() {
         }
     }
 
-    fun removeHint() {
-        val title = binding.inputNoteTitle.text.trim().toString()
-        val desc = binding.inputNoteDesc.text.trim().toString()
-        if (title.isEmpty()) {
-            binding.inputNoteTitle.hint = ""
-        } else if (desc.isEmpty()) {
-            binding.inputNoteDesc.hint = ""
-        }
-    }
-    override fun onBackPressed() {
-        super.onBackPressed()
-        removeHint()
-    }
 }

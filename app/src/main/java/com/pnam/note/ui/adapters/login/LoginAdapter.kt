@@ -1,4 +1,4 @@
-package com.pnam.note.ui.adapters
+package com.pnam.note.ui.adapters.login
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pnam.note.R
 import com.pnam.note.database.data.models.EmailPassword
-import com.pnam.note.database.data.models.Note
 
 class LoginAdapter(
     val list: MutableList<EmailPassword>,
-    private val listener: LoginItemClickListener) : RecyclerView.Adapter<LoginAdapter.LoginViewHolder>() {
+    private val listener: LoginItemClickListener
+) : RecyclerView.Adapter<LoginAdapter.LoginViewHolder>() {
     class LoginViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvEmail: TextView = itemView.findViewById(R.id.tv_email)
         val btnDelete: ImageView = itemView.findViewById(R.id.btn_delete_login)

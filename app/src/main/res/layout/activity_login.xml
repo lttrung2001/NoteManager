@@ -70,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="4dp"
                 android:scrollbars="vertical"
+                android:background="@drawable/light_yellow_corner_16dp"
                 android:visibility="gone"
                 tools:listitem="@layout/login_container" />
 

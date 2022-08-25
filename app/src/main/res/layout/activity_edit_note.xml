@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.editnote.EditNoteActivity">
+    android:transitionName="transition_fab"
+    tools:context=".ui.addnote.AddNoteActivity">
 
     <TextView
         android:id="@+id/btn_back"
@@ -24,42 +25,46 @@
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:orientation="vertical"
         android:padding="8dp">
 
-        <RelativeLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_note_images"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/btn_edit">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            tools:itemCount="10"
+            tools:listitem="@layout/image_container" />
 
-            <EditText
-                android:id="@+id/input_note_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:background="@android:color/transparent"
-                android:hint="@string/title"
-                android:inputType="textMultiLine"
-                android:minHeight="48dp"
-                android:textColorHint="#827717"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:transitionName="noteTitle" />
+        <EditText
+            android:id="@+id/input_note_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rcv_note_images"
+            android:autofillHints=""
+            android:background="@android:color/transparent"
+            android:hint="@string/title"
+            android:inputType="textMultiLine"
+            android:minHeight="48dp"
+            android:textColorHint="#827717"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:transitionName="noteTitle" />
 
-            <EditText
-                android:id="@+id/input_note_desc"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/input_note_title"
-                android:autofillHints=""
-                android:background="@android:color/transparent"
-                android:gravity="start|top"
-                android:hint="@string/description"
-                android:inputType="textMultiLine"
-                android:textColorHint="#795548"
-                android:textSize="14sp"
-                android:transitionName="noteDescription" />
-        </RelativeLayout>
+        <EditText
+            android:id="@+id/input_note_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_edit"
+            android:layout_below="@id/input_note_title"
+            android:autofillHints=""
+            android:background="@android:color/transparent"
+            android:gravity="start|top"
+            android:hint="@string/description"
+            android:inputType="textMultiLine"
+            android:textColorHint="#795548"
+            android:textSize="14sp"
+
+            android:transitionName="noteDescription" />
 
         <Button
             android:id="@+id/btn_edit"

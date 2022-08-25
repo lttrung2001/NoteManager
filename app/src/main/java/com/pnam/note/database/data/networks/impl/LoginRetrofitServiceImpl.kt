@@ -7,10 +7,7 @@ import com.pnam.note.database.data.models.Login
 import com.pnam.note.database.data.networks.LoginNetworks
 import com.pnam.note.throwable.NotFoundException
 import com.pnam.note.utils.AppUtils.Companion.LOGIN_TOKEN
-import com.pnam.note.utils.RetrofitUtils.INTERNAL_SERVER_ERROR
-import com.pnam.note.utils.RetrofitUtils.NOT_FOUND
 import com.pnam.note.utils.RetrofitUtils.SUCCESS
-import com.pnam.note.utils.RetrofitUtils.UNAUTHORIZED
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Response
 import retrofit2.http.Body
