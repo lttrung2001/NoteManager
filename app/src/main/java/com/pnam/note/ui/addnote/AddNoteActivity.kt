@@ -1,18 +1,13 @@
 package com.pnam.note.ui.addnote
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.database.Cursor
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.pnam.note.base.BaseActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
 import com.pnam.note.ui.adapters.image.ImageAdapter
@@ -26,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class AddNoteActivity : BaseActivity() {
+class AddNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddNoteBinding
     private lateinit var imageAdapter: ImageAdapter
     private val viewModel: AddNoteViewModel by viewModels()

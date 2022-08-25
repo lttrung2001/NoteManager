@@ -60,7 +60,7 @@ class DashboardActivity : BaseActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_change_password, R.id.nav_change_avatar, R.id.nav_logout
+                R.id.nav_home, R.id.nav_change_password, R.id.nav_logout
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

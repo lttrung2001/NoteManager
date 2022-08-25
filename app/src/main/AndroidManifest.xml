@@ -24,7 +24,8 @@
             android:name=".ui.forgotpassword.ForgotPasswordActivity"
             android:exported="false"
             android:parentActivityName=".ui.login.LoginActivity"
-            android:theme="@style/Theme.Note.NoActionBar" />
+            android:theme="@style/Theme.Note.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
 
         <service
             android:name=".service.SyncService"
@@ -37,7 +38,8 @@
         <activity
             android:name=".ui.register.RegisterActivity"
             android:exported="false"
-            android:theme="@style/Theme.Note.NoActionBar" />
+            android:theme="@style/Theme.Note.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.editnote.EditNoteActivity"
             android:exported="false"
@@ -49,7 +51,8 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"
-            android:theme="@style/Theme.Note.NoActionBar" />
+            android:theme="@style/Theme.Note.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.dashboard.DashboardActivity"
             android:configChanges="orientation|screenSize|screenLayout|navigation"

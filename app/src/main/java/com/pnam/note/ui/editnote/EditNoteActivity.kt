@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.pnam.note.base.BaseActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityEditNoteBinding
 import com.pnam.note.utils.AppUtils.Companion.EDIT_NOTE_REQUEST
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class EditNoteActivity : BaseActivity() {
+class EditNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditNoteBinding
     private val viewModel: EditNoteViewModel by viewModels()
     private val editListener: View.OnClickListener by lazy {

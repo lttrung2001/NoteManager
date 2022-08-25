@@ -6,19 +6,28 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.widget.Toast
-import com.pnam.note.database.data.locals.AppDatabase
+import com.pnam.note.database.data.locals.NoteLocals
+import com.pnam.note.database.data.models.NoteAndStatus
 import com.pnam.note.service.SyncService
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class NetworkReceiver : BroadcastReceiver() {
+    @Inject
+    lateinit var noteLocals: NoteLocals
+
     override fun onReceive(context: Context?, intent: Intent?) {
         if (ConnectivityManager.CONNECTIVITY_ACTION == intent?.action) {
             val syncIntent = Intent(context, SyncService::class.java)
-            if (isNetworkAvailable(context)) {
+            val unsyncNotes = arrayListOf<NoteAndStatus>()
+            CoroutineScope(Dispatchers.IO).launch {
+                unsyncNotes.addAll(noteLocals.findUnsyncNotes())
+            }
+            if (isNetworkAvailable(context) && unsyncNotes.isNotEmpty()) {
                 /* Sync data here */
                 context?.startService(syncIntent)
             } else {

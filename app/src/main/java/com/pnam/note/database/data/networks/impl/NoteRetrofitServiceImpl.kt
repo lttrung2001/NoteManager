@@ -44,7 +44,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()!!.message)
             }
         }
     }
@@ -54,7 +54,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()!!.message)
             }
         }
     }
@@ -68,7 +68,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()!!.message)
             }
         }
     }
@@ -81,7 +81,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()!!.message)
             }
         }
     }
@@ -91,7 +91,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()!!.message)
             }
         }
     }

@@ -29,6 +29,7 @@ import com.pnam.note.ui.editnote.EditNoteActivity
 import com.pnam.note.utils.AppUtils
 import com.pnam.note.utils.AppUtils.Companion.ADD_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.EDIT_NOTE_REQUEST
+import com.pnam.note.utils.AppUtils.Companion.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -122,6 +123,9 @@ class DashboardFragment : Fragment() {
 
     private val refreshListener: SwipeRefreshLayout.OnRefreshListener by lazy {
         SwipeRefreshLayout.OnRefreshListener {
+            if (notesAdapter!!.itemCount == 0) {
+                viewModel.getNotes()
+            }
             lifecycleScope.launch(Dispatchers.IO) {
                 viewModel.refreshNotes(notesAdapter!!.itemCount)
             }
@@ -142,7 +146,6 @@ class DashboardFragment : Fragment() {
     ): View {
         binding = FragmentDashboardBinding.inflate(layoutInflater)
         binding.btnStartAddNote.setOnClickListener(addNoteListener)
-        binding.swipeLayout.setOnRefreshListener(refreshListener)
         initRecycleView()
         initObservers()
         return binding.root
@@ -151,6 +154,7 @@ class DashboardFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         binding.edtSearch.addTextChangedListener(textWatcher)
+        binding.swipeLayout.setOnRefreshListener(refreshListener)
     }
 
     override fun onPause() {
@@ -269,6 +273,7 @@ class DashboardFragment : Fragment() {
                         val currentList = adapter.currentList.toMutableList()
                         currentList.add(0, note)
                         adapter.submitList(currentList)
+                        binding.rcvNotes.smoothScrollToPosition(0)
                     }
                 } else if (requestCode == EDIT_NOTE_REQUEST) {
                     val position = bundle.getInt(AppUtils.NOTE_POSITION)
@@ -277,6 +282,7 @@ class DashboardFragment : Fragment() {
                         currentList.removeAt(position)
                         currentList.add(0, note)
                         adapter.submitList(currentList)
+                        binding.rcvNotes.smoothScrollToPosition(0)
                     }
                 } else {
 
