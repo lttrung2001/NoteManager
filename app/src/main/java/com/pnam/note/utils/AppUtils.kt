@@ -13,7 +13,7 @@ class AppUtils {
         const val ADD_NOTE_REQUEST = 1
         const val EDIT_NOTE_REQUEST = 2
         const val CAMERA_PIC_REQUEST = 3
-        const val CHANGE_AVATAR_REQUEST = 4
+        const val CHOOSE_IMAGE_REQUEST = 4
 
 
         const val SYNC_NOTIFICATION_ID = 1000

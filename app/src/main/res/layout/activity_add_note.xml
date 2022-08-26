@@ -22,7 +22,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:padding="8dp">
@@ -53,7 +53,7 @@
             android:id="@+id/input_note_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/bottom_bar"
+            android:layout_above="@id/btn_add"
             android:layout_below="@id/input_note_title"
             android:autofillHints=""
             android:background="@android:color/transparent"
@@ -61,32 +61,21 @@
             android:hint="@string/description"
             android:inputType="textMultiLine"
             android:textColorHint="#795548"
-
             android:textSize="14sp" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/bottom_bar"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/btn_open_bottom_sheet"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/ic_add" />
 
-            <ImageButton
-                android:id="@+id/btn_open_bottom_sheet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_add"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/btn_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/add_note"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/add_note" />
     </RelativeLayout>
 </LinearLayout>

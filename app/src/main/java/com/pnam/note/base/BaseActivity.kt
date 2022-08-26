@@ -2,8 +2,8 @@ package com.pnam.note.base
 
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.pnam.note.receiver.NetworkReceiver
 
 open class BaseActivity : AppCompatActivity() {
@@ -16,7 +16,7 @@ open class BaseActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        registerReceiver(receiver,intentFilter)
+        registerReceiver(receiver, intentFilter)
     }
 
     override fun onStop() {

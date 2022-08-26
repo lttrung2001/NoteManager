@@ -1,9 +1,12 @@
 package com.pnam.note.ui.editnote
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +38,7 @@ class EditNoteActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
+                hideKeyboard(binding.btnEdit.windowToken)
                 lifecycleScope.launch(Dispatchers.IO) {
                     val data = intent.extras?.getSerializable("note") as Note
                     val note = Note(
@@ -79,19 +83,17 @@ class EditNoteActivity : AppCompatActivity() {
 
                 }
                 is Resource.Success -> {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        val newIntent = Intent()
-                        val bundle = Bundle()
-                        bundle.putSerializable(NOTE_CHANGE, it.data)
-                        bundle.putInt(
-                            NOTE_POSITION,
-                            intent.extras!!.getInt(NOTE_POSITION)
-                        )
-                        newIntent.putExtras(bundle)
-                        setResult(Activity.RESULT_OK, newIntent)
-                        finishActivity(EDIT_NOTE_REQUEST)
-                        supportFinishAfterTransition()
-                    }
+                    val newIntent = Intent()
+                    val bundle = Bundle()
+                    bundle.putSerializable(NOTE_CHANGE, it.data)
+                    bundle.putInt(
+                        NOTE_POSITION,
+                        intent.extras!!.getInt(NOTE_POSITION)
+                    )
+                    newIntent.putExtras(bundle)
+                    setResult(Activity.RESULT_OK, newIntent)
+                    finishActivity(EDIT_NOTE_REQUEST)
+                    supportFinishAfterTransition()
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
@@ -104,4 +106,8 @@ class EditNoteActivity : AppCompatActivity() {
         }
     }
 
+    private fun hideKeyboard(element: IBinder) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(element, 0)
+    }
 }

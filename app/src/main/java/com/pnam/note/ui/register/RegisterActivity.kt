@@ -3,13 +3,13 @@ package com.pnam.note.ui.register
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.pnam.note.R
 import com.pnam.note.databinding.ActivityRegisterBinding
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.Resource
@@ -44,9 +44,8 @@ class RegisterActivity : AppCompatActivity() {
                 binding.registerError.visibility = View.VISIBLE
                 binding.registerError.text = "Password not matched"
             } else {
+                hideKeyboard(binding.btnRegister.windowToken)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(binding.btnRegister.windowToken, 0)
                     viewModel.register(email, password)
                 }
             }
@@ -89,5 +88,10 @@ class RegisterActivity : AppCompatActivity() {
             binding.load.visibility = View.INVISIBLE
             binding.registerError.text = viewModel.error.value
         }
+    }
+
+    private fun hideKeyboard(element: IBinder) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(element, 0)
     }
 }

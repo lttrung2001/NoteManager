@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
@@ -47,8 +48,7 @@ class LoginActivity : AppCompatActivity() {
                 binding.loginError.visibility = View.VISIBLE
                 binding.loginError.text = "Your email is invalid"
             } else {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(binding.btnLogin.windowToken, 0)
+                hideKeyboard(binding.btnLogin.windowToken)
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.login(email, password)
                 }
@@ -183,5 +183,10 @@ class LoginActivity : AppCompatActivity() {
 
     companion object {
         const val EMAIL: String = "email"
+    }
+
+    private fun hideKeyboard(element: IBinder) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(element, 0)
     }
 }

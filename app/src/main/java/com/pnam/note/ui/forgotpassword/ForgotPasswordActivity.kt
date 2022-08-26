@@ -3,6 +3,7 @@ package com.pnam.note.ui.forgotpassword
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -36,8 +37,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 binding.forgotError.visibility = View.VISIBLE
                 binding.forgotError.text = "Your email is invalid"
             } else {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(binding.btnResetPassword.windowToken, 0)
+                hideKeyboard(binding.btnResetPassword.windowToken)
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.forgotPassword(binding.edtEmail.text.trim().toString())
                 }
@@ -83,5 +83,10 @@ class ForgotPasswordActivity : AppCompatActivity() {
             binding.forgotError.visibility = View.VISIBLE
             binding.forgotError.text = viewModel.error.value
         }
+    }
+
+    private fun hideKeyboard(element: IBinder) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(element, 0)
     }
 }

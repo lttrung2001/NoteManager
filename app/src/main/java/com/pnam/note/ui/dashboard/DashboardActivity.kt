@@ -42,11 +42,6 @@ class DashboardActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityScrollingBinding.inflate(layoutInflater)
-        binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.imageView)
-            .setOnClickListener {
-                var cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST)
-            }
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
