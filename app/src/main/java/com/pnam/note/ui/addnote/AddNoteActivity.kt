@@ -1,8 +1,10 @@
 package com.pnam.note.ui.addnote
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
@@ -10,12 +12,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
-import com.pnam.note.ui.bottomsheet.NoteBottomSheetFragment
+import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
 import com.pnam.note.utils.AppUtils.Companion.ADD_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
+import com.pnam.note.utils.AppUtils.Companion.READ_EXTERNAL_STORAGE_REQUEST
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -55,8 +59,17 @@ class AddNoteActivity : AppCompatActivity() {
 
     private val openBottomSheet: View.OnClickListener by lazy {
         View.OnClickListener {
-            val bottomSheet = NoteBottomSheetFragment()
-            bottomSheet.show(supportFragmentManager, NoteBottomSheetFragment.TAG)
+            if(ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    READ_EXTERNAL_STORAGE_REQUEST);
+            }
+            else {
+                val bottomSheet = AddNoteImagesFragment()
+                bottomSheet.show(supportFragmentManager, AddNoteImagesFragment.TAG)
+            }
         }
     }
 

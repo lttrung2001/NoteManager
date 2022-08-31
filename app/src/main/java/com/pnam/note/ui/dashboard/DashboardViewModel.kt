@@ -94,7 +94,7 @@ class DashboardViewModel @Inject constructor(
                             dashboardDisposable =
                                 noteLocals.findNotes(page, LIMIT_ON_PAGE).map { localNotes ->
                                     /* Tạo thêm DAO để check hasNextPage, hasPrePage */
-                                    PagingList(localNotes, hasNextPage = true, hasPrePage = false)
+                                    PagingList(localNotes, hasNextPage = true, hasPrePage = page > 0)
                                 }
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(observerDashboard) { localError ->
@@ -114,13 +114,13 @@ class DashboardViewModel @Inject constructor(
         composite.add(dashboardDisposable)
     }
 
-    internal fun refreshNotes(limit: Int) {
+    internal fun refreshNotes() {
         _refresh.postValue(Resource.Loading())
         refreshDisposable?.let {
             composite.remove(it)
             it.dispose()
         }
-        refreshDisposable = useCase.refreshNotes(limit)
+        refreshDisposable = useCase.refreshNotes(page, LIMIT_ON_PAGE)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(observerRefresh) { t ->
                 when (t) {

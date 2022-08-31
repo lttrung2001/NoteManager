@@ -1,6 +1,5 @@
 package com.pnam.note.ui.dashboard
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -125,7 +124,7 @@ class DashboardFragment : Fragment() {
                 viewModel.getNotes()
             }
             lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.refreshNotes(notesAdapter!!.itemCount)
+                viewModel.refreshNotes()
             }
         }
     }
@@ -161,12 +160,11 @@ class DashboardFragment : Fragment() {
     }
 
     private fun initRecycleView() {
-        notesAdapter = notesAdapter ?: NoteAdapter(mutableListOf(), noteClickListener)
+        notesAdapter = notesAdapter ?: NoteAdapter(noteClickListener)
         binding.rcvNotes.adapter = notesAdapter
         binding.rcvNotes.layoutManager = LinearLayoutManager(context)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun initObservers() {
         viewModel.dashboard.observe(viewLifecycleOwner) { resource ->
             when (resource) {

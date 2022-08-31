@@ -15,8 +15,7 @@ import java.util.*
 
 
 class NoteAdapter constructor(
-    val list: MutableList<Note>,
-    private val listener: NoteItemClickListener,
+    private val listener: NoteItemClickListener
 ) : ListAdapter<Note, NoteAdapter.NoteViewHolder>(object : DiffUtil.ItemCallback<Note>() {
     override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
         return oldItem.id == newItem.id

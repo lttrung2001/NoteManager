@@ -17,15 +17,21 @@ import com.pnam.note.utils.AppUtils.Companion.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
 import com.pnam.note.utils.AppUtils.Companion.NOTE_POSITION
 import com.pnam.note.utils.Resource
+import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import dagger.hilt.android.AndroidEntryPoint
+import io.socket.client.IO
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class EditNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditNoteBinding
+    private lateinit var mSocket: Socket
     private val viewModel: EditNoteViewModel by viewModels()
     private val editListener: View.OnClickListener by lazy {
         View.OnClickListener {
@@ -54,16 +60,35 @@ class EditNoteActivity : AppCompatActivity() {
         }
     }
 
+    private val openBottomSheet: View.OnClickListener by lazy {
+        View.OnClickListener {
+            mSocket.emit("send_message", "")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
         initObservers()
+        initSocket()
 
         binding.btnEdit.setOnClickListener(editListener)
+        binding.btnOpenBottomSheet.setOnClickListener(openBottomSheet)
         binding.btnBack.setOnClickListener {
             onBackPressed()
+        }
+    }
+
+    private fun initSocket() {
+        try {
+            mSocket = IO.socket(BASE_URL)
+            mSocket.connect()
+            mSocket.on("receive_message", emitterListener)
+        } catch (ex: Exception) {
+            Toast.makeText(this, "Exception", Toast.LENGTH_SHORT).show()
+            ex.printStackTrace()
         }
     }
 
@@ -109,5 +134,15 @@ class EditNoteActivity : AppCompatActivity() {
     private fun hideKeyboard(element: IBinder) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(element, 0)
+    }
+
+    private val emitterListener: Emitter.Listener by lazy {
+        Emitter.Listener {
+            Toast.makeText(this, it.size, Toast.LENGTH_SHORT).show()
+            runOnUiThread {
+                val data: JSONObject = it[0] as JSONObject
+                Toast.makeText(this, data.optString("data"), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

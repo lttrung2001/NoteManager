@@ -6,9 +6,15 @@ import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.utils.RetrofitUtils.SUCCESS
 import io.reactivex.rxjava3.core.Single
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import retrofit2.http.*
+import java.io.File
 import javax.inject.Inject
+
 
 class NoteRetrofitServiceImpl @Inject constructor(
     private val service: Service
@@ -21,7 +27,10 @@ class NoteRetrofitServiceImpl @Inject constructor(
         ): Single<Response<APIResult<PagingList<Note>>>>
 
         @GET("/refresh-notes")
-        fun fetchNotes(@Query("limit") limit: Int): Single<Response<APIResult<List<Note>>>>
+        fun refreshNotes(
+            @Query("page") page: Int,
+            @Query("limit") limit: Int
+        ): Single<Response<APIResult<List<Note>>>>
 
         @GET("/get-note-detail")
         fun fetchNoteDetail(noteId: String): Single<Response<APIResult<Note>>>
@@ -37,6 +46,14 @@ class NoteRetrofitServiceImpl @Inject constructor(
 
         @DELETE("/delete-note")
         fun deleteNote(@Query("id") noteId: String): Single<Response<APIResult<Note>>>
+
+        @Multipart
+        @POST("/upload-note-images")
+        fun uploadNoteImages(
+            @Query("id") noteId: String,
+            @Part image: MultipartBody.Part
+        ):
+                Single<Response<APIResult<String>>>
     }
 
     override fun fetchNotes(page: Int, limit: Int): Single<PagingList<Note>> {
@@ -49,8 +66,8 @@ class NoteRetrofitServiceImpl @Inject constructor(
         }
     }
 
-    override fun fetchNotes(limit: Int): Single<List<Note>> {
-        return service.fetchNotes(limit).map {
+    override fun refreshNotes(page: Int, limit: Int): Single<List<Note>> {
+        return service.refreshNotes(page, limit).map {
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
@@ -88,6 +105,21 @@ class NoteRetrofitServiceImpl @Inject constructor(
 
     override fun deleteNote(id: String): Single<Note> {
         return service.deleteNote(id).map {
+            if (it.code() == SUCCESS) {
+                it.body()!!.data
+            } else {
+                throw Exception(it.body()!!.message)
+            }
+        }
+    }
+
+    override fun uploadImages(noteId: String, files: List<File>): Single<String> {
+        val parts = files.map { file ->
+            val requestFile: RequestBody =
+                file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData("image", file.name, requestFile)
+        }
+        return service.uploadNoteImages(noteId, parts[0]).map {
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {

@@ -21,7 +21,7 @@ class DashboardUseCaseImpl @Inject constructor(
         return repositories.searchNotes(keySearch)
     }
 
-    override fun refreshNotes(limit: Int): Single<List<Note>> {
-        return repositories.getNotes(limit)
+    override fun refreshNotes(page: Int, limit: Int): Single<List<Note>> {
+        return repositories.refreshNotes(page, limit)
     }
 }

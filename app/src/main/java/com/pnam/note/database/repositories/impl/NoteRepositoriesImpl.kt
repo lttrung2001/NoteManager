@@ -6,6 +6,7 @@ import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.database.repositories.NoteRepositories
 import io.reactivex.rxjava3.core.Single
+import java.io.File
 import javax.inject.Inject
 
 class NoteRepositoriesImpl @Inject constructor(
@@ -18,8 +19,8 @@ class NoteRepositoriesImpl @Inject constructor(
         }
     }
 
-    override fun getNotes(limit: Int): Single<List<Note>> {
-        return networks.fetchNotes(limit).doOnSuccess { netNotes ->
+    override fun refreshNotes(page: Int, limit: Int): Single<List<Note>> {
+        return networks.refreshNotes(page, limit).doOnSuccess { netNotes ->
             locals.addNote(netNotes)
         }
     }
@@ -48,5 +49,9 @@ class NoteRepositoriesImpl @Inject constructor(
 
     override fun searchNotes(keySearch: String): Single<MutableList<Note>> {
         return locals.searchNotes(keySearch)
+    }
+
+    override fun uploadImages(noteId: String, files: List<File>): Single<String> {
+        return networks.uploadImages(noteId, files)
     }
 }
