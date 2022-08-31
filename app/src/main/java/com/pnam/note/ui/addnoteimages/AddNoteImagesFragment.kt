@@ -138,7 +138,6 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
     private fun initRecyclerView() {
         imageAdapter = imageAdapter ?: ImageAdapter(imageListener, this)
         binding.rcvNoteImages.adapter = imageAdapter
-        binding.rcvNoteImages.addOnScrollListener(scrollListener)
     }
 
     companion object {

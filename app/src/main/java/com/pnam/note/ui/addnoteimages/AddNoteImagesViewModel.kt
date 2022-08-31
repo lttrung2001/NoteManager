@@ -1,7 +1,10 @@
 package com.pnam.note.ui.addnoteimages
 
+import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
+import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -86,20 +89,39 @@ class AddNoteImagesViewModel @Inject constructor(
             MediaStore.Images.Media._ID
         )
         val sort = MediaStore.Images.ImageColumns.DATE_TAKEN
-        val imageCursor: Cursor? = context.contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
-            null, "$sort DESC LIMIT $limit OFFSET ${page * limit}"
-        )
-        val nextPageCursor: Cursor? = context.contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
-            null, "$sort DESC LIMIT $limit OFFSET ${(page + 1) * limit}"
-        )
+        val imageCursor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            context.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
+                null, "$sort DESC LIMIT $limit OFFSET ${page * limit}"
+            )
+        } else {
+            context.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, Bundle().apply {
+                    putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
+                    putInt(ContentResolver.QUERY_ARG_OFFSET, page * limit)
+                }, null
+            )
+        }
+        val nextPageCursor: Cursor? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, Bundle().apply {
+                    putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
+                    putInt(ContentResolver.QUERY_ARG_OFFSET, (page + 1) * limit)
+                }, null
+            )
+        } else {
+            context.contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
+                null, "$sort DESC LIMIT $limit OFFSET ${(page + 1) * limit}"
+            )
+        }
         for (i in 0 until imageCursor!!.count) {
             imageCursor.moveToPosition(i)
             val dataColumnIndex =
                 imageCursor.getColumnIndex(MediaStore.Images.Media.DATA)
             imageList.add(imageCursor.getString(dataColumnIndex))
         }
+
 
         imageListDisposable =
             Single.just(PagingList(imageList, (nextPageCursor?.count ?: 0) > 0, page == 0))
