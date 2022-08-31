@@ -66,7 +66,7 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
             override fun onClick(path: String) {
                 Toast.makeText(activity, path, Toast.LENGTH_SHORT).show()
                 lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.uploadNoteImages("trung", arrayListOf(path))
+                    viewModel.uploadNoteImages("", arrayListOf(path))
                 }
             }
         }

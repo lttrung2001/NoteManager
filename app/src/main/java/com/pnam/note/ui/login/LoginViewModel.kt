@@ -64,7 +64,7 @@ class LoginViewModel @Inject constructor(
             .login(email, password)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(observerLogin, this::loginError)
-        composite.add(loginDisposable)
+        loginDisposable?.let { composite.add(it) }
     }
 
     internal fun getSavedLogin() {
@@ -77,7 +77,7 @@ class LoginViewModel @Inject constructor(
             .subscribe(observerSavedLogin) {
                 _savedLogin.postValue(Resource.Error(it.message ?: "Unknown error"))
             }
-        composite.add(savedLoginDisposable)
+        savedLoginDisposable?.let { composite.add(it) }
     }
 
     private fun loginError(t: Throwable) {

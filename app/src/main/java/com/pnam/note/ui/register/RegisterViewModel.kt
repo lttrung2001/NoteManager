@@ -47,7 +47,7 @@ class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(observerLogin, this::registerError)
-        composite.add(registerDisposable)
+        registerDisposable?.let { composite.add(it) }
     }
 
     private fun registerError(t: Throwable) {

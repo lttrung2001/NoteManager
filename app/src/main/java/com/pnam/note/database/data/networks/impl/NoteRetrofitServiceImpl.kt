@@ -51,7 +51,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
         @POST("/upload-note-images")
         fun uploadNoteImages(
             @Query("id") noteId: String,
-            @Part image: MultipartBody.Part
+            @Part image: List<MultipartBody.Part>
         ):
                 Single<Response<APIResult<String>>>
     }
@@ -119,7 +119,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
                 file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             MultipartBody.Part.createFormData("image", file.name, requestFile)
         }
-        return service.uploadNoteImages(noteId, parts[0]).map {
+        return service.uploadNoteImages(noteId, parts).map {
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {

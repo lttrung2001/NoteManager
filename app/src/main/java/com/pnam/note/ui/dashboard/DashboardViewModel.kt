@@ -111,7 +111,7 @@ class DashboardViewModel @Inject constructor(
                     }
                 }
             }
-        composite.add(dashboardDisposable)
+        dashboardDisposable?.let { composite.add(it) }
     }
 
     internal fun refreshNotes() {
@@ -132,10 +132,11 @@ class DashboardViewModel @Inject constructor(
                     }
                 }
             }
-        composite.add(refreshDisposable)
+        refreshDisposable?.let { composite.add(it) }
     }
 
     internal fun deleteNote(note: Note) {
+        _deleteNote.postValue(Resource.Loading())
         deleteNoteDisposable?.let {
             composite.remove(it)
             it.dispose()
@@ -174,10 +175,11 @@ class DashboardViewModel @Inject constructor(
                     }
                 }
             }
-        composite.add(deleteNoteDisposable)
+        deleteNoteDisposable?.let { composite.add(it) }
     }
 
     internal fun searchNotes(keySearch: String) {
+        _searchNotes.postValue(Resource.Loading())
         searchNotesDisposable?.let {
             composite.remove(it)
             it.dispose()
@@ -198,7 +200,7 @@ class DashboardViewModel @Inject constructor(
                     _searchNotes.postValue(Resource.Error(t.message ?: "Unknown error"))
                 }
         }
-        composite.add(searchNotesDisposable)
+        searchNotesDisposable?.let { composite.add(it) }
     }
 
     override fun onCleared() {

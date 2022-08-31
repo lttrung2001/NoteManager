@@ -2,7 +2,6 @@ package com.pnam.note.ui.addnoteimages
 
 import android.content.ContentResolver
 import android.content.Context
-import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,6 +17,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 import javax.inject.Inject
 
@@ -71,6 +71,7 @@ class AddNoteImagesViewModel @Inject constructor(
         imageDisposable = useCase.uploadImages(noteId, imagesPath.map { path ->
             File(path)
         }).observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
             .subscribe(imageObserver) { t ->
                 t.printStackTrace()
             }
@@ -89,7 +90,7 @@ class AddNoteImagesViewModel @Inject constructor(
             MediaStore.Images.Media._ID
         )
         val sort = MediaStore.Images.ImageColumns.DATE_TAKEN
-        val imageCursor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        val imageCursor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             context.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
                 null, "$sort DESC LIMIT $limit OFFSET ${page * limit}"
@@ -102,7 +103,7 @@ class AddNoteImagesViewModel @Inject constructor(
                 }, null
             )
         }
-        val nextPageCursor: Cursor? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val nextPageCursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             context.contentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, Bundle().apply {
                     putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
@@ -115,13 +116,14 @@ class AddNoteImagesViewModel @Inject constructor(
                 null, "$sort DESC LIMIT $limit OFFSET ${(page + 1) * limit}"
             )
         }
-        for (i in 0 until imageCursor!!.count) {
-            imageCursor.moveToPosition(i)
-            val dataColumnIndex =
-                imageCursor.getColumnIndex(MediaStore.Images.Media.DATA)
-            imageList.add(imageCursor.getString(dataColumnIndex))
+        imageCursor?.let { cs ->
+            for (i in 0 until cs.count) {
+                cs.moveToPosition(i)
+                val dataColumnIndex =
+                    cs.getColumnIndex(MediaStore.Images.Media.DATA)
+                imageList.add(cs.getString(dataColumnIndex))
+            }
         }
-
 
         imageListDisposable =
             Single.just(PagingList(imageList, (nextPageCursor?.count ?: 0) > 0, page == 0))
@@ -129,5 +131,7 @@ class AddNoteImagesViewModel @Inject constructor(
                 .subscribe(imageListObserver) { t ->
                     _imageListLiveData.postValue(Resource.Error(t.message ?: "Unknown error"))
                 }
+        imageCursor?.close()
+        nextPageCursor?.close()
     }
 }

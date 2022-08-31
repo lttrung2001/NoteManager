@@ -75,6 +75,6 @@ class AddNoteViewModel @Inject constructor(
                 }
                 t.printStackTrace()
             }
-        composite.add(disposable)
+        disposable?.let { composite.add(it) }
     }
 }

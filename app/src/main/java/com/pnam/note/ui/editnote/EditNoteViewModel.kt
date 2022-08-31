@@ -75,6 +75,6 @@ class EditNoteViewModel @Inject constructor(
                     }
                 }
             }
-        composite.add(disposable)
+        disposable?.let { composite.add(it) }
     }
 }

@@ -33,7 +33,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@Suppress("DEPRECATION")
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
@@ -198,9 +197,7 @@ class DashboardFragment : Fragment() {
 
                 }
                 is Resource.Success -> {
-                    notesAdapter?.let { adapter ->
-                        adapter.submitList(resource.data)
-                    }
+                    notesAdapter?.submitList(resource.data)
                     binding.swipeLayout.isRefreshing = false
                 }
                 is Resource.Error -> {
@@ -264,24 +261,28 @@ class DashboardFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             data!!.extras.let { bundle ->
                 val note = bundle!!.getSerializable(AppUtils.NOTE_CHANGE) as Note
-                if (requestCode == ADD_NOTE_REQUEST) {
-                    notesAdapter?.let { adapter ->
-                        val currentList = adapter.currentList.toMutableList()
-                        currentList.add(0, note)
-                        adapter.submitList(currentList)
-                        binding.rcvNotes.smoothScrollToPosition(0)
+                when (requestCode) {
+                    ADD_NOTE_REQUEST -> {
+                        notesAdapter?.let { adapter ->
+                            val currentList = adapter.currentList.toMutableList()
+                            currentList.add(0, note)
+                            adapter.submitList(currentList)
+                            binding.rcvNotes.smoothScrollToPosition(0)
+                        }
                     }
-                } else if (requestCode == EDIT_NOTE_REQUEST) {
-                    val position = bundle.getInt(AppUtils.NOTE_POSITION)
-                    notesAdapter?.let { adapter ->
-                        val currentList = adapter.currentList.toMutableList()
-                        currentList.removeAt(position)
-                        currentList.add(0, note)
-                        adapter.submitList(currentList)
-                        binding.rcvNotes.smoothScrollToPosition(0)
+                    EDIT_NOTE_REQUEST -> {
+                        val position = bundle.getInt(AppUtils.NOTE_POSITION)
+                        notesAdapter?.let { adapter ->
+                            val currentList = adapter.currentList.toMutableList()
+                            currentList.removeAt(position)
+                            currentList.add(0, note)
+                            adapter.submitList(currentList)
+                            binding.rcvNotes.smoothScrollToPosition(0)
+                        }
                     }
-                } else {
+                    else -> {
 
+                    }
                 }
             }
         }
