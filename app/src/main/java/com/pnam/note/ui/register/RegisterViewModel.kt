@@ -53,7 +53,7 @@ class RegisterViewModel @Inject constructor(private val useCase: RegisterUseCase
     private fun registerError(t: Throwable) {
         when (t) {
             is NoConnectivityException -> {
-                error.postValue("")
+                error.postValue("No internet connection")
             }
             else -> {
                 _register.postValue(Resource.Error(t.message?: "Unknown error"))

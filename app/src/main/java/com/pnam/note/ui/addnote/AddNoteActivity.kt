@@ -16,7 +16,10 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
+import com.pnam.note.ui.adapters.image.ImageAdapter
+import com.pnam.note.ui.adapters.image.ImageItemClickListener
 import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
+import com.pnam.note.utils.AppUtils.Companion.ADD_IMAGE_TO_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.ADD_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
 import com.pnam.note.utils.AppUtils.Companion.READ_EXTERNAL_STORAGE_REQUEST
@@ -30,6 +33,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class AddNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddNoteBinding
+    private lateinit var imageAdapter: ImageAdapter
     private val viewModel: AddNoteViewModel by viewModels()
     private val addListener: View.OnClickListener by lazy {
         View.OnClickListener {
@@ -73,10 +77,19 @@ class AddNoteActivity : AppCompatActivity() {
         }
     }
 
+    private val imageListener: ImageItemClickListener by lazy {
+        object: ImageItemClickListener {
+            override fun onClick(path: String) {
+                TODO("Not yet implemented")
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initRecyclerView()
         initObservers()
 
         binding.btnAdd.setOnClickListener(addListener)
@@ -84,6 +97,11 @@ class AddNoteActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    private fun initRecyclerView() {
+        imageAdapter = ImageAdapter(imageListener)
+        binding.rcvNoteImages.adapter = imageAdapter
     }
 
     private fun initObservers() {
@@ -106,6 +124,27 @@ class AddNoteActivity : AppCompatActivity() {
                 }
             }
         }
+        viewModel.imagesLiveData.observe(this) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    val currentList = imageAdapter.currentList.toMutableList()
+                    currentList.removeAll(resource.data)
+                    currentList.addAll(resource.data)
+                    imageAdapter.submitList(currentList)
+//                    if (resource.data.isNotEmpty()) {
+//                        val params = binding.rcvNoteImages.layoutParams
+//                        params.height = 500
+//                        binding.rcvNoteImages.layoutParams = params
+//                    }
+                }
+                is Resource.Error -> {
+                    Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
         viewModel.error.observe(this) {
             Toast.makeText(this, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
@@ -114,5 +153,11 @@ class AddNoteActivity : AppCompatActivity() {
     private fun hideKeyboard(element: IBinder) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(element, 0)
+    }
+
+    internal fun addImagesToNote (images: List<String>) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.addImages(images)
+        }
     }
 }

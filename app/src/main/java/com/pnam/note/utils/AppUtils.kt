@@ -14,7 +14,8 @@ class AppUtils {
         const val EDIT_NOTE_REQUEST = 2
         const val CAMERA_PIC_REQUEST = 3
         const val CHOOSE_IMAGE_REQUEST = 4
-        const val READ_EXTERNAL_STORAGE_REQUEST = 5
+        const val ADD_IMAGE_TO_NOTE_REQUEST = 5
+        const val READ_EXTERNAL_STORAGE_REQUEST = 6
 
 
         const val SYNC_NOTIFICATION_ID = 1000

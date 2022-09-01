@@ -94,7 +94,11 @@ class DashboardViewModel @Inject constructor(
                             dashboardDisposable =
                                 noteLocals.findNotes(page, LIMIT_ON_PAGE).map { localNotes ->
                                     /* Tạo thêm DAO để check hasNextPage, hasPrePage */
-                                    PagingList(localNotes, hasNextPage = true, hasPrePage = page > 0)
+                                    PagingList(
+                                        localNotes,
+                                        hasNextPage = true,
+                                        hasPrePage = page > 0
+                                    )
                                 }
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(observerDashboard) { localError ->

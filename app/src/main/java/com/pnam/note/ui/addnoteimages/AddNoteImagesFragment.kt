@@ -1,6 +1,7 @@
 package com.pnam.note.ui.addnoteimages
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -17,10 +19,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.pnam.note.databinding.FragmentNoteBottomSheetBinding
 import com.pnam.note.ui.adapters.image.ImageAdapter
 import com.pnam.note.ui.adapters.image.ImageItemClickListener
+import com.pnam.note.ui.addnote.AddNoteActivity
 import com.pnam.note.utils.AppUtils
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 
@@ -61,13 +65,16 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val imageListener: ImageItemClickListener by lazy {
         object : ImageItemClickListener {
             override fun onClick(path: String) {
+//                Toast.makeText(activity, path, Toast.LENGTH_SHORT).show()
+//                lifecycleScope.launch(Dispatchers.IO) {
+//                    viewModel.uploadNoteImages("", arrayListOf(path))
+//                }
+                (activity as AddNoteActivity).addImagesToNote(listOf(path))
                 Toast.makeText(activity, path, Toast.LENGTH_SHORT).show()
-                lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.uploadNoteImages("", arrayListOf(path))
-                }
             }
         }
     }
@@ -83,7 +90,7 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentNoteBottomSheetBinding.inflate(layoutInflater)
         binding.bsTakeFromCamera.setOnClickListener(openCameraListener)
         initRecyclerView()
@@ -136,11 +143,12 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
     }
 
     private fun initRecyclerView() {
-        imageAdapter = imageAdapter ?: ImageAdapter(imageListener, this)
+        imageAdapter = imageAdapter ?: ImageAdapter(imageListener)
         binding.rcvNoteImages.adapter = imageAdapter
     }
 
     companion object {
         const val TAG = "note_bottom_sheet_fragment"
+        const val IMAGES_PATH = "images_path"
     }
 }

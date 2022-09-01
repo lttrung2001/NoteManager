@@ -61,6 +61,14 @@ class DashboardFragment : Fragment() {
                     }
                 }
             }
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    lifecycleScope.launch(Dispatchers.IO) {
+//                        viewModel.getNotes()
+//                    }
+//                }
+//            }
         }
     }
     private val noteClickListener: NoteItemClickListener by lazy {
