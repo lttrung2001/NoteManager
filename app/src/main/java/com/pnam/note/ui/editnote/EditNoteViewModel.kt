@@ -9,6 +9,7 @@ import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
@@ -28,14 +29,23 @@ class EditNoteViewModel @Inject constructor(
     internal val editNote: MutableLiveData<Resource<Note>> by lazy {
         MutableLiveData<Resource<Note>>()
     }
+    internal val imagesLiveData: MutableLiveData<Resource<List<String>>> by lazy {
+        MutableLiveData<Resource<List<String>>>()
+    }
 
     private val composite: CompositeDisposable by lazy {
         CompositeDisposable()
     }
     private var disposable: Disposable? = null
+    private var imagesDisposable: Disposable? = null
     private val observer: Consumer<Note> by lazy {
         Consumer<Note> { note ->
             editNote.postValue(Resource.Success(note))
+        }
+    }
+    private val imagesObserver: Consumer<List<String>> by lazy {
+        Consumer<List<String>> { list ->
+            imagesLiveData.postValue(Resource.Success(list))
         }
     }
 
@@ -76,5 +86,18 @@ class EditNoteViewModel @Inject constructor(
                 }
             }
         disposable?.let { composite.add(it) }
+    }
+
+    internal fun addImages(images: List<String>) {
+        imagesLiveData.postValue(Resource.Loading())
+        imagesDisposable?.let {
+            composite.remove(it)
+            it.dispose()
+        }
+        imagesDisposable = Single.just(images)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(imagesObserver) { t ->
+                imagesLiveData.postValue(Resource.Error(t.message ?: "Unknown error"))
+            }
     }
 }

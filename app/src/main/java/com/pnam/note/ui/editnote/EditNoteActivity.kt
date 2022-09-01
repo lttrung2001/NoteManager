@@ -1,8 +1,10 @@
 package com.pnam.note.ui.editnote
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
@@ -10,9 +12,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import com.pnam.note.base.ImageBottomSheetActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityEditNoteBinding
+import com.pnam.note.ui.adapters.image.ImageAdapter
+import com.pnam.note.ui.adapters.image.ImageItemClickListener
+import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
+import com.pnam.note.utils.AppUtils
 import com.pnam.note.utils.AppUtils.Companion.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
 import com.pnam.note.utils.AppUtils.Companion.NOTE_POSITION
@@ -29,9 +37,9 @@ import org.json.JSONObject
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class EditNoteActivity : AppCompatActivity() {
+class EditNoteActivity : ImageBottomSheetActivity() {
     private lateinit var binding: ActivityEditNoteBinding
-    private lateinit var mSocket: Socket
+    private lateinit var imageAdapter: ImageAdapter
     private val viewModel: EditNoteViewModel by viewModels()
     private val editListener: View.OnClickListener by lazy {
         View.OnClickListener {
@@ -62,7 +70,26 @@ class EditNoteActivity : AppCompatActivity() {
 
     private val openBottomSheet: View.OnClickListener by lazy {
         View.OnClickListener {
-            mSocket.emit("send_message", "")
+            if(ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    AppUtils.READ_EXTERNAL_STORAGE_REQUEST
+                );
+            }
+            else {
+                val bottomSheet = AddNoteImagesFragment()
+                bottomSheet.show(supportFragmentManager, AddNoteImagesFragment.TAG)
+            }
+        }
+    }
+
+    private val imageListener: ImageItemClickListener by lazy {
+        object: ImageItemClickListener {
+            override fun onClick(path: String) {
+                TODO("Not yet implemented")
+            }
         }
     }
 
@@ -71,24 +98,13 @@ class EditNoteActivity : AppCompatActivity() {
         binding = ActivityEditNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
+        initRecyclerView()
         initObservers()
-        initSocket()
 
         binding.btnEdit.setOnClickListener(editListener)
         binding.btnOpenBottomSheet.setOnClickListener(openBottomSheet)
         binding.btnBack.setOnClickListener {
             onBackPressed()
-        }
-    }
-
-    private fun initSocket() {
-        try {
-            mSocket = IO.socket(BASE_URL)
-            mSocket.connect()
-            mSocket.on("receive_message", emitterListener)
-        } catch (ex: Exception) {
-            Toast.makeText(this, "Exception", Toast.LENGTH_SHORT).show()
-            ex.printStackTrace()
         }
     }
 
@@ -99,6 +115,11 @@ class EditNoteActivity : AppCompatActivity() {
             binding.inputNoteTitle.setText(note.title)
             binding.inputNoteDesc.setText(note.description)
         }
+    }
+
+    private fun initRecyclerView() {
+        imageAdapter = ImageAdapter(imageListener)
+        binding.rcvNoteImages.adapter = imageAdapter
     }
 
     private fun initObservers() {
@@ -126,6 +147,23 @@ class EditNoteActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.imagesLiveData.observe(this) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    val currentList = imageAdapter.currentList.toMutableList()
+                    currentList.removeAll(resource.data)
+                    currentList.addAll(resource.data)
+                    imageAdapter.submitList(currentList)
+                }
+                is Resource.Error -> {
+                    Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         viewModel.error.observe(this) {
             Toast.makeText(this, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
@@ -143,6 +181,12 @@ class EditNoteActivity : AppCompatActivity() {
                 val data: JSONObject = it[0] as JSONObject
                 Toast.makeText(this, data.optString("data"), Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun addImagesToNote (images: List<String>) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.addImages(images)
         }
     }
 }

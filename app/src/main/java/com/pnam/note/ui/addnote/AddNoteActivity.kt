@@ -14,6 +14,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import com.pnam.note.base.ImageBottomSheetActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
 import com.pnam.note.ui.adapters.image.ImageAdapter
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class AddNoteActivity : AppCompatActivity() {
+class AddNoteActivity : ImageBottomSheetActivity() {
     private lateinit var binding: ActivityAddNoteBinding
     private lateinit var imageAdapter: ImageAdapter
     private val viewModel: AddNoteViewModel by viewModels()
@@ -134,11 +135,6 @@ class AddNoteActivity : AppCompatActivity() {
                     currentList.removeAll(resource.data)
                     currentList.addAll(resource.data)
                     imageAdapter.submitList(currentList)
-//                    if (resource.data.isNotEmpty()) {
-//                        val params = binding.rcvNoteImages.layoutParams
-//                        params.height = 500
-//                        binding.rcvNoteImages.layoutParams = params
-//                    }
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()
@@ -155,7 +151,7 @@ class AddNoteActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(element, 0)
     }
 
-    internal fun addImagesToNote (images: List<String>) {
+    override fun addImagesToNote (images: List<String>) {
         lifecycleScope.launch(Dispatchers.IO) {
             viewModel.addImages(images)
         }

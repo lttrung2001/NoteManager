@@ -1,7 +1,6 @@
 package com.pnam.note.ui.addnoteimages
 
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,11 +10,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.pnam.note.base.ImageBottomSheetActivity
 import com.pnam.note.databinding.FragmentNoteBottomSheetBinding
 import com.pnam.note.ui.adapters.image.ImageAdapter
 import com.pnam.note.ui.adapters.image.ImageItemClickListener
@@ -24,7 +23,6 @@ import com.pnam.note.utils.AppUtils
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 
@@ -65,16 +63,10 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val imageListener: ImageItemClickListener by lazy {
         object : ImageItemClickListener {
             override fun onClick(path: String) {
-//                Toast.makeText(activity, path, Toast.LENGTH_SHORT).show()
-//                lifecycleScope.launch(Dispatchers.IO) {
-//                    viewModel.uploadNoteImages("", arrayListOf(path))
-//                }
-                (activity as AddNoteActivity).addImagesToNote(listOf(path))
-                Toast.makeText(activity, path, Toast.LENGTH_SHORT).show()
+                (activity as ImageBottomSheetActivity).addImagesToNote(listOf(path))
             }
         }
     }
@@ -149,6 +141,5 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "note_bottom_sheet_fragment"
-        const val IMAGES_PATH = "images_path"
     }
 }
