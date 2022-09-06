@@ -1,4 +1,4 @@
-package com.pnam.note.ui.adapters.image
+package com.pnam.note.ui.adapters.chooseimage
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +11,10 @@ import coil.load
 import com.pnam.note.R
 
 
-class ImageAdapter(
-    private val listener: ImageItemClickListener
-) : ListAdapter<String, ImageAdapter.ImageViewHolder>(object : DiffUtil.ItemCallback<String>() {
+class ChooseImageAdapter(
+    private val listener: ChooseImageItemClickListener
+) : ListAdapter<String, ChooseImageAdapter.ImageViewHolder>(object :
+    DiffUtil.ItemCallback<String>() {
     override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
         return oldItem.contentEquals(newItem)
     }
@@ -28,7 +29,8 @@ class ImageAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.image_container, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.choose_image_container, parent, false)
         return ImageViewHolder(view)
     }
 

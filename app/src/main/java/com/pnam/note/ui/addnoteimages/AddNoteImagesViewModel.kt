@@ -11,7 +11,6 @@ import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.utils.AppUtils.Companion.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -23,7 +22,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddNoteImagesViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val useCase: AddNoteImagesUseCase
 ) : ViewModel() {
     private var page = 0
@@ -77,7 +75,7 @@ class AddNoteImagesViewModel @Inject constructor(
             }
     }
 
-    internal fun getLocalImages() {
+    internal fun getLocalImages(context: Context) {
         _imageListLiveData.postValue(Resource.Loading())
         imageListDisposable?.let {
             composite.remove(it)

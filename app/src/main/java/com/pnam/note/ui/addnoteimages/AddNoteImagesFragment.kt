@@ -16,9 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.pnam.note.base.ImageBottomSheetActivity
 import com.pnam.note.databinding.FragmentNoteBottomSheetBinding
-import com.pnam.note.ui.adapters.image.ImageAdapter
-import com.pnam.note.ui.adapters.image.ImageItemClickListener
-import com.pnam.note.ui.addnote.AddNoteActivity
+import com.pnam.note.ui.adapters.chooseimage.ChooseImageAdapter
+import com.pnam.note.ui.adapters.chooseimage.ChooseImageItemClickListener
 import com.pnam.note.utils.AppUtils
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +29,7 @@ import kotlinx.coroutines.launch
 class AddNoteImagesFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentNoteBottomSheetBinding
     private val viewModel: AddNoteImagesViewModel by viewModels()
-    private var imageAdapter: ImageAdapter? = null
+    private var imageAdapter: ChooseImageAdapter? = null
     val imageChoose = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
@@ -49,7 +48,7 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     lifecycleScope.launch(Dispatchers.IO) {
-                        viewModel.getLocalImages()
+                        viewModel.getLocalImages(requireContext())
                     }
                 }
             }
@@ -63,8 +62,8 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private val imageListener: ImageItemClickListener by lazy {
-        object : ImageItemClickListener {
+    private val imageListener: ChooseImageItemClickListener by lazy {
+        object : ChooseImageItemClickListener {
             override fun onClick(path: String) {
                 (activity as ImageBottomSheetActivity).addImagesToNote(listOf(path))
             }
@@ -74,7 +73,7 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.getLocalImages()
+            viewModel.getLocalImages(requireContext())
         }
     }
 
@@ -94,7 +93,7 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
         viewModel.imageListLiveData.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
-
+                    binding.rcvNoteImages.removeOnScrollListener(scrollListener)
                 }
                 is Resource.Success -> {
                     imageAdapter?.let { adapter ->
@@ -135,7 +134,7 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
     }
 
     private fun initRecyclerView() {
-        imageAdapter = imageAdapter ?: ImageAdapter(imageListener)
+        imageAdapter = imageAdapter ?: ChooseImageAdapter(imageListener)
         binding.rcvNoteImages.adapter = imageAdapter
     }
 

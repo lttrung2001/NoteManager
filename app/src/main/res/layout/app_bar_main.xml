@@ -32,7 +32,6 @@
                 android:backgroundTint="@color/primaryColor"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/Theme.Note.PopupOverlay" />
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

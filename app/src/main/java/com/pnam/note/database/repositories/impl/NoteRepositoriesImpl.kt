@@ -14,14 +14,14 @@ class NoteRepositoriesImpl @Inject constructor(
     override val networks: NoteNetworks
 ) : NoteRepositories {
     override fun getNotes(page: Int, limit: Int): Single<PagingList<Note>> {
-        return networks.fetchNotes(page, limit).doOnSuccess { netNotes ->
-            locals.addNote(netNotes.data)
+        return networks.fetchNotes(page, limit).doOnSuccess { paging ->
+            locals.addNote(paging.data)
         }
     }
 
-    override fun refreshNotes(page: Int, limit: Int): Single<List<Note>> {
-        return networks.refreshNotes(page, limit).doOnSuccess { netNotes ->
-            locals.addNote(netNotes)
+    override fun refreshNotes(page: Int, limit: Int): Single<PagingList<Note>> {
+        return networks.refreshNotes(page, limit).doOnSuccess { paging ->
+            locals.addNote(paging.data)
         }
     }
 

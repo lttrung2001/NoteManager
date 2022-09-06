@@ -90,10 +90,15 @@ class DashboardFragment : Fragment() {
                     view.findViewById(R.id.note_desc),
                     "noteDescription"
                 )
+                val pairTime: Pair<View, String> = Pair(
+                    view.findViewById(R.id.edit_at),
+                    "noteTime"
+                )
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     activity!!,
                     pairTitle,
-                    pairDesc
+                    pairDesc,
+                    pairTime
                 )
                 startActivityForResult(intent, EDIT_NOTE_REQUEST, options.toBundle())
             }
@@ -127,11 +132,14 @@ class DashboardFragment : Fragment() {
 
     private val refreshListener: SwipeRefreshLayout.OnRefreshListener by lazy {
         SwipeRefreshLayout.OnRefreshListener {
-            if (notesAdapter!!.itemCount == 0) {
-                viewModel.getNotes()
-            }
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.refreshNotes()
+            if (notesAdapter?.itemCount ?: 0 == 0) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.getNotes()
+                }
+            } else {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.refreshNotes()
+                }
             }
         }
     }
@@ -177,6 +185,7 @@ class DashboardFragment : Fragment() {
             when (resource) {
                 is Resource.Loading -> {
                     binding.loadMore.visibility = View.VISIBLE
+                    binding.rcvNotes.removeOnScrollListener(onScrollListener)
                 }
                 is Resource.Success -> {
                     notesAdapter?.let { adapter ->
@@ -205,7 +214,12 @@ class DashboardFragment : Fragment() {
 
                 }
                 is Resource.Success -> {
-                    notesAdapter?.submitList(resource.data)
+                    notesAdapter?.submitList(resource.data.data)
+                    if (resource.data.hasNextPage) {
+                        binding.rcvNotes.addOnScrollListener(onScrollListener)
+                    } else {
+                        binding.rcvNotes.removeOnScrollListener(onScrollListener)
+                    }
                     binding.swipeLayout.isRefreshing = false
                 }
                 is Resource.Error -> {

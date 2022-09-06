@@ -39,14 +39,14 @@ class DashboardViewModel @Inject constructor(
         MutableLiveData<Resource<MutableList<Note>>>()
     }
 
-    private val _refresh: MutableLiveData<Resource<List<Note>>> by lazy {
-        MutableLiveData<Resource<List<Note>>>()
+    private val _refresh: MutableLiveData<Resource<PagingList<Note>>> by lazy {
+        MutableLiveData<Resource<PagingList<Note>>>()
     }
 
     internal val dashboard: MutableLiveData<Resource<PagingList<Note>>> get() = _dashboard
     internal val deleteNote: MutableLiveData<Resource<Note>> get() = _deleteNote
     internal val searchNotes: MutableLiveData<Resource<MutableList<Note>>> get() = _searchNotes
-    internal val refresh: MutableLiveData<Resource<List<Note>>> get() = _refresh
+    internal val refresh: MutableLiveData<Resource<PagingList<Note>>> get() = _refresh
 
     private val composite: CompositeDisposable by lazy {
         CompositeDisposable()
@@ -58,8 +58,8 @@ class DashboardViewModel @Inject constructor(
     private var refreshDisposable: Disposable? = null
 
     private val observerDashboard: Consumer<PagingList<Note>> by lazy {
-        Consumer<PagingList<Note>> { list ->
-            _dashboard.postValue(Resource.Success(list))
+        Consumer<PagingList<Note>> { paging ->
+            _dashboard.postValue(Resource.Success(paging))
             page++
         }
     }
@@ -73,9 +73,9 @@ class DashboardViewModel @Inject constructor(
             _searchNotes.postValue(Resource.Success(list))
         }
     }
-    private val observerRefresh: Consumer<List<Note>> by lazy {
-        Consumer<List<Note>> { list ->
-            _refresh.postValue(Resource.Success(list))
+    private val observerRefresh: Consumer<PagingList<Note>> by lazy {
+        Consumer<PagingList<Note>> { paging ->
+            _refresh.postValue(Resource.Success(paging))
         }
     }
 
@@ -189,7 +189,6 @@ class DashboardViewModel @Inject constructor(
             it.dispose()
         }
         searchNotesDisposable = if (keySearch.isEmpty()) {
-            /* Nếu rỗng thì để list như trước đó (How?) */
             noteLocals.findNotes(page, LIMIT_ON_PAGE)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

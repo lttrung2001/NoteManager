@@ -38,8 +38,12 @@ class NoteAdapter constructor(
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = getItem(position)
         val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
-        holder.title.text = note.title
-        holder.desc.text = note.description
+        with(holder.title) {
+            text = note.title
+        }
+        with (holder.desc) {
+            text = note.description
+        }
         holder.editAt.text = simpleDateFormat.format(Date(note.editAt))
         holder.itemView.setOnClickListener {
             listener.onClick(note, holder.itemView, position)

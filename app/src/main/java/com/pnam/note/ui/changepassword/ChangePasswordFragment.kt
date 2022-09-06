@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.appbar.AppBarLayout
 import com.pnam.note.databinding.FragmentChangePasswordBinding
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,12 +20,6 @@ class ChangePasswordFragment : Fragment() {
     private lateinit var binding: FragmentChangePasswordBinding
     private val viewModel: ChangePasswordViewModel by viewModels()
 
-    private val backClickListener: View.OnClickListener by lazy {
-        View.OnClickListener {
-            activity?.onBackPressed()
-        }
-    }
-
     private val saveChangeClickListener: View.OnClickListener by lazy {
         View.OnClickListener {
             val currentPass = binding.edtCurrPassword.text.trim().toString()
@@ -35,8 +27,7 @@ class ChangePasswordFragment : Fragment() {
             val newPass2 = binding.edtNewPassword2.text.trim().toString()
             if (currentPass.isEmpty() || newPass.isEmpty() || newPass2.isEmpty()) {
                 binding.changePasswordError.text = "All input is required"
-            }
-            else if (newPass.contentEquals(newPass2)) {
+            } else if (newPass.contentEquals(newPass2)) {
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.changePassword(currentPass, newPass)
                 }
@@ -53,7 +44,6 @@ class ChangePasswordFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentChangePasswordBinding.inflate(layoutInflater)
-        binding.btnBack.setOnClickListener(backClickListener)
         binding.btnSaveChange.setOnClickListener(saveChangeClickListener)
         initObservers()
         return binding.root
@@ -67,7 +57,8 @@ class ChangePasswordFragment : Fragment() {
                     binding.load.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
-                    Toast.makeText(activity,"Change password successfully",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "Change password successfully", Toast.LENGTH_SHORT)
+                        .show()
                     binding.load.visibility = View.INVISIBLE
                     activity?.onBackPressed()
                 }

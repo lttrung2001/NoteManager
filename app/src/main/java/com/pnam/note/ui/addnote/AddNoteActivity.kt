@@ -11,16 +11,14 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.base.ImageBottomSheetActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
-import com.pnam.note.ui.adapters.image.ImageAdapter
-import com.pnam.note.ui.adapters.image.ImageItemClickListener
+import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
+import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
 import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
-import com.pnam.note.utils.AppUtils.Companion.ADD_IMAGE_TO_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.ADD_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
 import com.pnam.note.utils.AppUtils.Companion.READ_EXTERNAL_STORAGE_REQUEST
@@ -34,7 +32,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class AddNoteActivity : ImageBottomSheetActivity() {
     private lateinit var binding: ActivityAddNoteBinding
-    private lateinit var imageAdapter: ImageAdapter
+    private lateinit var imageAdapter: SavedImageAdapter
     private val viewModel: AddNoteViewModel by viewModels()
     private val addListener: View.OnClickListener by lazy {
         View.OnClickListener {
@@ -78,8 +76,8 @@ class AddNoteActivity : ImageBottomSheetActivity() {
         }
     }
 
-    private val imageListener: ImageItemClickListener by lazy {
-        object: ImageItemClickListener {
+    private val imageListener: SavedImageItemClickListener by lazy {
+        object: SavedImageItemClickListener {
             override fun onClick(path: String) {
                 TODO("Not yet implemented")
             }
@@ -101,7 +99,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
     }
 
     private fun initRecyclerView() {
-        imageAdapter = ImageAdapter(imageListener)
+        imageAdapter = SavedImageAdapter(imageListener)
         binding.rcvNoteImages.adapter = imageAdapter
     }
 

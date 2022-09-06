@@ -30,7 +30,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
         fun refreshNotes(
             @Query("page") page: Int,
             @Query("limit") limit: Int
-        ): Single<Response<APIResult<List<Note>>>>
+        ): Single<Response<APIResult<PagingList<Note>>>>
 
         @GET("/get-note-detail")
         fun fetchNoteDetail(noteId: String): Single<Response<APIResult<Note>>>
@@ -66,7 +66,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
         }
     }
 
-    override fun refreshNotes(page: Int, limit: Int): Single<List<Note>> {
+    override fun refreshNotes(page: Int, limit: Int): Single<PagingList<Note>> {
         return service.refreshNotes(page, limit).map {
             if (it.code() == SUCCESS) {
                 it.body()!!.data
