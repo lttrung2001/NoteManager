@@ -8,18 +8,6 @@
     app:behavior_hideable="true"
     app:behavior_peekHeight="0dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/bs_take_from_camera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:drawableLeft="@drawable/ic_baseline_camera_alt_24"
-        android:text="Take a picture"
-        android:textAlignment="textStart"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_note_images"
         android:layout_width="match_parent"

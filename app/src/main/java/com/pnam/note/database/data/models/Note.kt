@@ -11,5 +11,6 @@ data class Note(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "desc") val description: String,
     @ColumnInfo(name = "create_at") val createAt: Long,
-    @ColumnInfo(name = "edit_at") var editAt: Long
+    @ColumnInfo(name = "edit_at") val editAt: Long,
+    @ColumnInfo(name = "images") val images: List<String>?,
 ) : Serializable

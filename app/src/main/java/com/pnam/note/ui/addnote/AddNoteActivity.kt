@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class AddNoteActivity : ImageBottomSheetActivity() {
     private lateinit var binding: ActivityAddNoteBinding
-    private lateinit var imageAdapter: SavedImageAdapter
+    private var imageAdapter: SavedImageAdapter? = null
     private val viewModel: AddNoteViewModel by viewModels()
     private val addListener: View.OnClickListener by lazy {
         View.OnClickListener {
@@ -52,7 +52,8 @@ class AddNoteActivity : ImageBottomSheetActivity() {
                         title,
                         desc,
                         System.currentTimeMillis(),
-                        System.currentTimeMillis()
+                        System.currentTimeMillis(),
+                        imageAdapter?.currentList?: listOf()
                     )
                     viewModel.addNote(note)
                 }
@@ -129,10 +130,12 @@ class AddNoteActivity : ImageBottomSheetActivity() {
 
                 }
                 is Resource.Success -> {
-                    val currentList = imageAdapter.currentList.toMutableList()
-                    currentList.removeAll(resource.data)
-                    currentList.addAll(resource.data)
-                    imageAdapter.submitList(currentList)
+                    imageAdapter?.let { adapter ->
+                        val currentList = adapter.currentList.toMutableList()
+                        currentList.removeAll(resource.data)
+                        currentList.addAll(resource.data)
+                        adapter.submitList(currentList)
+                    }
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()

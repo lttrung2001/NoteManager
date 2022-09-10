@@ -71,7 +71,7 @@ class SyncService : Service() {
                             EDIT_NOTE_STATUS -> {
                                 i.note?.let { localNote ->
                                     noteNetworks.editNote(localNote).subscribe({ successNote ->
-                                        noteLocals.aftereditNoteOffline(localNote, successNote)
+                                        noteLocals.afterEditNoteOffline(localNote, successNote)
                                     }, {
                                         onDestroy()
                                     })

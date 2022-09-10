@@ -90,7 +90,7 @@ interface NoteDao : NoteLocals {
     }
 
     @Transaction
-    override fun aftereditNoteOffline(oldNote: Note, newNote: Note) {
+    override fun afterEditNoteOffline(oldNote: Note, newNote: Note) {
         deleteNote(oldNote)
         deleteNoteStatus(NoteStatus(oldNote.id, EDIT_NOTE_STATUS))
         addNote(newNote)

@@ -36,4 +36,6 @@
     <string name="back">Back</string>
     <string name="forgot_password_question">Forgot password?</string>
     <string name="change_avatar">Change avatar</string>
+    <string name="recent_notes">Recent notes</string>
+    <string name="empty">Empty</string>
 </resources>

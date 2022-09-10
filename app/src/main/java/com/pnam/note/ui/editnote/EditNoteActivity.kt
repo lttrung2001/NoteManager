@@ -26,11 +26,9 @@ import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
 import com.pnam.note.utils.AppUtils.Companion.NOTE_POSITION
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
-import io.socket.emitter.Emitter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -59,7 +57,8 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                         title,
                         desc,
                         data.createAt,
-                        System.currentTimeMillis()
+                        System.currentTimeMillis(),
+                        imageAdapter.currentList
                     )
                     viewModel.editNote(note)
                 }
@@ -77,7 +76,7 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                 requestPermissions(
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     AppUtils.READ_EXTERNAL_STORAGE_REQUEST
-                );
+                )
             } else {
                 val bottomSheet = AddNoteImagesFragment()
                 bottomSheet.show(supportFragmentManager, AddNoteImagesFragment.TAG)
@@ -98,7 +97,6 @@ class EditNoteActivity : ImageBottomSheetActivity() {
         binding = ActivityEditNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initView()
-        initRecyclerView()
         initObservers()
 
         binding.btnEdit.setOnClickListener(editListener)
@@ -110,6 +108,9 @@ class EditNoteActivity : ImageBottomSheetActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun initView() {
+        imageAdapter = SavedImageAdapter(imageListener)
+        binding.rcvNoteImages.adapter = imageAdapter
+
         val note = intent.extras?.getSerializable("note")
         note?.let {
             note as Note
@@ -117,13 +118,9 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                 inputNoteTitle.setText(note.title)
                 inputNoteDesc.setText(note.description)
                 editAt.text = SimpleDateFormat("dd/MM/yyyy").format(Date(note.editAt))
+                imageAdapter.submitList(note.images)
             }
         }
-    }
-
-    private fun initRecyclerView() {
-        imageAdapter = SavedImageAdapter(imageListener)
-        binding.rcvNoteImages.adapter = imageAdapter
     }
 
     private fun initObservers() {
@@ -157,10 +154,12 @@ class EditNoteActivity : ImageBottomSheetActivity() {
 
                 }
                 is Resource.Success -> {
-                    val currentList = imageAdapter.currentList.toMutableList()
-                    currentList.removeAll(resource.data)
-                    currentList.addAll(resource.data)
-                    imageAdapter.submitList(currentList)
+                    imageAdapter.let { adapter ->
+                        val currentList = adapter.currentList.toMutableList()
+                        currentList.removeAll(resource.data)
+                        currentList.addAll(resource.data)
+                        adapter.submitList(currentList)
+                    }
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()
@@ -176,16 +175,6 @@ class EditNoteActivity : ImageBottomSheetActivity() {
     private fun hideKeyboard(element: IBinder) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(element, 0)
-    }
-
-    private val emitterListener: Emitter.Listener by lazy {
-        Emitter.Listener {
-            Toast.makeText(this, it.size, Toast.LENGTH_SHORT).show()
-            runOnUiThread {
-                val data: JSONObject = it[0] as JSONObject
-                Toast.makeText(this, data.optString("data"), Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun addImagesToNote(images: List<String>) {

@@ -14,8 +14,8 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pnam.note.R
 import com.pnam.note.database.data.models.Note
@@ -177,7 +177,6 @@ class DashboardFragment : Fragment() {
     private fun initRecycleView() {
         notesAdapter = notesAdapter ?: NoteAdapter(noteClickListener)
         binding.rcvNotes.adapter = notesAdapter
-        binding.rcvNotes.layoutManager = LinearLayoutManager(context)
     }
 
     private fun initObservers() {
@@ -188,6 +187,10 @@ class DashboardFragment : Fragment() {
                     binding.rcvNotes.removeOnScrollListener(onScrollListener)
                 }
                 is Resource.Success -> {
+                    if (resource.data.data.isEmpty()) {
+                        binding.rcvNotes.visibility = View.GONE
+                        binding.tvEmpty.visibility = View.VISIBLE
+                    }
                     notesAdapter?.let { adapter ->
                         val currentList = adapter.currentList.toMutableList()
                         currentList.removeAll(resource.data.data)
@@ -214,6 +217,10 @@ class DashboardFragment : Fragment() {
 
                 }
                 is Resource.Success -> {
+                    if (resource.data.data.isNotEmpty()) {
+                        binding.rcvNotes.visibility = View.VISIBLE
+                        binding.tvEmpty.visibility = View.GONE
+                    }
                     notesAdapter?.submitList(resource.data.data)
                     if (resource.data.hasNextPage) {
                         binding.rcvNotes.addOnScrollListener(onScrollListener)

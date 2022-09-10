@@ -3,13 +3,16 @@ package com.pnam.note.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import androidx.room.migration.Migration
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.pnam.note.database.data.locals.AppDatabase
+import com.pnam.note.database.data.locals.ImageLocals
 import com.pnam.note.database.data.locals.LoginLocals
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.locals.dao.LoginDao
 import com.pnam.note.database.data.locals.dao.NoteDao
+import com.pnam.note.database.data.locals.impl.ImageLocalsImpl
 import com.pnam.note.database.data.networks.impl.BaseAuthorizationInterceptor
 import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
 import com.pnam.note.database.data.networks.impl.NetworkConnectionInterceptor
@@ -17,6 +20,7 @@ import com.pnam.note.database.data.networks.impl.NoteRetrofitServiceImpl
 import com.pnam.note.utils.AppUtils.Companion.APP_NAME
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RoomUtils.Companion.DB_NAME
+import com.pnam.note.utils.RoomUtils.Companion.DB_VER
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,6 +66,12 @@ class AppProvideModules {
     @Singleton
     fun provideNoteLocals(appDatabase: AppDatabase): NoteLocals {
         return appDatabase.noteDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageLocals(impl: ImageLocalsImpl): ImageLocals {
+        return impl
     }
 
     // Retrofit

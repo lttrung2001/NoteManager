@@ -50,8 +50,4 @@ class NoteRepositoriesImpl @Inject constructor(
     override fun searchNotes(keySearch: String): Single<MutableList<Note>> {
         return locals.searchNotes(keySearch)
     }
-
-    override fun uploadImages(noteId: String, files: List<File>): Single<String> {
-        return networks.uploadImages(noteId, files)
-    }
 }

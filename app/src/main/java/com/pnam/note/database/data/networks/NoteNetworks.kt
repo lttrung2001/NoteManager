@@ -14,6 +14,4 @@ interface NoteNetworks {
     fun addNote(note: Note): Single<Note>
     fun editNote(note: Note): Single<Note>
     fun deleteNote(id: String): Single<Note>
-
-    fun uploadImages(noteId: String, files: List<File>): Single<String>
 }

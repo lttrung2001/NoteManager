@@ -11,7 +11,9 @@
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/corner_50dp"
         android:orientation="horizontal"
         android:paddingStart="16dp"
@@ -32,21 +34,46 @@
             android:paddingVertical="10dp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_recent_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_bar"
+        android:layout_margin="8dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/recent_notes"
+        android:textColor="@color/primaryColor"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_bar">
+        android:layout_below="@id/tv_recent_notes">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_notes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/search_bar"
+            android:orientation="vertical"
             android:paddingTop="8dp"
             android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            app:spanCount="2"
             tools:itemCount="10"
             tools:listitem="@layout/note_container" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/empty"
+            android:textColor="@color/black"
+            android:textSize="40sp"
+            android:visibility="gone" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -69,7 +96,6 @@
         android:contentDescription="@string/app_name"
         android:transitionName="transition_fab"
         app:borderWidth="0dp"
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@color/white" />
+        app:srcCompat="@drawable/ic_add" />
 
 </RelativeLayout>

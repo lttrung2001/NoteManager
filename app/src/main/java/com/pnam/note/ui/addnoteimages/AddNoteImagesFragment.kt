@@ -48,17 +48,10 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     lifecycleScope.launch(Dispatchers.IO) {
-                        viewModel.getLocalImages(requireContext())
+                        viewModel.findImages(requireContext())
                     }
                 }
             }
-        }
-    }
-
-    private val openCameraListener: View.OnClickListener by lazy {
-        View.OnClickListener {
-            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(cameraIntent, AppUtils.CAMERA_PIC_REQUEST)
         }
     }
 
@@ -73,7 +66,7 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.getLocalImages(requireContext())
+            viewModel.findImages(requireContext())
         }
     }
 
@@ -83,7 +76,6 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentNoteBottomSheetBinding.inflate(layoutInflater)
-        binding.bsTakeFromCamera.setOnClickListener(openCameraListener)
         initRecyclerView()
         initObservers()
         return binding.root
@@ -107,20 +99,6 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
                             binding.rcvNoteImages.removeOnScrollListener(scrollListener)
                         }
                     }
-                }
-                is Resource.Error -> {
-                    Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        viewModel.imageLiveData.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-
-                }
-                is Resource.Success -> {
-                    Toast.makeText(activity, resource.data, Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Error -> {
                     Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()

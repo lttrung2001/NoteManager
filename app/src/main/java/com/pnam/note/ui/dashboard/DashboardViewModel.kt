@@ -60,7 +60,9 @@ class DashboardViewModel @Inject constructor(
     private val observerDashboard: Consumer<PagingList<Note>> by lazy {
         Consumer<PagingList<Note>> { paging ->
             _dashboard.postValue(Resource.Success(paging))
-            page++
+            if (paging.data.size > LIMIT_ON_PAGE) {
+                page++
+            }
         }
     }
     private val observerDeleteNote: Consumer<Note> by lazy {
@@ -94,6 +96,9 @@ class DashboardViewModel @Inject constructor(
                             dashboardDisposable =
                                 noteLocals.findNotes(page, LIMIT_ON_PAGE).map { localNotes ->
                                     /* Tạo thêm DAO để check hasNextPage, hasPrePage */
+                                    if (localNotes.size > LIMIT_ON_PAGE) {
+                                        page++
+                                    }
                                     PagingList(
                                         localNotes,
                                         hasNextPage = true,

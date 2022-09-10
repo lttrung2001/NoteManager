@@ -2,7 +2,7 @@ package com.pnam.note.utils
 
 class AppUtils {
     companion object {
-        const val LIMIT_ON_PAGE = 10
+        const val LIMIT_ON_PAGE = 20
         const val APP_NAME = "note_manager"
         const val LOGIN_TOKEN = "login_token"
         const val ACCESS_TOKEN = "access_token"

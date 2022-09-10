@@ -24,7 +24,7 @@ interface NoteLocals {
     fun addNoteOffline(note: Note): Note?
     fun afterAddNoteOffline(oldNote: Note, newNote: Note)
     fun editNoteOffline(note: Note): Note?
-    fun aftereditNoteOffline(oldNote: Note, newNote: Note)
+    fun afterEditNoteOffline(oldNote: Note, newNote: Note)
     fun deleteNoteOffline(note: Note): Note?
     fun afterDeleteNoteOffline(deletedNote: Note)
     fun findUnsyncNotes(): List<NoteAndStatus>

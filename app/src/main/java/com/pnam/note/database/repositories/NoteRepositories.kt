@@ -5,7 +5,6 @@ import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.NoteNetworks
 import io.reactivex.rxjava3.core.Single
-import java.io.File
 import javax.inject.Singleton
 
 @Singleton
@@ -19,6 +18,4 @@ interface NoteRepositories {
     fun editNote(note: Note): Single<Note>
     fun deleteNote(note: Note): Single<Note>
     fun searchNotes(keySearch: String): Single<MutableList<Note>>
-
-    fun uploadImages(noteId: String, files: List<File>): Single<String>
 }

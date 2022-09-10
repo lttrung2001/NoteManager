@@ -37,7 +37,7 @@ class NoteAdapter constructor(
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = getItem(position)
-        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm")
         with(holder.title) {
             text = note.title
         }
