@@ -117,7 +117,7 @@ class EditNoteActivity : ImageBottomSheetActivity() {
             with(binding) {
                 inputNoteTitle.setText(note.title)
                 inputNoteDesc.setText(note.description)
-                editAt.text = SimpleDateFormat("dd/MM/yyyy").format(Date(note.editAt))
+                editAt.text = SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(note.editAt))
                 imageAdapter.submitList(note.images)
             }
         }

@@ -1,5 +1,6 @@
 package com.pnam.note.ui.dashboard
 
+import android.widget.Adapter
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pnam.note.R
 import com.pnam.note.database.data.models.Note
@@ -36,19 +35,21 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
-    private lateinit var binding: FragmentDashboardBinding
+    private var binding: FragmentDashboardBinding? = null
     private var notesAdapter: NoteAdapter? = null
     private val viewModel: DashboardViewModel by viewModels()
 
     private val addNoteListener: View.OnClickListener by lazy {
-        View.OnClickListener {
+        View.OnClickListener { view ->
             val intent = Intent(activity, AddNoteActivity::class.java)
-            val options = activity?.let { act ->
-                ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    act, binding.btnStartAddNote, "transition_fab"
-                )
-            }
-            startActivityForResult(intent, ADD_NOTE_REQUEST, options?.toBundle())
+            startActivityForResult(intent, ADD_NOTE_REQUEST)
+//            val fabPair: Pair<View, String> = Pair(
+//                view,
+//                "transition_fab"
+//            )
+//            val options =
+//                ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), fabPair)
+//            startActivityForResult(intent, ADD_NOTE_REQUEST, options.toBundle())
         }
     }
     private val onScrollListener: RecyclerView.OnScrollListener by lazy {
@@ -95,7 +96,7 @@ class DashboardFragment : Fragment() {
                     "noteTime"
                 )
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    activity!!,
+                    requireActivity(),
                     pairTitle,
                     pairDesc,
                     pairTime
@@ -123,7 +124,7 @@ class DashboardFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.searchNotes(binding.edtSearch.text.trim().toString())
+                    viewModel.searchNotes(binding!!.edtSearch.text.trim().toString())
                 }
             }
 
@@ -157,39 +158,44 @@ class DashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDashboardBinding.inflate(layoutInflater)
-        binding.btnStartAddNote.setOnClickListener(addNoteListener)
+        binding!!.btnStartAddNote.setOnClickListener(addNoteListener)
         initObservers()
         initRecycleView()
-        return binding.root
+        return binding!!.root
     }
 
     override fun onResume() {
         super.onResume()
-        binding.edtSearch.addTextChangedListener(textWatcher)
-        binding.swipeLayout.setOnRefreshListener(refreshListener)
+        binding!!.edtSearch.addTextChangedListener(textWatcher)
+        binding!!.swipeLayout.setOnRefreshListener(refreshListener)
     }
 
     override fun onPause() {
         super.onPause()
-        binding.edtSearch.removeTextChangedListener(textWatcher)
+        binding!!.edtSearch.removeTextChangedListener(textWatcher)
     }
 
     private fun initRecycleView() {
         notesAdapter = notesAdapter ?: NoteAdapter(noteClickListener)
-        binding.rcvNotes.adapter = notesAdapter
+        binding!!.rcvNotes.adapter = notesAdapter
     }
 
     private fun initObservers() {
         viewModel.dashboard.observe(viewLifecycleOwner) { resource ->
+            Toast.makeText(activity, "Dashboard", Toast.LENGTH_SHORT).show()
             when (resource) {
                 is Resource.Loading -> {
-                    binding.loadMore.visibility = View.VISIBLE
-                    binding.rcvNotes.removeOnScrollListener(onScrollListener)
+                    binding?.apply {
+                        loadMore.visibility = View.VISIBLE
+                        rcvNotes.removeOnScrollListener(onScrollListener)
+                    }
                 }
                 is Resource.Success -> {
                     if (resource.data.data.isEmpty()) {
-                        binding.rcvNotes.visibility = View.GONE
-                        binding.tvEmpty.visibility = View.VISIBLE
+                        binding?.apply {
+                            rcvNotes.visibility = View.GONE
+                            tvEmpty.visibility = View.VISIBLE
+                        }
                     }
                     notesAdapter?.let { adapter ->
                         val currentList = adapter.currentList.toMutableList()
@@ -198,48 +204,52 @@ class DashboardFragment : Fragment() {
                         adapter.submitList(currentList)
                     }
                     if (resource.data.hasNextPage) {
-                        binding.rcvNotes.addOnScrollListener(onScrollListener)
+                        binding!!.rcvNotes.addOnScrollListener(onScrollListener)
                     } else {
-                        binding.rcvNotes.removeOnScrollListener(onScrollListener)
+                        binding!!.rcvNotes.removeOnScrollListener(onScrollListener)
                     }
-                    binding.loadMore.visibility = View.GONE
+                    binding!!.loadMore.visibility = View.GONE
                 }
                 is Resource.Error -> {
-                    binding.loadMore.visibility = View.GONE
+                    binding!!.loadMore.visibility = View.GONE
                     Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         viewModel.refresh.observe(viewLifecycleOwner) { resource ->
+            Toast.makeText(activity, "Refresh", Toast.LENGTH_SHORT).show()
             when (resource) {
                 is Resource.Loading -> {
-
+                    binding!!.swipeLayout.isRefreshing = true
                 }
                 is Resource.Success -> {
                     if (resource.data.data.isNotEmpty()) {
-                        binding.rcvNotes.visibility = View.VISIBLE
-                        binding.tvEmpty.visibility = View.GONE
+                        binding?.apply {
+                            rcvNotes.visibility = View.VISIBLE
+                            tvEmpty.visibility = View.GONE
+                        }
                     }
                     notesAdapter?.submitList(resource.data.data)
                     if (resource.data.hasNextPage) {
-                        binding.rcvNotes.addOnScrollListener(onScrollListener)
+                        binding!!.rcvNotes.addOnScrollListener(onScrollListener)
                     } else {
-                        binding.rcvNotes.removeOnScrollListener(onScrollListener)
+                        binding!!.rcvNotes.removeOnScrollListener(onScrollListener)
                     }
-                    binding.swipeLayout.isRefreshing = false
+                    binding!!.swipeLayout.isRefreshing = false
                 }
                 is Resource.Error -> {
-                    binding.swipeLayout.isRefreshing = false
+                    binding!!.swipeLayout.isRefreshing = false
                     Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         viewModel.deleteNote.observe(viewLifecycleOwner) { resource ->
+            Toast.makeText(activity, "Delete", Toast.LENGTH_SHORT).show()
             when (resource) {
                 is Resource.Loading -> {
-                    binding.loadMore.visibility = View.VISIBLE
+                    binding!!.loadMore.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
                     notesAdapter?.let { adapter ->
@@ -247,10 +257,10 @@ class DashboardFragment : Fragment() {
                         currentList.remove(resource.data)
                         adapter.submitList(currentList)
                     }
-                    binding.loadMore.visibility = View.GONE
+                    binding!!.loadMore.visibility = View.GONE
                 }
                 is Resource.Error -> {
-                    binding.loadMore.visibility = View.GONE
+                    binding!!.loadMore.visibility = View.GONE
                     Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -259,7 +269,7 @@ class DashboardFragment : Fragment() {
         viewModel.searchNotes.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    binding.loadMore.visibility = View.VISIBLE
+                    binding!!.loadMore.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
                     notesAdapter?.let { adapter ->
@@ -268,18 +278,20 @@ class DashboardFragment : Fragment() {
                         currentList.addAll(resource.data)
                         adapter.submitList(currentList)
                     }
-                    binding.loadMore.visibility = View.GONE
+                    binding!!.loadMore.visibility = View.GONE
                 }
                 is Resource.Error -> {
-                    binding.loadMore.visibility = View.GONE
+                    binding!!.loadMore.visibility = View.GONE
                     Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) {
-            binding.loadMore.visibility = View.GONE
-            binding.swipeLayout.isRefreshing = false
+            binding?.apply {
+                loadMore.visibility = View.GONE
+                swipeLayout.isRefreshing = false
+            }
             Toast.makeText(activity, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
     }
@@ -288,15 +300,15 @@ class DashboardFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            data!!.extras.let { bundle ->
-                val note = bundle!!.getSerializable(AppUtils.NOTE_CHANGE) as Note
+            data?.extras.let { bundle ->
+                val note = bundle?.getSerializable(AppUtils.NOTE_CHANGE) as Note
                 when (requestCode) {
                     ADD_NOTE_REQUEST -> {
                         notesAdapter?.let { adapter ->
                             val currentList = adapter.currentList.toMutableList()
                             currentList.add(0, note)
                             adapter.submitList(currentList)
-                            binding.rcvNotes.smoothScrollToPosition(0)
+                            binding!!.rcvNotes.smoothScrollToPosition(0)
                         }
                     }
                     EDIT_NOTE_REQUEST -> {
@@ -306,7 +318,7 @@ class DashboardFragment : Fragment() {
                             currentList.removeAt(position)
                             currentList.add(0, note)
                             adapter.submitList(currentList)
-                            binding.rcvNotes.smoothScrollToPosition(0)
+                            binding!!.rcvNotes.smoothScrollToPosition(0)
                         }
                     }
                     else -> {
@@ -319,6 +331,7 @@ class DashboardFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.edtSearch.removeTextChangedListener(textWatcher)
+        binding?.rcvNotes?.adapter = null
+        binding = null
     }
 }
