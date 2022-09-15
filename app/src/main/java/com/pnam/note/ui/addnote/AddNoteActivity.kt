@@ -19,6 +19,7 @@ import com.pnam.note.databinding.ActivityAddNoteBinding
 import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
 import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
 import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
+import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppUtils.Companion.ADD_NOTE_REQUEST
 import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
 import com.pnam.note.utils.AppUtils.Companion.READ_EXTERNAL_STORAGE_REQUEST
@@ -82,7 +83,11 @@ class AddNoteActivity : ImageBottomSheetActivity() {
     private val imageListener: SavedImageItemClickListener by lazy {
         object : SavedImageItemClickListener {
             override fun onClick(path: String) {
-                TODO("Not yet implemented")
+                startActivity(Intent(this@AddNoteActivity,ImageDetailActivity::class.java).apply {
+                    putExtras(Bundle().apply {
+                        putString("imagePath", path)
+                    })
+                })
             }
         }
     }
