@@ -61,7 +61,7 @@ class DashboardViewModel @Inject constructor(
     private val observerDashboard: Consumer<PagingList<Note>> by lazy {
         Consumer<PagingList<Note>> { paging ->
             _dashboard.postValue(Resource.Success(paging))
-            if (paging.data.size > LIMIT_ON_PAGE) {
+            if (paging.hasNextPage) {
                 page++
             }
         }

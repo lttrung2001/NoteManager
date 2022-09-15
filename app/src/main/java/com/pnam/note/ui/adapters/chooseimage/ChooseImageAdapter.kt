@@ -40,7 +40,7 @@ class ChooseImageAdapter(
             placeholder(R.drawable.note_application)
         }
         holder.image.setOnClickListener {
-            listener.onClick(getItem(position))
+            listener.onClick(getItem(position), position)
         }
     }
 }

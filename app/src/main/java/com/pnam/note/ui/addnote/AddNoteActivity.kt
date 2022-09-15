@@ -38,10 +38,10 @@ class AddNoteActivity : ImageBottomSheetActivity() {
         View.OnClickListener {
             val title = binding.inputNoteTitle.text.trim().toString()
             val desc = binding.inputNoteDesc.text.trim().toString()
-            if (title.isEmpty() && desc.isEmpty()) {
+            if (title.isEmpty() && desc.isEmpty() && (imageAdapter?.currentList?.size ?: 0) == 0) {
                 Toast.makeText(
                     this@AddNoteActivity,
-                    "Please write somethings to save",
+                    "Note must not be empty",
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
@@ -53,7 +53,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
                         desc,
                         System.currentTimeMillis(),
                         System.currentTimeMillis(),
-                        imageAdapter?.currentList?: listOf()
+                        imageAdapter?.currentList ?: listOf()
                     )
                     viewModel.addNote(note)
                 }
@@ -63,14 +63,16 @@ class AddNoteActivity : ImageBottomSheetActivity() {
 
     private val openBottomSheet: View.OnClickListener by lazy {
         View.OnClickListener {
-            if(ActivityCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestPermissions(
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    READ_EXTERNAL_STORAGE_REQUEST);
-            }
-            else {
+                    READ_EXTERNAL_STORAGE_REQUEST
+                );
+            } else {
                 val bottomSheet = AddNoteImagesFragment()
                 bottomSheet.show(supportFragmentManager, AddNoteImagesFragment.TAG)
             }
@@ -78,7 +80,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
     }
 
     private val imageListener: SavedImageItemClickListener by lazy {
-        object: SavedImageItemClickListener {
+        object : SavedImageItemClickListener {
             override fun onClick(path: String) {
                 TODO("Not yet implemented")
             }
@@ -152,7 +154,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
         imm.hideSoftInputFromWindow(element, 0)
     }
 
-    override fun addImagesToNote (images: List<String>) {
+    override fun addImagesToNote(images: List<String>) {
         lifecycleScope.launch(Dispatchers.IO) {
             viewModel.addImages(images)
         }

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -60,6 +61,7 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                         System.currentTimeMillis(),
                         imageAdapter.currentList
                     )
+                    Log.d("Note detail", note.toString())
                     viewModel.editNote(note)
                 }
             }

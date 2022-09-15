@@ -40,36 +40,21 @@ class DashboardFragment : Fragment() {
     private val viewModel: DashboardViewModel by viewModels()
 
     private val addNoteListener: View.OnClickListener by lazy {
-        View.OnClickListener { view ->
+        View.OnClickListener {
             val intent = Intent(activity, AddNoteActivity::class.java)
             startActivityForResult(intent, ADD_NOTE_REQUEST)
-//            val fabPair: Pair<View, String> = Pair(
-//                view,
-//                "transition_fab"
-//            )
-//            val options =
-//                ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), fabPair)
-//            startActivityForResult(intent, ADD_NOTE_REQUEST, options.toBundle())
         }
     }
     private val onScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1) && dy > 0) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     lifecycleScope.launch(Dispatchers.IO) {
                         viewModel.getNotes()
                     }
                 }
             }
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                super.onScrollStateChanged(recyclerView, newState)
-//                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                    lifecycleScope.launch(Dispatchers.IO) {
-//                        viewModel.getNotes()
-//                    }
-//                }
-//            }
         }
     }
     private val noteClickListener: NoteItemClickListener by lazy {
@@ -133,7 +118,7 @@ class DashboardFragment : Fragment() {
 
     private val refreshListener: SwipeRefreshLayout.OnRefreshListener by lazy {
         SwipeRefreshLayout.OnRefreshListener {
-            if (notesAdapter?.itemCount ?: 0 == 0) {
+            if ((notesAdapter?.itemCount ?: 0) == 0) {
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.getNotes()
                 }
@@ -182,13 +167,9 @@ class DashboardFragment : Fragment() {
 
     private fun initObservers() {
         viewModel.dashboard.observe(viewLifecycleOwner) { resource ->
-            Toast.makeText(activity, "Dashboard", Toast.LENGTH_SHORT).show()
             when (resource) {
                 is Resource.Loading -> {
-                    binding?.apply {
-                        loadMore.visibility = View.VISIBLE
-                        rcvNotes.removeOnScrollListener(onScrollListener)
-                    }
+                    binding!!.loadMore.visibility = View.VISIBLE
                 }
                 is Resource.Success -> {
                     if (resource.data.data.isEmpty()) {
@@ -218,7 +199,6 @@ class DashboardFragment : Fragment() {
         }
 
         viewModel.refresh.observe(viewLifecycleOwner) { resource ->
-            Toast.makeText(activity, "Refresh", Toast.LENGTH_SHORT).show()
             when (resource) {
                 is Resource.Loading -> {
                     binding!!.swipeLayout.isRefreshing = true
@@ -246,7 +226,6 @@ class DashboardFragment : Fragment() {
         }
 
         viewModel.deleteNote.observe(viewLifecycleOwner) { resource ->
-            Toast.makeText(activity, "Delete", Toast.LENGTH_SHORT).show()
             when (resource) {
                 is Resource.Loading -> {
                     binding!!.loadMore.visibility = View.VISIBLE
