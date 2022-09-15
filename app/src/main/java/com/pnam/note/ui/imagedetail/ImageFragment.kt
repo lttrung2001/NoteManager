@@ -25,6 +25,7 @@ class ImageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding!!.img.load(requireActivity().intent.extras?.get("imagePath")) {
+
             crossfade(true)
             crossfade(500)
         }
