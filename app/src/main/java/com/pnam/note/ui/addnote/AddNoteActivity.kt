@@ -28,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import java.util.ArrayList
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -83,11 +84,14 @@ class AddNoteActivity : ImageBottomSheetActivity() {
     private val imageListener: SavedImageItemClickListener by lazy {
         object : SavedImageItemClickListener {
             override fun onClick(path: String) {
-                startActivity(Intent(this@AddNoteActivity,ImageDetailActivity::class.java).apply {
-                    putExtras(Bundle().apply {
-                        putString("imagePath", path)
-                    })
-                })
+                val intent = Intent(this@AddNoteActivity, ImageDetailActivity::class.java)
+                val bundle = Bundle()
+                bundle.putStringArrayList(
+                    "imagePaths",
+                    imageAdapter!!.currentList.toList() as ArrayList<String>
+                )
+                intent.putExtras(bundle)
+                startActivity(intent)
             }
         }
     }
@@ -163,5 +167,10 @@ class AddNoteActivity : ImageBottomSheetActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             viewModel.addImages(images)
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAfterTransition()
     }
 }

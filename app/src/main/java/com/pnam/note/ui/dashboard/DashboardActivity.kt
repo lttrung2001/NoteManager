@@ -105,4 +105,9 @@ class DashboardActivity : BaseActivity() {
             }
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAfterTransition()
+    }
 }

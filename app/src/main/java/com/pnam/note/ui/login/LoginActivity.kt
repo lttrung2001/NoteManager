@@ -189,4 +189,9 @@ class LoginActivity : AppCompatActivity() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(element, 0)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAfterTransition()
+    }
 }

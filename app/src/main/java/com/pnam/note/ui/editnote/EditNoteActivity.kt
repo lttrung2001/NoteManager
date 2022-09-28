@@ -14,7 +14,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.get
 import androidx.lifecycle.lifecycleScope
+import com.pnam.note.R
 import com.pnam.note.base.ImageBottomSheetActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityEditNoteBinding
@@ -33,6 +36,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -90,11 +94,15 @@ class EditNoteActivity : ImageBottomSheetActivity() {
     private val imageListener: SavedImageItemClickListener by lazy {
         object : SavedImageItemClickListener {
             override fun onClick(path: String) {
-                startActivity(Intent(this@EditNoteActivity,ImageDetailActivity::class.java).apply {
-                    putExtras(Bundle().apply {
-                        putString("imagePath", path)
-                    })
-                })
+                val intent = Intent(this@EditNoteActivity, ImageDetailActivity::class.java)
+                val bundle = Bundle()
+                bundle.putStringArrayList(
+                    "imagePaths",
+                    imageAdapter.currentList.toList() as ArrayList<String>
+                )
+                bundle.putInt("position", imageAdapter.currentList.indexOf(path))
+                intent.putExtras(bundle)
+                startActivity(intent)
             }
         }
     }
@@ -188,5 +196,10 @@ class EditNoteActivity : ImageBottomSheetActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             viewModel.addImages(images)
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAfterTransition()
     }
 }

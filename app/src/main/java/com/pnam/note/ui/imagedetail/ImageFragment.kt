@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import coil.load
 import com.pnam.note.databinding.FragmentImageBinding
+import com.pnam.note.ui.adapters.imagedetail.ImageDetailAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,10 +25,14 @@ class ImageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.img.load(requireActivity().intent.extras?.get("imagePath")) {
 
+        binding!!.img.load(requireArguments().getString("image")) {
             crossfade(true)
-            crossfade(500)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 }
