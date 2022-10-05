@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.os.Build.*
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.NoteAndStatus
 import com.pnam.note.service.SyncService
@@ -40,15 +41,10 @@ class NetworkReceiver : BroadcastReceiver() {
         val connectivityManager = context
             ?.getSystemService(Context.CONNECTIVITY_SERVICE)
                 as ConnectivityManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val network = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(network)
-            return capabilities != null
-                    && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                    || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI))
-        } else {
-            val netInfo = connectivityManager.activeNetworkInfo
-            return netInfo != null && netInfo.isConnected
-        }
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        return capabilities != null
+                && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI))
     }
 }

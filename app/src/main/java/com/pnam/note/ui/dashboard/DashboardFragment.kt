@@ -23,9 +23,9 @@ import com.pnam.note.ui.adapters.note.NoteAdapter
 import com.pnam.note.ui.adapters.note.NoteItemClickListener
 import com.pnam.note.ui.addnote.AddNoteActivity
 import com.pnam.note.ui.editnote.EditNoteActivity
-import com.pnam.note.utils.AppUtils
-import com.pnam.note.utils.AppUtils.Companion.ADD_NOTE_REQUEST
-import com.pnam.note.utils.AppUtils.Companion.EDIT_NOTE_REQUEST
+import com.pnam.note.utils.AppConstants
+import com.pnam.note.utils.AppConstants.ADD_NOTE_REQUEST
+import com.pnam.note.utils.AppConstants.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +66,7 @@ class DashboardFragment : Fragment() {
                 )
                 val bundle = Bundle()
                 bundle.putSerializable("note", note)
-                bundle.putInt(AppUtils.NOTE_POSITION, position)
+                bundle.putInt(AppConstants.NOTE_POSITION, position)
                 intent.putExtras(bundle)
                 val pairTitle: Pair<View, String> = Pair(
                     view.findViewById(R.id.note_title),
@@ -280,7 +280,7 @@ class DashboardFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             data?.extras.let { bundle ->
-                val note = bundle?.getSerializable(AppUtils.NOTE_CHANGE) as Note
+                val note = bundle?.getSerializable(AppConstants.NOTE_CHANGE) as Note
                 when (requestCode) {
                     ADD_NOTE_REQUEST -> {
                         notesAdapter?.let { adapter ->
@@ -291,7 +291,7 @@ class DashboardFragment : Fragment() {
                         }
                     }
                     EDIT_NOTE_REQUEST -> {
-                        val position = bundle.getInt(AppUtils.NOTE_POSITION)
+                        val position = bundle.getInt(AppConstants.NOTE_POSITION)
                         notesAdapter?.let { adapter ->
                             val currentList = adapter.currentList.toMutableList()
                             currentList.removeAt(position)

@@ -8,18 +8,6 @@
     android:transitionName="transition_fab"
     tools:context=".ui.addnote.AddNoteActivity">
 
-    <TextView
-        android:id="@+id/btn_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/dashboard"
-        android:textColor="@color/primaryColor"
-        android:textSize="16sp"
-        app:drawableStartCompat="@drawable/ic_back"
-        app:drawableTint="@color/primaryColor" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -1,5 +1,6 @@
 package com.pnam.note.database.data.networks.impl
 
+import android.os.FileUtils
 import android.util.Log
 import android.webkit.URLUtil
 import com.google.gson.Gson
@@ -102,9 +103,8 @@ class NoteRetrofitServiceImpl @Inject constructor(
     override fun editNote(note: Note): Single<Note> {
         val parts = note.images?.filter { imagePath ->
             !URLUtil.isNetworkUrl(imagePath)
-        }?.map { filePath ->
-            Log.d("Local file", filePath)
-            val file = File(filePath)
+        }?.map { imagePath ->
+            val file = File(imagePath)
             val requestFile: RequestBody =
                 file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             MultipartBody.Part.createFormData("image", file.name, requestFile)

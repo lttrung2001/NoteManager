@@ -1,6 +1,5 @@
 package com.pnam.note.ui.dashboard
 
-import android.widget.Adapter
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +7,7 @@ import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.throwable.NoConnectivityException
-import com.pnam.note.utils.AppUtils.Companion.LIMIT_ON_PAGE
+import com.pnam.note.utils.AppConstants.Companion.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

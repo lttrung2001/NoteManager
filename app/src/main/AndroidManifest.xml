@@ -53,13 +53,11 @@
             android:name=".ui.editnote.EditNoteActivity"
             android:configChanges="orientation|screenSize|screenLayout|navigation|colorMode"
             android:exported="false"
-            android:theme="@style/Theme.Note.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.addnote.AddNoteActivity"
             android:configChanges="orientation|screenSize|screenLayout|navigation|colorMode"
             android:exported="false"
-            android:theme="@style/Theme.Note.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.login.LoginActivity"

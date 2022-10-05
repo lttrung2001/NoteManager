@@ -23,7 +23,7 @@ import com.pnam.note.ui.adapters.login.LoginItemClickListener
 import com.pnam.note.ui.dashboard.DashboardActivity
 import com.pnam.note.ui.forgotpassword.ForgotPasswordActivity
 import com.pnam.note.ui.register.RegisterActivity
-import com.pnam.note.utils.AppUtils.Companion.APP_NAME
+import com.pnam.note.utils.AppConstants.APP_NAME
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers

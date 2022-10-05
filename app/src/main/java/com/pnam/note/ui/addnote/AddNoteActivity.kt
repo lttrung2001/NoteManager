@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import com.pnam.note.R
 import com.pnam.note.base.ImageBottomSheetActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
@@ -20,9 +21,9 @@ import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
 import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
 import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
-import com.pnam.note.utils.AppUtils.Companion.ADD_NOTE_REQUEST
-import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
-import com.pnam.note.utils.AppUtils.Companion.READ_EXTERNAL_STORAGE_REQUEST
+import com.pnam.note.utils.AppConstants.ADD_NOTE_REQUEST
+import com.pnam.note.utils.AppConstants.NOTE_CHANGE
+import com.pnam.note.utils.AppConstants.READ_EXTERNAL_STORAGE_REQUEST
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -96,18 +97,24 @@ class AddNoteActivity : ImageBottomSheetActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.let {
+            title = resources.getText(R.string.add_note)
+            it.setDisplayHomeAsUpEnabled(true)
+        }
         initRecyclerView()
         initObservers()
 
         binding.btnAdd.setOnClickListener(addListener)
         binding.btnOpenBottomSheet.setOnClickListener(openBottomSheet)
-        binding.btnBack.setOnClickListener {
-            onBackPressed()
-        }
     }
 
     private fun initRecyclerView() {

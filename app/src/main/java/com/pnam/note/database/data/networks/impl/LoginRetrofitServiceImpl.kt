@@ -6,7 +6,7 @@ import com.pnam.note.database.data.models.APIResult
 import com.pnam.note.database.data.models.Login
 import com.pnam.note.database.data.networks.LoginNetworks
 import com.pnam.note.throwable.NotFoundException
-import com.pnam.note.utils.AppUtils.Companion.LOGIN_TOKEN
+import com.pnam.note.utils.AppConstants.Companion.LOGIN_TOKEN
 import com.pnam.note.utils.RetrofitUtils.SUCCESS
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Response

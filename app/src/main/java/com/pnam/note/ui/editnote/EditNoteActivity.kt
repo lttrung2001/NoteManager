@@ -8,14 +8,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.view.get
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.R
 import com.pnam.note.base.ImageBottomSheetActivity
@@ -25,10 +22,10 @@ import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
 import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
 import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
-import com.pnam.note.utils.AppUtils
-import com.pnam.note.utils.AppUtils.Companion.EDIT_NOTE_REQUEST
-import com.pnam.note.utils.AppUtils.Companion.NOTE_CHANGE
-import com.pnam.note.utils.AppUtils.Companion.NOTE_POSITION
+import com.pnam.note.utils.AppConstants.EDIT_NOTE_REQUEST
+import com.pnam.note.utils.AppConstants.NOTE_CHANGE
+import com.pnam.note.utils.AppConstants.NOTE_POSITION
+import com.pnam.note.utils.AppConstants.READ_EXTERNAL_STORAGE_REQUEST
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +63,6 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                         System.currentTimeMillis(),
                         imageAdapter.currentList
                     )
-                    Log.d("Note detail", note.toString())
                     viewModel.editNote(note)
                 }
             }
@@ -82,7 +78,7 @@ class EditNoteActivity : ImageBottomSheetActivity() {
             ) {
                 requestPermissions(
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    AppUtils.READ_EXTERNAL_STORAGE_REQUEST
+                    READ_EXTERNAL_STORAGE_REQUEST
                 )
             } else {
                 val bottomSheet = AddNoteImagesFragment()
@@ -98,7 +94,9 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                 val bundle = Bundle()
                 bundle.putStringArrayList(
                     "imagePaths",
-                    imageAdapter.currentList.toList() as ArrayList<String>
+                    arrayListOf<String>().apply {
+                        this.addAll(imageAdapter.currentList)
+                    }
                 )
                 bundle.putInt("position", imageAdapter.currentList.indexOf(path))
                 intent.putExtras(bundle)
@@ -107,18 +105,24 @@ class EditNoteActivity : ImageBottomSheetActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.let {
+            title = resources.getText(R.string.edit_note)
+            it.setDisplayHomeAsUpEnabled(true)
+        }
         initView()
         initObservers()
 
         binding.btnEdit.setOnClickListener(editListener)
         binding.btnOpenBottomSheet.setOnClickListener(openBottomSheet)
-        binding.btnBack.setOnClickListener {
-            onBackPressed()
-        }
     }
 
     @SuppressLint("SimpleDateFormat")

@@ -20,9 +20,9 @@ import com.pnam.note.R
 import com.pnam.note.base.BaseActivity
 import com.pnam.note.databinding.ActivityMainBinding
 import com.pnam.note.ui.login.LoginActivity
-import com.pnam.note.utils.AppUtils
-import com.pnam.note.utils.AppUtils.Companion.APP_NAME
-import com.pnam.note.utils.AppUtils.Companion.CAMERA_PIC_REQUEST
+import com.pnam.note.utils.AppConstants
+import com.pnam.note.utils.AppConstants.APP_NAME
+import com.pnam.note.utils.AppConstants.CAMERA_PIC_REQUEST
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -83,8 +83,8 @@ class DashboardActivity : BaseActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             val sp =
                 applicationContext.getSharedPreferences(APP_NAME, Context.MODE_PRIVATE)
-            sp.edit().remove(AppUtils.ACCESS_TOKEN).apply()
-            sp.edit().remove(AppUtils.LOGIN_TOKEN).apply()
+            sp.edit().remove(AppConstants.ACCESS_TOKEN).apply()
+            sp.edit().remove(AppConstants.LOGIN_TOKEN).apply()
             sp.edit().remove(LoginActivity.EMAIL).apply()
             viewModel.noteLocals.deleteAllNote()
             viewModel.noteLocals.deleteAllNoteStatus()
