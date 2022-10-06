@@ -6,9 +6,11 @@ import com.pnam.note.database.data.networks.LoginNetworks
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
 import com.pnam.note.database.data.networks.impl.NoteRetrofitServiceImpl
+import com.pnam.note.database.repositories.DownloadRepositories
 import com.pnam.note.database.repositories.ImageRepositories
 import com.pnam.note.database.repositories.LoginRepositories
 import com.pnam.note.database.repositories.NoteRepositories
+import com.pnam.note.database.repositories.impl.DownloadRepositoriesImpl
 import com.pnam.note.database.repositories.impl.ImageRepositoriesImpl
 import com.pnam.note.database.repositories.impl.LoginRepositoriesImpl
 import com.pnam.note.database.repositories.impl.NoteRepositoriesImpl
@@ -53,6 +55,9 @@ abstract class AppBindsModules {
 
     @Binds
     abstract fun getImageRepository(repository: ImageRepositoriesImpl): ImageRepositories
+
+    @Binds
+    abstract fun getDownloadRepositories(repositories: DownloadRepositoriesImpl): DownloadRepositories
 
     // Usecase
     @Binds
