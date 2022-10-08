@@ -74,7 +74,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
                 requestPermissions(
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     READ_EXTERNAL_STORAGE_REQUEST
-                );
+                )
             } else {
                 val bottomSheet = AddNoteImagesFragment()
                 bottomSheet.show(supportFragmentManager, AddNoteImagesFragment.TAG)

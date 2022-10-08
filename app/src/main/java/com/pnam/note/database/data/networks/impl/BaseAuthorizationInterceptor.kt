@@ -7,8 +7,8 @@ import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
 import com.pnam.note.database.data.models.APIResult
 import com.pnam.note.ui.login.LoginActivity
-import com.pnam.note.utils.AppConstants.Companion.ACCESS_TOKEN
-import com.pnam.note.utils.AppConstants.Companion.LOGIN_TOKEN
+import com.pnam.note.utils.AppConstants.ACCESS_TOKEN
+import com.pnam.note.utils.AppConstants.LOGIN_TOKEN
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RetrofitUtils.SUCCESS
 import dagger.hilt.android.qualifiers.ApplicationContext

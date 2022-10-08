@@ -31,7 +31,7 @@ class DownloadRepositoriesImpl @Inject constructor(
 
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(uri.lastPathSegment)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setDescription("Android Data download using DownloadManager")
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
             File.separator + uri.lastPathSegment)

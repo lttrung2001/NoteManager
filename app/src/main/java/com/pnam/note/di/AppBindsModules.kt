@@ -26,6 +26,8 @@ import com.pnam.note.ui.editnote.EditNoteUseCase
 import com.pnam.note.ui.editnote.EditNoteUseCaseImpl
 import com.pnam.note.ui.forgotpassword.ForgotPasswordUseCase
 import com.pnam.note.ui.forgotpassword.ForgotPasswordUseCaseImpl
+import com.pnam.note.ui.imagedetail.ImageDetailUseCase
+import com.pnam.note.ui.imagedetail.ImageDetailUseCaseImpl
 import com.pnam.note.ui.login.LoginUseCase
 import com.pnam.note.ui.login.LoginUseCaseImpl
 import com.pnam.note.ui.register.RegisterUseCase
@@ -82,5 +84,8 @@ abstract class AppBindsModules {
     abstract fun getForgotPasswordUseCase(useCase: ForgotPasswordUseCaseImpl): ForgotPasswordUseCase
 
     @Binds
-    abstract fun getAddNoteImages(useCase: AddNoteImagesUseCaseImpl): AddNoteImagesUseCase
+    abstract fun getAddNoteImagesUseCase(useCase: AddNoteImagesUseCaseImpl): AddNoteImagesUseCase
+
+    @Binds
+    abstract fun getImageDetailUseCase(useCase: ImageDetailUseCaseImpl): ImageDetailUseCase
 }

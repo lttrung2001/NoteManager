@@ -9,8 +9,8 @@ import com.pnam.note.R
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.NoteAndStatus
 import com.pnam.note.database.data.networks.NoteNetworks
-import com.pnam.note.utils.AppConstants.Companion.SYNC_CHANNEL_ID
-import com.pnam.note.utils.AppConstants.Companion.SYNC_NOTIFICATION_ID
+import com.pnam.note.utils.AppConstants.SYNC_CHANNEL_ID
+import com.pnam.note.utils.AppConstants.SYNC_NOTIFICATION_ID
 import com.pnam.note.utils.RoomUtils.Companion.ADD_NOTE_STATUS
 import com.pnam.note.utils.RoomUtils.Companion.EDIT_NOTE_STATUS
 import dagger.hilt.android.AndroidEntryPoint

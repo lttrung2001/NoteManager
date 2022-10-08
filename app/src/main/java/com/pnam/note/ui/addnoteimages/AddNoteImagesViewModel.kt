@@ -1,17 +1,13 @@
 package com.pnam.note.ui.addnoteimages
 
 import android.content.Context
-import android.os.Build
-import android.os.Bundle
-import android.provider.MediaStore
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pnam.note.database.data.models.PagingList
-import com.pnam.note.utils.AppConstants.Companion.LIMIT_ON_PAGE
+import com.pnam.note.utils.AppConstants.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer

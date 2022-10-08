@@ -17,7 +17,7 @@ import com.pnam.note.database.data.networks.impl.BaseAuthorizationInterceptor
 import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
 import com.pnam.note.database.data.networks.impl.NetworkConnectionInterceptor
 import com.pnam.note.database.data.networks.impl.NoteRetrofitServiceImpl
-import com.pnam.note.utils.AppConstants.Companion.APP_NAME
+import com.pnam.note.utils.AppConstants.APP_NAME
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RoomUtils.Companion.DB_NAME
 import com.pnam.note.utils.RoomUtils.Companion.DB_VER
