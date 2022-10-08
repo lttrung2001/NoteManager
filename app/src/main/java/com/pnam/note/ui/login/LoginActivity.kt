@@ -42,13 +42,16 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.edtEmail.text?.trim().toString()
             val password = binding.edtPassword.text?.trim().toString()
             if (email.isEmpty() || password.isEmpty()) {
-                binding.loginError.visibility = View.VISIBLE
-                binding.loginError.text = "All input is required"
+                binding.tilPassword?.let { til ->
+                    til.isErrorEnabled = true
+                    til.errorContentDescription = "All input are required."
+                }
             } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                binding.loginError.visibility = View.VISIBLE
-                binding.loginError.text = "Your email is invalid"
+                binding.tilEmail?.let { til ->
+                    til.errorContentDescription = "Your email is invalid"
+                }
             } else {
-                hideKeyboard(binding.btnLogin.windowToken)
+                binding.btnLogin?.windowToken?.let { btn -> hideKeyboard(btn) }
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.login(email, password)
                 }
@@ -58,8 +61,8 @@ class LoginActivity : AppCompatActivity() {
 
     private val emailClick: View.OnClickListener by lazy {
         View.OnClickListener {
-            if (binding.rcvLogins.visibility != View.VISIBLE) {
-                binding.rcvLogins.visibility = View.VISIBLE
+            if (binding.rcvLogins?.visibility != View.VISIBLE) {
+                binding.rcvLogins?.visibility = View.VISIBLE
             }
         }
     }
@@ -81,14 +84,14 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.rcvLogins.layoutManager = LinearLayoutManager(this)
+        binding.rcvLogins?.layoutManager = LinearLayoutManager(this)
         binding.let {
-            it.btnLogin.setOnClickListener(loginClick)
-            it.btnRegister.setOnClickListener(registerClick)
-            it.btnForgot.setOnClickListener(forgotClick)
+            it.btnLogin?.setOnClickListener(loginClick)
+            it.btnRegister?.setOnClickListener(registerClick)
+            it.btnForgot?.setOnClickListener(forgotClick)
             it.edtEmail.setOnClickListener(emailClick)
             it.edtEmail.addTextChangedListener {
-                binding.rcvLogins.visibility = View.GONE
+                binding.rcvLogins?.visibility = View.GONE
             }
         }
         initLoginObserver()
@@ -102,12 +105,11 @@ class LoginActivity : AppCompatActivity() {
         viewModel.login.observe(this) {
             when (it) {
                 is Resource.Loading -> {
-                    binding.load.visibility = View.VISIBLE
-                    binding.loginError.visibility = View.INVISIBLE
+                    binding.load?.visibility = View.VISIBLE
+
                 }
                 is Resource.Success -> {
-                    binding.loginError.visibility = View.INVISIBLE
-                    binding.load.visibility = View.INVISIBLE
+                    binding.load?.visibility = View.INVISIBLE
                     val data: Intent = Intent(this, DashboardActivity::class.java).apply {
                         applicationContext.getSharedPreferences(
                             APP_NAME,
@@ -119,18 +121,20 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(data)
                 }
                 is Resource.Error -> {
-                    binding.load.visibility = View.INVISIBLE
-                    binding.loginError.let { tvError ->
-                        tvError.visibility = View.VISIBLE
-                        tvError.text = it.message
+                    binding.load?.visibility = View.INVISIBLE
+                    binding.tilPassword?.let { til ->
+                        til.isErrorEnabled = true
+                        til.errorContentDescription = it.message
                     }
                 }
             }
         }
         viewModel.error.observe(this) {
-            binding.loginError.visibility = View.VISIBLE
-            binding.load.visibility = View.INVISIBLE
-            binding.loginError.text = viewModel.error.value
+            binding.load?.visibility = View.INVISIBLE
+            binding.tilPassword?.let { til ->
+                til.isErrorEnabled = true
+                til.errorContentDescription = viewModel.error.value
+            }
         }
     }
 
@@ -148,7 +152,7 @@ class LoginActivity : AppCompatActivity() {
                                 override fun onClick(emailPassword: EmailPassword) {
                                     binding.edtEmail.setText(emailPassword.email)
                                     binding.edtPassword.setText(emailPassword.password)
-                                    binding.rcvLogins.visibility = View.GONE
+                                    binding.rcvLogins?.visibility = View.GONE
                                 }
 
                                 override fun onDeleteClick(email: String, position: Int) {
@@ -157,12 +161,12 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                     loginAdapter.removeAt(position)
                                     if (loginAdapter.itemCount == 0) {
-                                        binding.rcvLogins.visibility = View.GONE
+                                        binding.rcvLogins?.visibility = View.GONE
                                     }
                                 }
                             }
                         )
-                        binding.rcvLogins.adapter = loginAdapter
+                        binding.rcvLogins?.adapter = loginAdapter
                     }
                 }
                 is Resource.Error -> {
@@ -174,9 +178,9 @@ class LoginActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val rect = Rect()
-        binding.rcvLogins.getGlobalVisibleRect(rect)
+        binding.rcvLogins?.getGlobalVisibleRect(rect)
         if (!rect.contains(ev!!.rawX.toInt(), ev.rawY.toInt())) {
-            binding.rcvLogins.visibility = View.GONE
+            binding.rcvLogins?.visibility = View.GONE
         }
         return super.dispatchTouchEvent(ev)
     }
