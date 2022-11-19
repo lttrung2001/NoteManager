@@ -37,10 +37,10 @@ class DownloadRepositoriesImpl @Inject constructor(
             File.separator + uri.lastPathSegment)
         /* Xếp download vào hàng đợi
         * downloadPreference là id của download */
-        val downloadPreference = downloadManager.enqueue(request)
-        Download.downloads.add(Download(downloadPreference, uri.lastPathSegment?: "Unknown name"))
-        downloadIdList.add(downloadPreference)
-        return downloadPreference
+        val downloadReference = downloadManager.enqueue(request)
+        Download.downloads.add(Download(downloadReference, uri.lastPathSegment?: "Unknown name"))
+        downloadIdList.add(downloadReference)
+        return downloadReference
     }
 
     override fun getDownloadStatus(id: Long): DownloadInfo {

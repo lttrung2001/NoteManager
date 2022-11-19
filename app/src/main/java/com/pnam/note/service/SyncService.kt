@@ -7,7 +7,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.pnam.note.R
 import com.pnam.note.database.data.locals.NoteLocals
-import com.pnam.note.database.data.models.NoteAndStatus
+import com.pnam.note.database.data.locals.entities.NoteAndStatus
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.utils.AppConstants.SYNC_CHANNEL_ID
 import com.pnam.note.utils.AppConstants.SYNC_NOTIFICATION_ID

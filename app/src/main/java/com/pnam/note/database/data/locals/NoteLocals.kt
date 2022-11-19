@@ -1,9 +1,8 @@
 package com.pnam.note.database.data.locals
 
 import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.models.NoteStatus
-import com.pnam.note.database.data.models.NoteAndStatus
-import io.reactivex.rxjava3.core.Completable
+import com.pnam.note.database.data.locals.entities.NoteStatus
+import com.pnam.note.database.data.locals.entities.NoteAndStatus
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Singleton
 

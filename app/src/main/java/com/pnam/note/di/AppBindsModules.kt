@@ -1,7 +1,5 @@
 package com.pnam.note.di
 
-import com.pnam.note.database.data.locals.ImageLocals
-import com.pnam.note.database.data.locals.impl.ImageLocalsImpl
 import com.pnam.note.database.data.networks.LoginNetworks
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
@@ -32,6 +30,7 @@ import com.pnam.note.ui.login.LoginUseCase
 import com.pnam.note.ui.login.LoginUseCaseImpl
 import com.pnam.note.ui.register.RegisterUseCase
 import com.pnam.note.ui.register.RegisterUseCaseImpl
+import com.pnam.note.utils.LocalTokenManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -88,4 +87,7 @@ abstract class AppBindsModules {
 
     @Binds
     abstract fun getImageDetailUseCase(useCase: ImageDetailUseCaseImpl): ImageDetailUseCase
+
+    @Binds
+    abstract fun getLocalTokenManager(impl: LocalTokenManager.LocalTokenManagerImpl): LocalTokenManager
 }

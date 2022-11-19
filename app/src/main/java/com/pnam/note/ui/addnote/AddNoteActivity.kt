@@ -14,7 +14,7 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.R
-import com.pnam.note.base.ImageBottomSheetActivity
+import com.pnam.note.ui.base.ImageBottomSheetActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
 import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter

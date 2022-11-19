@@ -87,12 +87,6 @@ class ImageDetailActivity : AppCompatActivity() {
                     intent.extras?.let { bundle ->
                         val arr = bundle.getStringArrayList(IMAGEPATHS)!!
                         val position = bundle.getInt(POSITION)
-//                        val manager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-//                        val uri =
-//                            Uri.parse(arr[position])
-//                        val request = DownloadManager.Request(uri)
-//                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-//                        val reference: Long = manager.enqueue(request)
                         downloadViewModel.download(arr[position])
                     }
                 }

@@ -28,7 +28,7 @@ class NoteAdapter constructor(
 }) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.note_container,
+            R.layout.container_note,
             parent,
             false
         )

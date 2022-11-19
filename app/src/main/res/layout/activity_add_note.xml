@@ -12,21 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcv_note_images"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="8dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="10"
-            tools:listitem="@layout/saved_image_container" />
-
         <EditText
             android:id="@+id/input_note_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rcv_note_images"
             android:layout_marginHorizontal="8dp"
             android:autofillHints=""
             android:background="@android:color/transparent"
@@ -41,16 +30,28 @@
             android:id="@+id/input_note_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/btn_add"
             android:layout_below="@id/input_note_title"
             android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="8dp"
             android:autofillHints=""
             android:background="@android:color/transparent"
             android:gravity="start|top"
             android:hint="@string/description"
             android:inputType="textMultiLine"
+            android:minHeight="100dp"
             android:textColorHint="#795548"
             android:textSize="14sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_note_images"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_note_desc"
+            android:orientation="horizontal"
+            android:paddingEnd="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="10"
+            tools:listitem="@layout/saved_image_container" />
 
         <ImageButton
             android:id="@+id/btn_open_bottom_sheet"

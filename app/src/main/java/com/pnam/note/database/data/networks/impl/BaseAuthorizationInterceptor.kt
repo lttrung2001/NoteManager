@@ -6,9 +6,14 @@ import android.content.SharedPreferences
 import com.auth0.android.jwt.JWT
 import com.google.gson.Gson
 import com.pnam.note.database.data.models.APIResult
+import com.pnam.note.throwable.LoginSessionExpiredException
+import com.pnam.note.throwable.NotFoundException
+import com.pnam.note.throwable.TokenExpiredException
+import com.pnam.note.throwable.UnknownCodeException
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppConstants.ACCESS_TOKEN
 import com.pnam.note.utils.AppConstants.LOGIN_TOKEN
+import com.pnam.note.utils.LocalTokenManager
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RetrofitUtils.SUCCESS
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,7 +32,8 @@ interface BaseAuthorizationInterceptor : Interceptor {
     class AuthorizationInterceptor @Inject constructor(
         @ApplicationContext private val context: Context,
         private val sharedPreferences: SharedPreferences,
-        private val httpLoggingInterceptor: HttpLoggingInterceptor
+        private val httpLoggingInterceptor: HttpLoggingInterceptor,
+        private val localTokenManager: LocalTokenManager
     ) : BaseAuthorizationInterceptor {
 
         @OptIn(ExperimentalCoroutinesApi::class)
@@ -35,18 +41,18 @@ interface BaseAuthorizationInterceptor : Interceptor {
             val request = chain.request()
             if ((request.url.encodedPath.equals("/login", true)
                         || request.url.encodedPath.equals("/register", true)
-                        || request.url.encodedPath.equals("/forgot-password",true))
+                        || request.url.encodedPath.equals("/forgot-password", true))
                 && request.method.equals("post", true)
             ) {
                 return chain.proceed(request)
             }
             val newRequestBuilder: Request.Builder = chain.request().newBuilder()
-            val accessToken = sharedPreferences.getString(ACCESS_TOKEN, "")!!
+            val accessToken = sharedPreferences.getString(ACCESS_TOKEN, "") ?: ""
             val token = try {
                 if (accessToken.isNotBlank()) {
                     val jwtToken = JWT(accessToken)
                     val exp = jwtToken.expiresAt
-                    // Nếu access token hết hạn
+                    /* Access token was expired */
                     if ((exp?.time ?: 0) < System.currentTimeMillis()) {
                         fetchAccessToken().also { token ->
                             sharedPreferences.edit().putString(ACCESS_TOKEN, token).apply()
@@ -60,34 +66,34 @@ interface BaseAuthorizationInterceptor : Interceptor {
                     }
                 }
             } catch (e: Throwable) {
-                sharedPreferences.edit().remove(ACCESS_TOKEN).apply()
-                sharedPreferences.edit().remove(LOGIN_TOKEN).apply()
-                sharedPreferences.edit().remove(LoginActivity.EMAIL).apply()
-                // Trở về màn hình login
+                localTokenManager.logout()
                 context.startActivity(Intent(context, LoginActivity::class.java).also {
                     it.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or
                             Intent.FLAG_ACTIVITY_NEW_TASK
                 })
-                throw Exception("Session expired")
+                if (e is LoginSessionExpiredException) {
+                    throw e
+                } else {
+
+                }
             }
             newRequestBuilder.addHeader("Authorization", "Bearer $token")
             return chain.proceed(newRequestBuilder.build())
         }
 
         private fun fetchAccessToken(): String {
-            val loginToken = sharedPreferences.getString(LOGIN_TOKEN, "")!!
+            val loginToken = sharedPreferences.getString(LOGIN_TOKEN, "") ?: ""
             return if (loginToken.isNotBlank()) {
                 val jwtToken = JWT(loginToken)
                 val exp = jwtToken.expiresAt
-                // Token hết hạn
+                /* Login token has expired */
                 if ((exp?.time ?: 0) < System.currentTimeMillis()) {
-                    // Throw token expired error
-                    throw Exception("Token expired")
+                    throw LoginSessionExpiredException()
                 } else {
                     fetchAccessToken(loginToken)
                 }
             } else {
-                throw Exception("Login token is required")
+                throw NotFoundException("Login token is required")
             }
         }
 
@@ -107,7 +113,7 @@ interface BaseAuthorizationInterceptor : Interceptor {
                 val body = Gson().fromJson(response.body?.string(), APIResult::class.java)
                 body.data.toString()
             } else {
-                throw Exception("Unknown code exception")
+                throw UnknownCodeException()
             }
         }
     }

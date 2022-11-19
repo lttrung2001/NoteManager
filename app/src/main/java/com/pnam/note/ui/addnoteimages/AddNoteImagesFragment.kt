@@ -12,7 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.pnam.note.base.ImageBottomSheetActivity
+import com.pnam.note.ui.base.ImageBottomSheetActivity
 import com.pnam.note.databinding.FragmentNoteBottomSheetBinding
 import com.pnam.note.ui.adapters.chooseimage.ChooseImageAdapter
 import com.pnam.note.ui.adapters.chooseimage.ChooseImageItemClickListener

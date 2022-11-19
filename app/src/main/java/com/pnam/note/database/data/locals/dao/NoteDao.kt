@@ -4,12 +4,11 @@ import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.models.NoteAndStatus
-import com.pnam.note.database.data.models.NoteStatus
+import com.pnam.note.database.data.locals.entities.NoteAndStatus
+import com.pnam.note.database.data.locals.entities.NoteStatus
 import com.pnam.note.utils.RoomUtils.Companion.ADD_NOTE_STATUS
 import com.pnam.note.utils.RoomUtils.Companion.DELETE_NOTE_STATUS
 import com.pnam.note.utils.RoomUtils.Companion.EDIT_NOTE_STATUS
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import java.lang.Exception
 

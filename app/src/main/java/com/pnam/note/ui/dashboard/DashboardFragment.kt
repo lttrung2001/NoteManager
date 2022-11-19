@@ -14,6 +14,7 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pnam.note.R
@@ -35,6 +36,16 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
+    init {
+        lifecycleScope.launch {
+            whenStarted {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.getNotes()
+                }
+            }
+        }
+    }
+
     private var binding: FragmentDashboardBinding? = null
     private var notesAdapter: NoteAdapter? = null
     private val viewModel: DashboardViewModel by viewModels()
@@ -127,13 +138,6 @@ class DashboardFragment : Fragment() {
                     viewModel.refreshNotes()
                 }
             }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.getNotes()
         }
     }
 

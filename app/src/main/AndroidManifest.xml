@@ -27,7 +27,7 @@
             android:name=".ui.imagedetail.ImageDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".base.ImageBottomSheetActivity"
+            android:name="com.pnam.note.ui.base.ImageBottomSheetActivity"
             android:exported="false" />
         <activity
             android:name=".ui.forgotpassword.ForgotPasswordActivity"
@@ -42,7 +42,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".base.BaseActivity"
+            android:name="com.pnam.note.ui.base.BaseActivity"
             android:exported="false" />
         <activity
             android:name=".ui.register.RegisterActivity"
