@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
-import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.activity.viewModels

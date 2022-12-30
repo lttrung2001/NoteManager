@@ -1,7 +1,5 @@
 package com.pnam.note.database.data.networks.impl
 
-import android.os.FileUtils
-import android.util.Log
 import android.webkit.URLUtil
 import com.google.gson.Gson
 import com.pnam.note.database.data.models.APIResult
