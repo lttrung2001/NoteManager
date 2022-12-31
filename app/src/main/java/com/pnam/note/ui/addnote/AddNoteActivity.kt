@@ -19,7 +19,7 @@ import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
 import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
 import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
-import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
+import com.pnam.note.ui.addimages.AddNoteImagesFragment
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppConstants.ADD_NOTE_REQUEST
 import com.pnam.note.utils.AppConstants.NOTE_CHANGE
@@ -110,8 +110,9 @@ class AddNoteActivity : ImageBottomSheetActivity() {
             title = resources.getText(R.string.add_note)
             it.setDisplayHomeAsUpEnabled(true)
         }
-        initRecyclerView()
+
         initObservers()
+        initRecyclerView()
 
         binding.btnAdd.setOnClickListener(addListener)
         binding.btnOpenBottomSheet.setOnClickListener(openBottomSheet)

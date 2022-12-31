@@ -35,7 +35,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
         ): Single<Response<APIResult<PagingList<Note>>>>
 
         @GET("/get-note-detail")
-        fun fetchNoteDetail(noteId: String): Single<Response<APIResult<Note>>>
+        fun fetchNoteDetail(@Query("id") noteId: String): Single<Response<APIResult<Note>>>
 
         @Multipart
         @PUT("/add-note")
@@ -62,7 +62,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()?.message)
             }
         }
     }
@@ -72,13 +72,19 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()?.message)
             }
         }
     }
 
-    override fun fetchNoteDetail(): Single<Note> {
-        TODO("Not yet implemented")
+    override fun fetchNoteDetail(id: String): Single<Note> {
+        return service.fetchNoteDetail(id).map {
+            if (it.code() == SUCCESS) {
+                it.body()!!.data
+            } else {
+                throw Exception(it.body()?.message)
+            }
+        }
     }
 
     override fun addNote(note: Note): Single<Note> {
@@ -93,7 +99,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
                 if (it.code() == SUCCESS) {
                     it.body()!!.data
                 } else {
-                    throw Exception(it.message())
+                    throw Exception(it.body()?.message)
                 }
             }
     }
@@ -116,7 +122,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()?.message)
             }
         }
     }
@@ -126,7 +132,7 @@ class NoteRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()?.message)
             }
         }
     }

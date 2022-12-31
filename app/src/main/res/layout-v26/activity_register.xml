@@ -22,7 +22,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/login_container_top_corner_radius_32"
+        android:background="@drawable/rectangle_bg_white_top_corner_32"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent=".7"
@@ -33,7 +33,7 @@
             android:id="@+id/register_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/login_container_top_corner_radius_32"
+            android:background="@drawable/rectangle_bg_white_top_corner_32"
             android:paddingVertical="40dp"
             android:text="@string/register"
             android:textAlignment="center"

@@ -1,8 +1,8 @@
 package com.pnam.note.database.data.locals
 
 import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.locals.entities.NoteStatus
-import com.pnam.note.database.data.locals.entities.NoteAndStatus
+import com.pnam.note.database.data.models.NoteStatus
+import com.pnam.note.database.data.models.NoteAndStatus
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Singleton
 
@@ -26,5 +26,5 @@ interface NoteLocals {
     fun afterEditNoteOffline(oldNote: Note, newNote: Note)
     fun deleteNoteOffline(note: Note): Note?
     fun afterDeleteNoteOffline(deletedNote: Note)
-    fun findUnsyncNotes(): List<NoteAndStatus>
+    fun findAsyncNotes(): List<NoteAndStatus>
 }

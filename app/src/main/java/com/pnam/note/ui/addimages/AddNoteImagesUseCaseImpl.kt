@@ -1,11 +1,9 @@
-package com.pnam.note.ui.addnoteimages
+package com.pnam.note.ui.addimages
 
 import android.content.Context
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.repositories.ImageRepositories
-import com.pnam.note.database.repositories.NoteRepositories
 import io.reactivex.rxjava3.core.Single
-import java.io.File
 import javax.inject.Inject
 
 class AddNoteImagesUseCaseImpl @Inject constructor(

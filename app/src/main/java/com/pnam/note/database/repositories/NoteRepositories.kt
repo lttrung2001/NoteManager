@@ -13,7 +13,7 @@ interface NoteRepositories {
     val networks: NoteNetworks
     fun getNotes(page: Int, limit: Int): Single<PagingList<Note>>
     fun refreshNotes(page: Int, limit: Int): Single<PagingList<Note>>
-    fun getNoteDetail(): Single<Note>
+    fun getNoteDetail(id: String): Single<Note>
     fun addNote(note: Note): Single<Note>
     fun editNote(note: Note): Single<Note>
     fun deleteNote(note: Note): Single<Note>

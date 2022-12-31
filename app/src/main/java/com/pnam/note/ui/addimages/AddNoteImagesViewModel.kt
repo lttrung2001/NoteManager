@@ -1,4 +1,4 @@
-package com.pnam.note.ui.addnoteimages
+package com.pnam.note.ui.addimages
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData

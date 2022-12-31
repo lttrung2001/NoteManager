@@ -30,7 +30,7 @@ class ChooseImageAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.choose_image_container, parent, false)
+                .inflate(R.layout.container_choose_image, parent, false)
         return ImageViewHolder(view)
     }
 

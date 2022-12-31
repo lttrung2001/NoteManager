@@ -62,7 +62,7 @@
             android:paddingEnd="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="10"
-            tools:listitem="@layout/saved_image_container" />
+            tools:listitem="@layout/container_saved_image" />
 
         <ImageButton
             android:id="@+id/btn_open_bottom_sheet"

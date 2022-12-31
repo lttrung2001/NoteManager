@@ -15,5 +15,5 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="3"
         tools:itemCount="20"
-        tools:listitem="@layout/choose_image_container" />
+        tools:listitem="@layout/container_choose_image" />
 </LinearLayout>

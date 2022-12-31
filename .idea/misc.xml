@@ -3,11 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/corner_150dp.xml" value="0.249" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/ic_add.xml" value="0.1995" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/input_outline.xml" value="0.187" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/light_gray_corner_16dp.xml" value="0.1985" />
+        <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/light_yellow_corner_14dp.xml" value="0.249" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/light_yellow_corner_16dp.xml" value="0.1995" />
+        <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/light_yellow_corner_4dp.xml" value="0.249" />
+        <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/light_yellow_corner_8dp.xml" value="0.249" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/login_container_top_corner_radius_32.xml" value="0.187" />
+        <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/saved_login_container.xml" value="0.1935" />
+        <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/saved_login_container_corner_8dp.xml" value="0.249" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/side_nav_bar.xml" value="0.1995" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/drawable/small_note_container_gray_corner_8dp.xml" value="0.1995" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/layout-v26/activity_login.xml" value="0.264" />
@@ -38,7 +44,7 @@
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/layout/nav_header_main.xml" value="0.25" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/layout/note_bottom_sheet_fragment.xml" value="0.25" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/layout/note_container.xml" value="0.264" />
-        <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/layout/popup_window_suggest_login.xml" value="0.20521590423257802" />
+        <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/layout/popup_window_suggest_login.xml" value="0.33" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/layout/saved_image_container.xml" value="0.33" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/menu/activity_main_drawer.xml" value="0.25" />
         <entry key="..\:/Users/THANHTRUNG/OneDrive - student.ptithcm.edu.vn/Desktop/Note/NoteManager/app/src/main/res/menu/menu_image_detail.xml" value="0.20521590423257802" />

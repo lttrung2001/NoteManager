@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.pnam.note.database.data.locals.NoteLocals
-import com.pnam.note.database.data.locals.entities.NoteAndStatus
+import com.pnam.note.database.data.models.NoteAndStatus
 import com.pnam.note.service.SyncService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -22,12 +22,11 @@ class NetworkReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (ConnectivityManager.CONNECTIVITY_ACTION == intent?.action) {
             val syncIntent = Intent(context, SyncService::class.java)
-            val unsyncNotes = arrayListOf<NoteAndStatus>()
+            val asyncNotes = arrayListOf<NoteAndStatus>()
             CoroutineScope(Dispatchers.IO).launch {
-                unsyncNotes.addAll(noteLocals.findUnsyncNotes())
+                asyncNotes.addAll(noteLocals.findAsyncNotes())
             }
-            if (isNetworkAvailable(context) && unsyncNotes.isNotEmpty()) {
-                /* Sync data here */
+            if (isNetworkAvailable(context) && asyncNotes.isNotEmpty()) {
                 context?.startService(syncIntent)
             } else {
                 context?.stopService(syncIntent)
@@ -35,6 +34,7 @@ class NetworkReceiver : BroadcastReceiver() {
         }
     }
 
+    // Function that check is network available at the present
     private fun isNetworkAvailable(context: Context?): Boolean {
         val connectivityManager = context
             ?.getSystemService(Context.CONNECTIVITY_SERVICE)

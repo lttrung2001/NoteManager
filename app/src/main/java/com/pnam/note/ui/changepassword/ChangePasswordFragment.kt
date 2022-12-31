@@ -49,6 +49,11 @@ class ChangePasswordFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.changePassword.postValue(null)
+    }
+
     private fun initObservers() {
         viewModel.changePassword.observe(viewLifecycleOwner) {
             when (it) {
@@ -60,7 +65,6 @@ class ChangePasswordFragment : Fragment() {
                     Toast.makeText(activity, "Change password successfully", Toast.LENGTH_SHORT)
                         .show()
                     binding.load.visibility = View.INVISIBLE
-                    activity?.onBackPressed()
                 }
                 is Resource.Error -> {
                     binding.load.visibility = View.INVISIBLE

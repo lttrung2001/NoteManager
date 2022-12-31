@@ -1,6 +1,6 @@
 package com.pnam.note.ui.adapters.login
 
-import com.pnam.note.database.data.locals.entities.EmailPassword
+import com.pnam.note.database.data.models.EmailPassword
 
 interface LoginItemClickListener {
     fun onClick(emailPassword: EmailPassword)

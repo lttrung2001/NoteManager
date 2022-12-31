@@ -25,13 +25,15 @@ class NoteRepositoriesImpl @Inject constructor(
         }
     }
 
-    override fun getNoteDetail(): Single<Note> {
-        TODO("Not yet implemented")
+    override fun getNoteDetail(id: String): Single<Note> {
+        return networks.fetchNoteDetail(id).doOnSuccess {
+            locals.editNote(it)
+        }
     }
 
     override fun addNote(note: Note): Single<Note> {
         return networks.addNote(note).doOnSuccess {
-            locals.addNote(note)
+            locals.addNote(it)
         }
     }
 
@@ -43,7 +45,7 @@ class NoteRepositoriesImpl @Inject constructor(
 
     override fun deleteNote(note: Note): Single<Note> {
         return networks.deleteNote(note.id).doOnSuccess {
-            locals.deleteNote(note)
+            locals.deleteNote(it)
         }
     }
 

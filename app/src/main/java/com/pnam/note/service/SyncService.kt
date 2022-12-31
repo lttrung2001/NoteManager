@@ -7,7 +7,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.pnam.note.R
 import com.pnam.note.database.data.locals.NoteLocals
-import com.pnam.note.database.data.locals.entities.NoteAndStatus
+import com.pnam.note.database.data.models.NoteAndStatus
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.utils.AppConstants.SYNC_CHANNEL_ID
 import com.pnam.note.utils.AppConstants.SYNC_NOTIFICATION_ID
@@ -41,19 +41,14 @@ class SyncService : Service() {
         }
         val PROGRESS_MAX = 100
         val PROGRESS_CURRENT = 0
+        //Notification
         NotificationManagerCompat.from(this).apply {
             // Issue the initial notification with zero progress
             builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false)
+            // Build a notification for sync service
             notify(SYNC_NOTIFICATION_ID, builder.build())
-
-            // Do the job here that tracks the progress.
-            // Usually, this should be in a
-            // worker thread
-            // To show progress, update PROGRESS_CURRENT and update the notification with:
-            // builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false);
-            // notificationManager.notify(notificationId, builder.build());
             CoroutineScope(Dispatchers.IO).launch {
-                syncList = noteLocals.findUnsyncNotes()
+                syncList = noteLocals.findAsyncNotes()
                 var currentIndex = 1.0
                 if (syncList.isNotEmpty()) {
                     for (i in syncList) {

@@ -15,12 +15,12 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.R
-import com.pnam.note.ui.base.ImageBottomSheetActivity
 import com.pnam.note.database.data.models.Note
 import com.pnam.note.databinding.ActivityEditNoteBinding
 import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
 import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
-import com.pnam.note.ui.addnoteimages.AddNoteImagesFragment
+import com.pnam.note.ui.addimages.AddNoteImagesFragment
+import com.pnam.note.ui.base.ImageBottomSheetActivity
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppConstants.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.AppConstants.NOTE_CHANGE
@@ -93,7 +93,7 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                 val intent = Intent(this@EditNoteActivity, ImageDetailActivity::class.java)
                 val bundle = Bundle()
                 bundle.putStringArrayList(
-                    "imagePaths",
+                    "imagesPath",
                     arrayListOf<String>().apply {
                         this.addAll(imageAdapter.currentList)
                     }
@@ -118,8 +118,9 @@ class EditNoteActivity : ImageBottomSheetActivity() {
             title = resources.getText(R.string.edit_note)
             it.setDisplayHomeAsUpEnabled(true)
         }
-        initView()
+
         initObservers()
+        initView()
 
         binding.btnEdit.setOnClickListener(editListener)
         binding.btnOpenBottomSheet.setOnClickListener(openBottomSheet)
@@ -138,6 +139,9 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                 inputNoteDesc.setText(note.description)
                 editAt.text = SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(note.editAt))
                 imageAdapter.submitList(note.images)
+            }
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.getNoteDetail(note.id)
             }
         }
     }
@@ -182,6 +186,24 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        viewModel.getNoteDetailLiveData.observe(this) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    binding.inputNoteTitle.setText(resource.data.title)
+                    binding.inputNoteDesc.setText(resource.data.description)
+                    binding.editAt.text =
+                        SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(resource.data.editAt))
+                    imageAdapter.submitList(resource.data.images)
+                }
+                is Resource.Error -> {
+
                 }
             }
         }

@@ -48,7 +48,7 @@
             android:layout_height="24dp"
             android:layout_gravity="end"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_baseline_delete_24"
+            android:src="@drawable/ic_delete"
             app:tint="@color/gray" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

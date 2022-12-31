@@ -1,9 +1,7 @@
 package com.pnam.note.ui.imagedetail
 
 import android.Manifest
-import android.app.DownloadManager
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -29,7 +27,7 @@ class ImageDetailActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 intent.extras?.putInt(POSITION, position)
-                val size = intent.extras!!.getStringArrayList(IMAGEPATHS)?.size
+                val size = intent.extras!!.getStringArrayList(IMAGESPATH)?.size
                 supportActionBar?.title = "${position + 1} of $size images"
             }
         }
@@ -45,14 +43,14 @@ class ImageDetailActivity : AppCompatActivity() {
         binding = ActivityImageDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val position = intent.extras!!.getInt(POSITION)
-        val imagePaths = intent.extras!!.getStringArrayList(IMAGEPATHS)
+        val imagesPath = intent.extras!!.getStringArrayList(IMAGESPATH)
 
         supportActionBar?.let {
-            title = "${position + 1} of ${imagePaths?.size} images"
+            title = "${position + 1} of ${imagesPath?.size} images"
             it.setDisplayHomeAsUpEnabled(true)
         }
 
-        fragmentAdapter = ImageDetailAdapter(this, imagePaths!!.toList())
+        fragmentAdapter = ImageDetailAdapter(this, imagesPath!!.toList())
         binding.imgPager.adapter = fragmentAdapter
         binding.imgPager.currentItem = position
         binding.imgPager.registerOnPageChangeCallback(pageChangedCallback)
@@ -85,7 +83,7 @@ class ImageDetailActivity : AppCompatActivity() {
                     )
                 } else {
                     intent.extras?.let { bundle ->
-                        val arr = bundle.getStringArrayList(IMAGEPATHS)!!
+                        val arr = bundle.getStringArrayList(IMAGESPATH)!!
                         val position = bundle.getInt(POSITION)
                         downloadViewModel.download(arr[position])
                     }
@@ -105,6 +103,6 @@ class ImageDetailActivity : AppCompatActivity() {
 
     companion object {
         private const val POSITION = "position"
-        private const val IMAGEPATHS = "imagePaths"
+        private const val IMAGESPATH = "imagesPath"
     }
 }

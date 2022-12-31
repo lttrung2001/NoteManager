@@ -12,10 +12,10 @@ import com.pnam.note.database.repositories.impl.DownloadRepositoriesImpl
 import com.pnam.note.database.repositories.impl.ImageRepositoriesImpl
 import com.pnam.note.database.repositories.impl.LoginRepositoriesImpl
 import com.pnam.note.database.repositories.impl.NoteRepositoriesImpl
+import com.pnam.note.ui.addimages.AddNoteImagesUseCase
+import com.pnam.note.ui.addimages.AddNoteImagesUseCaseImpl
 import com.pnam.note.ui.addnote.AddNoteUseCase
 import com.pnam.note.ui.addnote.AddNoteUseCaseImpl
-import com.pnam.note.ui.addnoteimages.AddNoteImagesUseCase
-import com.pnam.note.ui.addnoteimages.AddNoteImagesUseCaseImpl
 import com.pnam.note.ui.changepassword.ChangePasswordUseCase
 import com.pnam.note.ui.changepassword.ChangePasswordUseCaseImpl
 import com.pnam.note.ui.dashboard.DashboardUseCase
@@ -28,6 +28,8 @@ import com.pnam.note.ui.imagedetail.ImageDetailUseCase
 import com.pnam.note.ui.imagedetail.ImageDetailUseCaseImpl
 import com.pnam.note.ui.login.LoginUseCase
 import com.pnam.note.ui.login.LoginUseCaseImpl
+import com.pnam.note.ui.notedetail.NoteDetailUseCase
+import com.pnam.note.ui.notedetail.NoteDetailUseCaseImpl
 import com.pnam.note.ui.register.RegisterUseCase
 import com.pnam.note.ui.register.RegisterUseCaseImpl
 import com.pnam.note.utils.LocalTokenManager
@@ -87,6 +89,9 @@ abstract class AppBindsModules {
 
     @Binds
     abstract fun getImageDetailUseCase(useCase: ImageDetailUseCaseImpl): ImageDetailUseCase
+
+    @Binds
+    abstract fun getNoteDetailUseCase(useCase: NoteDetailUseCaseImpl): NoteDetailUseCase
 
     @Binds
     abstract fun getLocalTokenManager(impl: LocalTokenManager.LocalTokenManagerImpl): LocalTokenManager

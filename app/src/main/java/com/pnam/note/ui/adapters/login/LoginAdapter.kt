@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pnam.note.R
-import com.pnam.note.database.data.locals.entities.EmailPassword
+import com.pnam.note.database.data.models.EmailPassword
 
 class LoginAdapter(
     private val listener: LoginItemClickListener

@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.pnam.note.R
-import com.pnam.note.database.data.locals.entities.EmailPassword
+import com.pnam.note.database.data.models.EmailPassword
 import com.pnam.note.databinding.ActivityLoginBinding
 import com.pnam.note.ui.adapters.login.LoginAdapter
 import com.pnam.note.ui.adapters.login.LoginItemClickListener
@@ -82,7 +82,8 @@ class LoginActivity : BaseActivity() {
 
     private val popupWindow: PopupWindow by lazy {
         PopupWindow(this@LoginActivity).also { window ->
-            val view = layoutInflater.inflate(R.layout.popup_window_suggest_login, null)
+            window.setBackgroundDrawable(resources.getDrawable(R.drawable.rectangle_transparent, theme))
+            val view = layoutInflater.inflate(R.layout.popup_window_saved_login, null)
             val rcv = view.findViewById<RecyclerView>(R.id.rcv_logins)
             rcv.layoutManager = LinearLayoutManager(this@LoginActivity)
             rcv.adapter = loginAdapter
@@ -92,7 +93,7 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private val loginClick: View.OnClickListener by lazy {
+    private val loginClick: View.OnClickListener     by lazy {
         View.OnClickListener {
             val email = binding.edtEmail.text?.trim().toString()
             val password = binding.edtPassword.text?.trim().toString()

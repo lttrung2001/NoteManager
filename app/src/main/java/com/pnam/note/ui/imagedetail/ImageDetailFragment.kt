@@ -10,7 +10,7 @@ import com.pnam.note.databinding.FragmentImageBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ImageFragment : Fragment() {
+class ImageDetailFragment : Fragment() {
     private var binding: FragmentImageBinding? = null
 
     override fun onCreateView(

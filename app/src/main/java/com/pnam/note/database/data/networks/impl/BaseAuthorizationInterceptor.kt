@@ -8,7 +8,6 @@ import com.google.gson.Gson
 import com.pnam.note.database.data.models.APIResult
 import com.pnam.note.throwable.LoginSessionExpiredException
 import com.pnam.note.throwable.NotFoundException
-import com.pnam.note.throwable.TokenExpiredException
 import com.pnam.note.throwable.UnknownCodeException
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppConstants.ACCESS_TOKEN

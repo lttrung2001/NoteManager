@@ -28,7 +28,7 @@ class SavedImageAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.saved_image_container, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.container_saved_image, parent, false)
         return ImageViewHolder(view)
     }
 

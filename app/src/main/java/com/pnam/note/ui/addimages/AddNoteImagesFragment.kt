@@ -1,4 +1,4 @@
-package com.pnam.note.ui.addnoteimages
+package com.pnam.note.ui.addimages
 
 import android.app.Activity
 import android.os.Bundle
@@ -12,10 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.pnam.note.ui.base.ImageBottomSheetActivity
-import com.pnam.note.databinding.FragmentNoteBottomSheetBinding
+import com.pnam.note.databinding.FragmentNoteBottomSheetDialogBinding
 import com.pnam.note.ui.adapters.chooseimage.ChooseImageAdapter
 import com.pnam.note.ui.adapters.chooseimage.ChooseImageItemClickListener
+import com.pnam.note.ui.base.ImageBottomSheetActivity
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddNoteImagesFragment : BottomSheetDialogFragment() {
-    private lateinit var binding: FragmentNoteBottomSheetBinding
+    private lateinit var binding: FragmentNoteBottomSheetDialogBinding
     private val viewModel: AddNoteImagesViewModel by viewModels()
     private var imageAdapter: ChooseImageAdapter? = null
     val imageChoose = registerForActivityResult(
@@ -72,9 +72,9 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNoteBottomSheetBinding.inflate(layoutInflater)
-        initRecyclerView()
+        binding = FragmentNoteBottomSheetDialogBinding.inflate(layoutInflater)
         initObservers()
+        initRecyclerView()
         return binding.root
     }
 

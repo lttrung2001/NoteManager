@@ -3,24 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.imagedetail.ImageFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.imagedetail.ImageDetailFragment">
+
     <TextView
         android:id="@+id/img_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:text="Image name"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            android:src="@drawable/screenshot" />
+            android:scaleType="fitCenter" />
     </ScrollView>
 </LinearLayout>

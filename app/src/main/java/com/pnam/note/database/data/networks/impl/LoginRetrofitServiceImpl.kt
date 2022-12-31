@@ -57,7 +57,7 @@ class LoginRetrofitServiceImpl @Inject constructor(
                 // Save login info to locals
                 login
             } else {
-                throw NotFoundException("UNAUTHORIZED")
+                throw Exception(it.body()?.message)
             }
         }
     }
@@ -70,7 +70,7 @@ class LoginRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()?.message)
             }
         }
     }
@@ -98,7 +98,7 @@ class LoginRetrofitServiceImpl @Inject constructor(
             if (it.code() == SUCCESS) {
                 it.body()!!.data
             } else {
-                throw Exception(it.message())
+                throw Exception(it.body()?.message)
             }
         }
     }

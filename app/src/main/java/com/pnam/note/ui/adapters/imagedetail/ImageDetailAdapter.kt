@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.pnam.note.ui.imagedetail.ImageFragment
+import com.pnam.note.ui.imagedetail.ImageDetailFragment
 
 class ImageDetailAdapter(
     fragmentActivity: FragmentActivity,
@@ -17,7 +17,7 @@ class ImageDetailAdapter(
     }
 
     override fun createFragment(position: Int): Fragment {
-        val fragment = ImageFragment()
+        val fragment = ImageDetailFragment()
         fragment.arguments = Bundle().apply {
             putString(IMAGE, imagePaths[position])
         }
