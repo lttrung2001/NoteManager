@@ -15,7 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.R
 import com.pnam.note.ui.base.ImageBottomSheetActivity
-import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
 import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
 import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
@@ -88,7 +88,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
                 val intent = Intent(this@AddNoteActivity, ImageDetailActivity::class.java)
                 val bundle = Bundle()
                 bundle.putStringArrayList(
-                    "imagePaths",
+                    "imagesPath",
                     imageAdapter!!.currentList.toList() as ArrayList<String>
                 )
                 intent.putExtras(bundle)

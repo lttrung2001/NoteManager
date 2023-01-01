@@ -5,9 +5,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.pnam.note.database.data.locals.dao.LoginDao
 import com.pnam.note.database.data.locals.dao.NoteDao
-import com.pnam.note.database.data.models.EmailPassword
-import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.models.NoteStatus
+import com.pnam.note.database.data.locals.entities.EmailPassword
+import com.pnam.note.database.data.locals.entities.Note
+import com.pnam.note.database.data.locals.entities.NoteStatus
 import com.pnam.note.utils.Converters
 import com.pnam.note.utils.RoomUtils.Companion.DB_VER
 import javax.inject.Singleton

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.pnam.note.database.data.locals.LoginLocals
-import com.pnam.note.database.data.models.EmailPassword
+import com.pnam.note.database.data.locals.entities.EmailPassword
 import io.reactivex.rxjava3.core.Single
 
 @Dao

@@ -1,6 +1,6 @@
 package com.pnam.note.ui.notedetail
 
-import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.database.repositories.NoteRepositories
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject

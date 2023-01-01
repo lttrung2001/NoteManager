@@ -1,12 +1,11 @@
 package com.pnam.note.database.repositories.impl
 
 import com.pnam.note.database.data.locals.NoteLocals
-import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.database.repositories.NoteRepositories
 import io.reactivex.rxjava3.core.Single
-import java.io.File
 import javax.inject.Inject
 
 class NoteRepositoriesImpl @Inject constructor(

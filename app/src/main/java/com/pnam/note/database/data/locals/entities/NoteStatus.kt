@@ -1,4 +1,4 @@
-package com.pnam.note.database.data.models
+package com.pnam.note.database.data.locals.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

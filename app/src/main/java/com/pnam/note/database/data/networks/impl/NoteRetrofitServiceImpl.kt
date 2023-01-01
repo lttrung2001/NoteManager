@@ -3,7 +3,7 @@ package com.pnam.note.database.data.networks.impl
 import android.webkit.URLUtil
 import com.google.gson.Gson
 import com.pnam.note.database.data.models.APIResult
-import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.NoteNetworks
 import com.pnam.note.utils.RetrofitUtils.SUCCESS

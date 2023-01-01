@@ -18,7 +18,7 @@ import androidx.lifecycle.whenStarted
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pnam.note.R
-import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.databinding.FragmentDashboardBinding
 import com.pnam.note.ui.adapters.note.NoteAdapter
 import com.pnam.note.ui.adapters.note.NoteItemClickListener

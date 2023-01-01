@@ -1,9 +1,7 @@
-package com.pnam.note.database.data.models
+package com.pnam.note.database.data.locals.entities
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.pnam.note.database.data.models.Note
-import com.pnam.note.database.data.models.NoteStatus
 
 data class NoteAndStatus(
     @Embedded val status: NoteStatus,

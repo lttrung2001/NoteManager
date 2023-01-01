@@ -1,9 +1,8 @@
 package com.pnam.note.database.data.networks
 
-import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.database.data.models.PagingList
 import io.reactivex.rxjava3.core.Single
-import java.io.File
 import javax.inject.Singleton
 
 @Singleton

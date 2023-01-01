@@ -1,11 +1,10 @@
 package com.pnam.note.ui.editnote
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pnam.note.database.data.locals.NoteLocals
-import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.ui.notedetail.NoteDetailUseCase
 import com.pnam.note.utils.Resource

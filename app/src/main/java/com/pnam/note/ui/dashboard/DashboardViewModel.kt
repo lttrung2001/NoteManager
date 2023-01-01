@@ -4,10 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pnam.note.database.data.locals.NoteLocals
-import com.pnam.note.database.data.models.Note
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.throwable.NoConnectivityException
-import com.pnam.note.ui.notedetail.NoteDetailUseCase
 import com.pnam.note.utils.AppConstants.LIMIT_ON_PAGE
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

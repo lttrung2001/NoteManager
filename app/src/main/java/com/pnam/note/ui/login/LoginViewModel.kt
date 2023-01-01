@@ -3,7 +3,7 @@ package com.pnam.note.ui.login
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.pnam.note.database.data.locals.dao.LoginDao
-import com.pnam.note.database.data.models.EmailPassword
+import com.pnam.note.database.data.locals.entities.EmailPassword
 import com.pnam.note.database.data.models.Login
 import com.pnam.note.throwable.NoConnectivityException
 import com.pnam.note.utils.Resource

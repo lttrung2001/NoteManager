@@ -1,7 +1,7 @@
 package com.pnam.note.database.repositories.impl
 
 import com.pnam.note.database.data.locals.LoginLocals
-import com.pnam.note.database.data.models.EmailPassword
+import com.pnam.note.database.data.locals.entities.EmailPassword
 import com.pnam.note.database.data.models.Login
 import com.pnam.note.database.data.networks.LoginNetworks
 import com.pnam.note.database.repositories.LoginRepositories

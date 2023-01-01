@@ -1,6 +1,6 @@
 package com.pnam.note.database.data.locals
 
-import com.pnam.note.database.data.models.EmailPassword
+import com.pnam.note.database.data.locals.entities.EmailPassword
 import javax.inject.Singleton
 
 @Singleton

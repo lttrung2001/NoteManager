@@ -2,11 +2,11 @@ package com.pnam.note.utils
 
 object AppConstants {
     const val LIMIT_ON_PAGE = 10
-    const val APP_NAME = "note_manager"
-    const val LOGIN_TOKEN = "login_token"
-    const val ACCESS_TOKEN = "access_token"
-    const val NOTE_CHANGE = "note_change"
-    const val NOTE_POSITION = "note_position"
+    const val APP_NAME = "com.pnam.note"
+    const val LOGIN_TOKEN = "com.pnam.note.logintoken"
+    const val ACCESS_TOKEN = "com.pnam.note.accesstoken"
+    const val NOTE_CHANGE = "com.pnam.note.notechange"
+    const val NOTE_POSITION = "com.pnam.note.noteposition"
 
 
     const val ADD_NOTE_REQUEST = 1
@@ -16,5 +16,5 @@ object AppConstants {
 
 
     const val SYNC_NOTIFICATION_ID = 1000
-    const val SYNC_CHANNEL_ID = "sync_channel_id"
+    const val SYNC_CHANNEL_ID = "com.pnam.note.syncchannelid"
 }

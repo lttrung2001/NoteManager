@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.pnam.note.database.data.locals.NoteLocals
-import com.pnam.note.database.data.models.NoteAndStatus
+import com.pnam.note.database.data.locals.entities.NoteAndStatus
 import com.pnam.note.service.SyncService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
