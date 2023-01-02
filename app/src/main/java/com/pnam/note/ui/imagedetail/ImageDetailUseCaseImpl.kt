@@ -17,10 +17,6 @@ class ImageDetailUseCaseImpl @Inject constructor(
         return repositories.downloadProgress(id, progressHandle)
     }
 
-    override fun removeDownloadProgress(id: Long) {
-        return repositories.removeDownloadProgress(id)
-    }
-
     override fun download(url: String): Long {
         return repositories.download(url)
     }

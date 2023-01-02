@@ -15,7 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.pnam.note.databinding.FragmentNoteBottomSheetDialogBinding
 import com.pnam.note.ui.adapters.chooseimage.ChooseImageAdapter
 import com.pnam.note.ui.adapters.chooseimage.ChooseImageItemClickListener
-import com.pnam.note.ui.base.ImageBottomSheetActivity
+import com.pnam.note.ui.base.BaseActivity
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +55,7 @@ class AddNoteImagesFragment : BottomSheetDialogFragment() {
     private val imageListener: ChooseImageItemClickListener by lazy {
         object : ChooseImageItemClickListener {
             override fun onClick(path: String, position: Int) {
-                (activity as ImageBottomSheetActivity).addImagesToNote(listOf(path))
+                (activity as BaseActivity).addImagesToNote(listOf(path))
             }
         }
     }

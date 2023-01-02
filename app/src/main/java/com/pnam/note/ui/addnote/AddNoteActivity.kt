@@ -2,24 +2,21 @@ package com.pnam.note.ui.addnote
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.IBinder
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.R
-import com.pnam.note.ui.base.ImageBottomSheetActivity
 import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.databinding.ActivityAddNoteBinding
 import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
 import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
 import com.pnam.note.ui.addimages.AddNoteImagesFragment
+import com.pnam.note.ui.base.BaseActivity
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppConstants.ADD_NOTE_REQUEST
 import com.pnam.note.utils.AppConstants.NOTE_CHANGE
@@ -29,19 +26,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import java.util.ArrayList
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class AddNoteActivity : ImageBottomSheetActivity() {
+class AddNoteActivity : BaseActivity() {
     private lateinit var binding: ActivityAddNoteBinding
-    private var imageAdapter: SavedImageAdapter? = null
+    private lateinit var imageAdapter: SavedImageAdapter
     private val viewModel: AddNoteViewModel by viewModels()
     private val addListener: View.OnClickListener by lazy {
         View.OnClickListener {
             val title = binding.inputNoteTitle.text.trim().toString()
             val desc = binding.inputNoteDesc.text.trim().toString()
-            if (title.isEmpty() && desc.isEmpty() && (imageAdapter?.currentList?.size ?: 0) == 0) {
+            if (title.isEmpty() && desc.isEmpty() && imageAdapter.currentList.isEmpty()) {
                 Toast.makeText(
                     this@AddNoteActivity,
                     "Note must not be empty",
@@ -56,7 +52,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
                         desc,
                         System.currentTimeMillis(),
                         System.currentTimeMillis(),
-                        imageAdapter?.currentList ?: listOf()
+                        imageAdapter.currentList
                     )
                     viewModel.addNote(note)
                 }
@@ -89,7 +85,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
                 val bundle = Bundle()
                 bundle.putStringArrayList(
                     "imagesPath",
-                    imageAdapter!!.currentList.toList() as ArrayList<String>
+                    imageAdapter.currentList.toList() as ArrayList<String>
                 )
                 intent.putExtras(bundle)
                 startActivity(intent)
@@ -149,7 +145,7 @@ class AddNoteActivity : ImageBottomSheetActivity() {
 
                 }
                 is Resource.Success -> {
-                    imageAdapter?.let { adapter ->
+                    imageAdapter.let { adapter ->
                         val currentList = adapter.currentList.toMutableList()
                         currentList.removeAll(resource.data)
                         currentList.addAll(resource.data)
@@ -164,11 +160,6 @@ class AddNoteActivity : ImageBottomSheetActivity() {
         viewModel.error.observe(this) {
             Toast.makeText(this, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun hideKeyboard(element: IBinder) {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(element, 0)
     }
 
     override fun addImagesToNote(images: List<String>) {

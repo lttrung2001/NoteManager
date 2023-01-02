@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Patterns
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -18,7 +21,7 @@ import com.pnam.note.database.data.locals.entities.EmailPassword
 import com.pnam.note.databinding.ActivityLoginBinding
 import com.pnam.note.ui.adapters.login.LoginAdapter
 import com.pnam.note.ui.adapters.login.LoginItemClickListener
-import com.pnam.note.ui.base.BaseActivity
+import com.pnam.note.ui.base.BroadcastActivity
 import com.pnam.note.ui.dashboard.DashboardActivity
 import com.pnam.note.ui.forgotpassword.ForgotPasswordActivity
 import com.pnam.note.ui.register.RegisterActivity
@@ -29,10 +32,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@SuppressLint("ClickableViewAccessibility")
+@SuppressLint("ClickableViewAccessibility", "UseCompatLoadingForDrawables")
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class LoginActivity : BaseActivity() {
+class LoginActivity : BroadcastActivity() {
     private lateinit var binding: ActivityLoginBinding
     private val viewModel: LoginViewModel by viewModels()
     private val loginAdapter: LoginAdapter by lazy {
@@ -46,9 +49,11 @@ class LoginActivity : BaseActivity() {
 
                 override fun onDeleteClick(email: String, position: Int) {
                     lifecycleScope.launch(Dispatchers.IO) {
-                        viewModel.loginDao.deleteLogin(email)
+                        viewModel.deleteLogin(email)
                     }
-                    loginAdapter.currentList.removeAt(position)
+                    val listAfterRemoveItem = loginAdapter.currentList.toMutableList()
+                    listAfterRemoveItem.removeAt(position)
+                    loginAdapter.submitList(listAfterRemoveItem)
                     if (loginAdapter.currentList.size == 0) {
                         popupWindow.dismiss()
                     }
@@ -72,6 +77,10 @@ class LoginActivity : BaseActivity() {
         View.OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 binding.edtEmail.requestFocus()
+                val imm: InputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(binding.edtEmail, InputMethodManager.SHOW_IMPLICIT)
+
                 popupWindow.showAsDropDown(binding.edtEmail)
                 true
             } else {
@@ -82,7 +91,12 @@ class LoginActivity : BaseActivity() {
 
     private val popupWindow: PopupWindow by lazy {
         PopupWindow(this@LoginActivity).also { window ->
-            window.setBackgroundDrawable(resources.getDrawable(R.drawable.rectangle_transparent, theme))
+            window.setBackgroundDrawable(
+                resources.getDrawable(
+                    R.drawable.rectangle_transparent,
+                    theme
+                )
+            )
             val view = layoutInflater.inflate(R.layout.popup_window_saved_login, null)
             val rcv = view.findViewById<RecyclerView>(R.id.rcv_logins)
             rcv.layoutManager = LinearLayoutManager(this@LoginActivity)
@@ -93,7 +107,7 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private val loginClick: View.OnClickListener     by lazy {
+    private val loginClick: View.OnClickListener by lazy {
         View.OnClickListener {
             val email = binding.edtEmail.text?.trim().toString()
             val password = binding.edtPassword.text?.trim().toString()
@@ -138,6 +152,21 @@ class LoginActivity : BaseActivity() {
         }
     }
 
+    private val textWatcher: TextWatcher by lazy {
+        object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                popupWindow.dismiss()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -148,11 +177,23 @@ class LoginActivity : BaseActivity() {
             bd.btnForgot.setOnClickListener(forgotClick)
             bd.edtEmail.setOnTouchListener(emailTouchInterceptor)
         }
+
         initLoginObserver()
         initSavedLoginObserver()
+
         lifecycleScope.launch(Dispatchers.IO) {
             viewModel.getSavedLogin()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.edtEmail.addTextChangedListener(textWatcher)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.edtEmail.removeTextChangedListener(textWatcher)
     }
 
     private fun initLoginObserver() {

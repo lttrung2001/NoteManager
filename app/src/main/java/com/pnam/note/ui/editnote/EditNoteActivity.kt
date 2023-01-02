@@ -3,13 +3,10 @@ package com.pnam.note.ui.editnote
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.IBinder
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -20,7 +17,7 @@ import com.pnam.note.databinding.ActivityEditNoteBinding
 import com.pnam.note.ui.adapters.savedimage.SavedImageAdapter
 import com.pnam.note.ui.adapters.savedimage.SavedImageItemClickListener
 import com.pnam.note.ui.addimages.AddNoteImagesFragment
-import com.pnam.note.ui.base.ImageBottomSheetActivity
+import com.pnam.note.ui.base.BaseActivity
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppConstants.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.AppConstants.NOTE_CHANGE
@@ -37,7 +34,7 @@ import java.util.*
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class EditNoteActivity : ImageBottomSheetActivity() {
+class EditNoteActivity : BaseActivity() {
     private lateinit var binding: ActivityEditNoteBinding
     private lateinit var imageAdapter: SavedImageAdapter
     private val viewModel: EditNoteViewModel by viewModels()
@@ -45,10 +42,10 @@ class EditNoteActivity : ImageBottomSheetActivity() {
         View.OnClickListener {
             val title = binding.inputNoteTitle.text.trim().toString()
             val desc = binding.inputNoteDesc.text.trim().toString()
-            if (title.isEmpty() && desc.isEmpty()) {
+            if (title.isEmpty() && desc.isEmpty() || imageAdapter.currentList.isEmpty()) {
                 Toast.makeText(
                     this@EditNoteActivity,
-                    "Please write somethings to save",
+                    "Note must not be empty",
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
@@ -146,6 +143,7 @@ class EditNoteActivity : ImageBottomSheetActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun initObservers() {
         viewModel.editNote.observe(this) {
             when (it) {
@@ -201,6 +199,11 @@ class EditNoteActivity : ImageBottomSheetActivity() {
                     binding.editAt.text =
                         SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(resource.data.editAt))
                     imageAdapter.submitList(resource.data.images)
+                    resource.data.images?.let {
+                        if (it.isNotEmpty()) {
+                            binding.btnViewAllImages.visibility = View.VISIBLE
+                        }
+                    }
                 }
                 is Resource.Error -> {
 
@@ -211,11 +214,6 @@ class EditNoteActivity : ImageBottomSheetActivity() {
         viewModel.error.observe(this) {
             Toast.makeText(this, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun hideKeyboard(element: IBinder) {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(element, 0)
     }
 
     override fun addImagesToNote(images: List<String>) {

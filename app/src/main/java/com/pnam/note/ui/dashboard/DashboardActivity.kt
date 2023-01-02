@@ -17,7 +17,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.pnam.note.R
-import com.pnam.note.ui.base.BaseActivity
+import com.pnam.note.ui.base.BroadcastActivity
 import com.pnam.note.databinding.ActivityMainBinding
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppConstants
@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class DashboardActivity : BaseActivity() {
+class DashboardActivity : BroadcastActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration

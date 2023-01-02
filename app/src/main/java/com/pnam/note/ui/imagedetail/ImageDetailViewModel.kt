@@ -12,11 +12,10 @@ class ImageDetailViewModel @Inject constructor(
     private val _downloadId: MutableLiveData<Long> by lazy {
         MutableLiveData<Long>()
     }
-    internal val downloadId: MutableLiveData<Long> get() = _downloadId
     private val _downloadIdValue: Long get() = _downloadId.value ?: -1
 
-    fun download(url: String) {
-        downloadId.postValue(useCase.download(url))
+    fun download(url: String): Long {
+        return useCase.download(url)
     }
 
     fun getDownloadStatus(id: Long): String {
@@ -28,9 +27,5 @@ class ImageDetailViewModel @Inject constructor(
         progressHandle: (bytesDownloaded: Long, bytesTotal: Long) -> Unit
     ) {
         useCase.downloadProgress(id, progressHandle)
-    }
-
-    fun removeDownloadProgress(id: Long) {
-        useCase.removeDownloadProgress(id)
     }
 }

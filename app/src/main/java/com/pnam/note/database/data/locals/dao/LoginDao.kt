@@ -20,5 +20,5 @@ interface LoginDao : LoginLocals {
     override fun changePassword(email: String, newPassword: String)
 
     @Query("SELECT * FROM EmailPassword ORDER BY email")
-    fun getAllLogin(): Single<MutableList<EmailPassword>>
+    override fun getSavedLogins(): Single<MutableList<EmailPassword>>
 }

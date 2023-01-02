@@ -2,7 +2,6 @@ package com.pnam.note.ui.login
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.pnam.note.database.data.locals.dao.LoginDao
 import com.pnam.note.database.data.locals.entities.EmailPassword
 import com.pnam.note.database.data.models.Login
 import com.pnam.note.throwable.NoConnectivityException
@@ -16,8 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val useCase: LoginUseCase,
-    val loginDao: LoginDao
+    private val useCase: LoginUseCase
 ) : ViewModel() {
     val error: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
@@ -73,11 +71,15 @@ class LoginViewModel @Inject constructor(
             composite.remove(it)
             it.dispose()
         }
-        savedLoginDisposable = loginDao.getAllLogin()
+        savedLoginDisposable = useCase.getSavedLogins()
             .subscribe(observerSavedLogin) {
                 _savedLogin.postValue(Resource.Error(it.message ?: "Unknown error"))
             }
         savedLoginDisposable?.let { composite.add(it) }
+    }
+
+    internal fun deleteLogin(email: String) {
+        return useCase.deleteLogin(email)
     }
 
     private fun loginError(t: Throwable) {

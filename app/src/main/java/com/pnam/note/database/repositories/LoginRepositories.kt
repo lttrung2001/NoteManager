@@ -1,6 +1,7 @@
 package com.pnam.note.database.repositories
 
 import com.pnam.note.database.data.locals.LoginLocals
+import com.pnam.note.database.data.locals.entities.EmailPassword
 import com.pnam.note.database.data.models.Login
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.LoginNetworks
@@ -15,4 +16,6 @@ interface LoginRepositories {
     fun register(email: String, password: String): Single<Login>
     fun forgotPassword(email: String): Single<Unit>
     fun changePassword(email: String, oldPassword: String, newPassword: String): Single<Login>
+    fun deleteLogin(email: String)
+    fun getSavedLogins(): Single<MutableList<EmailPassword>>
 }

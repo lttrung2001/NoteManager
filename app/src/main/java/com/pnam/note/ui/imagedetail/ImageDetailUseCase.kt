@@ -9,6 +9,5 @@ interface ImageDetailUseCase {
         id: Long,
         progressHandle: (bytesDownloaded: Long, bytesTotal: Long) -> Unit
     )
-    fun removeDownloadProgress(id: Long)
     fun download(url: String): Long
 }

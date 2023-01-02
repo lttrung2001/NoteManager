@@ -35,4 +35,12 @@ class LoginRepositoriesImpl @Inject constructor(
             locals.changePassword(email, newPassword)
         }
     }
+
+    override fun deleteLogin(email: String) {
+        return locals.deleteLogin(email)
+    }
+
+    override fun getSavedLogins(): Single<MutableList<EmailPassword>> {
+        return locals.getSavedLogins()
+    }
 }

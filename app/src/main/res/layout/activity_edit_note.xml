@@ -53,13 +53,28 @@
             android:textSize="14sp"
             android:transitionName="noteDescription" />
 
+        <Button
+            android:id="@+id/btn_view_all_images"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_note_desc"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@android:color/transparent"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:text="@string/view_all"
+            android:textAllCaps="false"
+            android:textColor="@color/primaryColor"
+            android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_note_images"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/input_note_desc"
+            android:layout_below="@id/btn_view_all_images"
             android:orientation="horizontal"
-            android:paddingEnd="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="10"
             tools:listitem="@layout/container_saved_image" />

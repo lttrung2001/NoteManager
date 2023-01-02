@@ -7,7 +7,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.pnam.note.databinding.ActivityRegisterBinding
-import com.pnam.note.ui.base.BaseActivity
+import com.pnam.note.ui.base.BroadcastActivity
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class RegisterActivity : BaseActivity() {
+class RegisterActivity : BroadcastActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private val viewModel: RegisterViewModel by viewModels()
 

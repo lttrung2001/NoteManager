@@ -6,16 +6,11 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
-import android.provider.MediaStore
 import com.pnam.note.database.data.models.Download
 import com.pnam.note.database.repositories.DownloadRepositories
 import com.pnam.note.utils.DownloadInfo
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import java.io.File
-import java.security.cert.CertPathValidatorException
 import javax.inject.Inject
 
 class DownloadRepositoriesImpl @Inject constructor(
@@ -31,14 +26,16 @@ class DownloadRepositoriesImpl @Inject constructor(
 
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(uri.lastPathSegment)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             .setDescription("Android Data download using DownloadManager")
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-            File.separator + uri.lastPathSegment)
+            .setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                File.separator + uri.lastPathSegment
+            )
         /* Xếp download vào hàng đợi
         * downloadPreference là id của download */
         val downloadReference = downloadManager.enqueue(request)
-        Download.downloads.add(Download(downloadReference, uri.lastPathSegment?: "Unknown name"))
+        Download.downloads.add(Download(downloadReference, uri.lastPathSegment ?: "Unknown name"))
         downloadIdList.add(downloadReference)
         return downloadReference
     }
@@ -113,13 +110,13 @@ class DownloadRepositoriesImpl @Inject constructor(
         Thread {
             var preProgress = -1
             while (downloadIdList.find { it == id } != null && run {
-                try {
-                    cursor = downloadManager.query(query)
-                    true
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                    false
-                }
+                    try {
+                        cursor = downloadManager.query(query)
+                        true
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                        false
+                    }
                 } && cursor.moveToFirst()) {
                 val bytesDownloaded = cursor.getInt(
                     cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
@@ -144,7 +141,7 @@ class DownloadRepositoriesImpl @Inject constructor(
         }.start()
     }
 
-    override fun removeDownloadProgress(id: Long) {
+    private fun removeDownloadProgress(id: Long) {
         downloadIdList.remove(id)
     }
 
