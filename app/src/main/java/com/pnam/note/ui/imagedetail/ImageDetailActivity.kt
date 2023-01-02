@@ -28,8 +28,7 @@ class ImageDetailActivity : AppCompatActivity() {
         object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                intent.extras?.putInt(POSITION, position)
-                val size = intent.extras!!.getStringArrayList(IMAGESPATH)?.size
+                val size = fragmentAdapter.itemCount
                 supportActionBar?.title = "${position + 1} of $size images"
             }
         }
@@ -52,7 +51,7 @@ class ImageDetailActivity : AppCompatActivity() {
             it.setDisplayHomeAsUpEnabled(true)
         }
 
-        fragmentAdapter = ImageDetailAdapter(this, imagesPath!!.toList())
+        fragmentAdapter = ImageDetailAdapter(this, imagesPath ?: mutableListOf())
         binding.imgPager.adapter = fragmentAdapter
         binding.imgPager.currentItem = position
         binding.imgPager.registerOnPageChangeCallback(pageChangedCallback)
@@ -71,6 +70,17 @@ class ImageDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete_img -> {
+                val size = fragmentAdapter.itemCount
+                val position = binding.imgPager.currentItem
+                // Handle delete image with viewpager2 and fragment adapter here...
+                // Call api delete image here... (*)
+                // Do below code when success
+                // Return result for previous activity to update list images
+                fragmentAdapter.removeAt(position)
+                supportActionBar?.title = "$position of ${size-1} images"
+                if (size == 1) {
+                    finish()
+                }
                 true
             }
             R.id.download_img -> {

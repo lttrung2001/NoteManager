@@ -12,10 +12,7 @@ import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.database.data.locals.dao.LoginDao
 import com.pnam.note.database.data.locals.dao.NoteDao
 import com.pnam.note.database.data.locals.impl.ImageLocalsImpl
-import com.pnam.note.database.data.networks.impl.BaseAuthorizationInterceptor
-import com.pnam.note.database.data.networks.impl.LoginRetrofitServiceImpl
-import com.pnam.note.database.data.networks.impl.NetworkConnectionInterceptor
-import com.pnam.note.database.data.networks.impl.NoteRetrofitServiceImpl
+import com.pnam.note.database.data.networks.impl.*
 import com.pnam.note.utils.AppConstants.APP_NAME
 import com.pnam.note.utils.RetrofitUtils.BASE_URL
 import com.pnam.note.utils.RoomUtils.Companion.DB_NAME
@@ -132,6 +129,11 @@ class AppProvideModules {
     @Singleton
     fun provideNoteService(retrofit: Retrofit): NoteRetrofitServiceImpl.Service =
         retrofit.create(NoteRetrofitServiceImpl.Service::class.java)
+
+    @Provides
+    @Singleton
+    fun provideImageService(retrofit: Retrofit): ImageRetrofitServiceImpl.Service =
+        retrofit.create(ImageRetrofitServiceImpl.Service::class.java)
 
     @Provides
     @Singleton
