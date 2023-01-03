@@ -5,24 +5,30 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.URLUtil
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.pnam.note.R
 import com.pnam.note.databinding.ActivityImageDetailBinding
 import com.pnam.note.ui.adapters.imagedetail.ImageDetailAdapter
 import com.pnam.note.utils.AppConstants
+import com.pnam.note.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class ImageDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityImageDetailBinding
     private lateinit var fragmentAdapter: ImageDetailAdapter
-    private val downloadViewModel: ImageDetailViewModel by viewModels()
+    private val viewModel: ImageDetailViewModel by viewModels()
 
     private val pageChangedCallback: ViewPager2.OnPageChangeCallback by lazy {
         object : ViewPager2.OnPageChangeCallback() {
@@ -56,6 +62,30 @@ class ImageDetailActivity : AppCompatActivity() {
         binding.imgPager.adapter = fragmentAdapter
         binding.imgPager.currentItem = position
         binding.imgPager.registerOnPageChangeCallback(pageChangedCallback)
+
+        initObservers()
+    }
+
+    private fun initObservers() {
+        viewModel.deleteImageLiveData.observe(this@ImageDetailActivity) { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+                    val size = fragmentAdapter.itemCount
+                    val position = binding.imgPager.currentItem
+                    fragmentAdapter.removeAt(position)
+                    supportActionBar?.title = "$position of ${size - 1} images"
+                    if (size == 1) {
+                        finish()
+                    }
+                }
+                is Resource.Error -> {
+                    Toast.makeText(this@ImageDetailActivity, resource.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -71,6 +101,22 @@ class ImageDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete_img -> {
+                val size = fragmentAdapter.itemCount
+                val position = binding.imgPager.currentItem
+                val noteId = intent.extras!!.getString(AppConstants.NOTE_ID)
+                val imageUrl = fragmentAdapter.getList().get(binding.imgPager.currentItem)
+
+                if (URLUtil.isNetworkUrl(imageUrl)) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        viewModel.deleteImage(noteId?:"", imageUrl)
+                    }
+                } else {
+                    fragmentAdapter.removeAt(position)
+                    supportActionBar?.title = "$position of ${size - 1} images"
+                    if (size == 1) {
+                        finish()
+                    }
+                }
                 true
             }
             R.id.download_img -> {
@@ -88,9 +134,9 @@ class ImageDetailActivity : AppCompatActivity() {
                         val imagesPath = bundle.getStringArrayList(IMAGESPATH)
                         imagesPath?.let { arr ->
                             val position = bundle.getInt(POSITION)
-                            val downloadId = downloadViewModel.download(arr[position])
-                            val downloadInfo = downloadViewModel.getDownloadStatus(downloadId)
-                            downloadViewModel.downloadProgress(downloadId) { bytesDownloaded, bytesTotal ->
+                            val downloadId = viewModel.download(arr[position])
+                            val downloadInfo = viewModel.getDownloadStatus(downloadId)
+                            viewModel.downloadProgress(downloadId) { bytesDownloaded, bytesTotal ->
                                 val title = "Download image from firebase storage"
                                 val text = if (bytesDownloaded == bytesTotal) {
                                     "Download finished"

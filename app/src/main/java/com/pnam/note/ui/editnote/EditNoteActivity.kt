@@ -21,6 +21,7 @@ import com.pnam.note.ui.base.BaseActivity
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppConstants.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.AppConstants.NOTE_CHANGE
+import com.pnam.note.utils.AppConstants.NOTE_ID
 import com.pnam.note.utils.AppConstants.NOTE_POSITION
 import com.pnam.note.utils.AppConstants.READ_EXTERNAL_STORAGE_REQUEST
 import com.pnam.note.utils.Resource
@@ -89,6 +90,8 @@ class EditNoteActivity : BaseActivity() {
             override fun onClick(path: String) {
                 val intent = Intent(this@EditNoteActivity, ImageDetailActivity::class.java)
                 val bundle = Bundle()
+
+                bundle.putString(NOTE_ID, binding.tvNoteId.text as String?)
                 bundle.putStringArrayList(
                     "imagesPath",
                     arrayListOf<String>().apply {
@@ -132,6 +135,7 @@ class EditNoteActivity : BaseActivity() {
         note?.let {
             note as Note
             with(binding) {
+                tvNoteId.text = note.id
                 inputNoteTitle.setText(note.title)
                 inputNoteDesc.setText(note.description)
                 editAt.text = SimpleDateFormat("dd/MM/yyyy HH:mm").format(Date(note.editAt))

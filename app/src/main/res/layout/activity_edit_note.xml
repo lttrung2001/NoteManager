@@ -20,6 +20,12 @@
             android:text="@string/note_app"
             android:transitionName="noteTime" />
 
+        <TextView
+            android:id="@+id/tv_note_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
         <EditText
             android:id="@+id/input_note_title"
             android:layout_width="match_parent"

@@ -11,4 +11,8 @@ class ImageRepositoriesImpl @Inject constructor(override val locals: ImageLocals
     override fun findImages(context: Context, page: Int, limit: Int): Single<PagingList<String>> {
         return locals.findImages(context, page, limit)
     }
+
+    override fun deleteImage(noteId: String, url: String): Single<String> {
+        return networks.deleteImage(noteId, url)
+    }
 }

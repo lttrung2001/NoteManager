@@ -1,6 +1,7 @@
 package com.pnam.note.utils
 
 import android.content.SharedPreferences
+import com.pnam.note.database.data.locals.LoginLocals
 import com.pnam.note.database.data.locals.NoteLocals
 import com.pnam.note.ui.login.LoginActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi

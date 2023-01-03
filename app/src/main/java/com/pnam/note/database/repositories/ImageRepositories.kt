@@ -10,4 +10,5 @@ import javax.inject.Singleton
 interface ImageRepositories {
     val locals: ImageLocals
     fun findImages(context: Context, page: Int, limit: Int): Single<PagingList<String>>
+    fun deleteImage(noteId: String, url: String): Single<String>
 }
