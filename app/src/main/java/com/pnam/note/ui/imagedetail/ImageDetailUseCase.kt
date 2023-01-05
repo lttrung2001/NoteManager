@@ -1,5 +1,6 @@
 package com.pnam.note.ui.imagedetail
 
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Singleton
 
 @Singleton
@@ -9,6 +10,7 @@ interface ImageDetailUseCase {
         id: Long,
         progressHandle: (bytesDownloaded: Long, bytesTotal: Long) -> Unit
     )
+
     fun download(url: String): Long
 
     fun deleteImage(noteId: String, url: String): Single<String>

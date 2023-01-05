@@ -8,20 +8,39 @@ import com.pnam.note.ui.imagedetail.ImageDetailFragment
 
 class ImageDetailAdapter(
     fragmentActivity: FragmentActivity,
-    private val imagePaths: List<String>
+    private val imagesPath: ArrayList<String>
 ) :
     FragmentStateAdapter(fragmentActivity) {
 
     override fun getItemCount(): Int {
-        return imagePaths.size
+        return imagesPath.size
     }
 
     override fun createFragment(position: Int): Fragment {
         val fragment = ImageDetailFragment()
         fragment.arguments = Bundle().apply {
-            putString(IMAGE, imagePaths[position])
+            putString(IMAGE, imagesPath[position])
         }
         return fragment
+    }
+
+    internal fun removeAt(position: Int) {
+        imagesPath.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, itemCount)
+    }
+
+    internal fun getList(): List<String> {
+        return imagesPath
+    }
+
+    override fun getItemId(position: Int): Long {
+        return imagesPath[position].hashCode().toLong()
+    }
+
+    override fun containsItem(itemId: Long): Boolean {
+        val pageIds = imagesPath.map { it.hashCode().toLong() }
+        return pageIds.contains(itemId)
     }
 
     companion object {

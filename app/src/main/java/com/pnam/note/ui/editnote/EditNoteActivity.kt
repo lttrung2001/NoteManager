@@ -20,6 +20,7 @@ import com.pnam.note.ui.addimages.AddNoteImagesFragment
 import com.pnam.note.ui.base.BaseActivity
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppConstants.EDIT_NOTE_REQUEST
+import com.pnam.note.utils.AppConstants.IMAGES_PATH
 import com.pnam.note.utils.AppConstants.NOTE_CHANGE
 import com.pnam.note.utils.AppConstants.NOTE_ID
 import com.pnam.note.utils.AppConstants.NOTE_POSITION
@@ -31,6 +32,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @ExperimentalCoroutinesApi
@@ -43,7 +45,7 @@ class EditNoteActivity : BaseActivity() {
         View.OnClickListener {
             val title = binding.inputNoteTitle.text.trim().toString()
             val desc = binding.inputNoteDesc.text.trim().toString()
-            if (title.isEmpty() && desc.isEmpty() || imageAdapter.currentList.isEmpty()) {
+            if (title.isEmpty() && desc.isEmpty() && imageAdapter.currentList.isEmpty()) {
                 Toast.makeText(
                     this@EditNoteActivity,
                     "Note must not be empty",
@@ -52,7 +54,7 @@ class EditNoteActivity : BaseActivity() {
             } else {
                 hideKeyboard(binding.btnEdit.windowToken)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val data = intent.extras?.getSerializable("note") as Note
+                    val data = intent.extras!!.getSerializable("note") as Note
                     val note = Note(
                         data.id,
                         title,
@@ -90,15 +92,17 @@ class EditNoteActivity : BaseActivity() {
             override fun onClick(path: String) {
                 val intent = Intent(this@EditNoteActivity, ImageDetailActivity::class.java)
                 val bundle = Bundle()
-
-                bundle.putString(NOTE_ID, binding.tvNoteId.text as String?)
-                bundle.putStringArrayList(
-                    "imagesPath",
-                    arrayListOf<String>().apply {
-                        this.addAll(imageAdapter.currentList)
-                    }
+                val note = Note(
+                    binding.tvNoteId.text.toString(),
+                    "",
+                    "",
+                    0,
+                    0,
+                    imageAdapter.currentList
                 )
+                bundle.putSerializable("note", note)
                 bundle.putInt("position", imageAdapter.currentList.indexOf(path))
+                bundle.putStringArrayList(IMAGES_PATH, ArrayList(imageAdapter.currentList))
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
@@ -131,7 +135,7 @@ class EditNoteActivity : BaseActivity() {
         imageAdapter = SavedImageAdapter(imageListener)
         binding.rcvNoteImages.adapter = imageAdapter
 
-        val note = intent.extras?.getSerializable("note")
+        val note = intent.extras!!.getSerializable("note")
         note?.let {
             note as Note
             with(binding) {

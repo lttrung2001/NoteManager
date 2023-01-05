@@ -15,6 +15,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.pnam.note.R
+import com.pnam.note.database.data.locals.entities.Note
 import com.pnam.note.databinding.ActivityImageDetailBinding
 import com.pnam.note.ui.adapters.imagedetail.ImageDetailAdapter
 import com.pnam.note.utils.AppConstants
@@ -34,8 +35,7 @@ class ImageDetailActivity : AppCompatActivity() {
         object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                intent.extras?.putInt(POSITION, position)
-                val size = intent.extras!!.getStringArrayList(IMAGESPATH)?.size
+                val size = fragmentAdapter.itemCount
                 supportActionBar?.title = "${position + 1} of $size images"
             }
         }
@@ -51,14 +51,18 @@ class ImageDetailActivity : AppCompatActivity() {
         binding = ActivityImageDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val position = intent.extras!!.getInt(POSITION)
-        val imagesPath = intent.extras!!.getStringArrayList(IMAGESPATH)
+        val note = intent.extras!!.getSerializable("note") as Note
+        val imagesPath = ArrayList(note.images!!)
 
         supportActionBar?.let {
-            title = "${position + 1} of ${imagesPath?.size} images"
+            title = "${position + 1} of ${imagesPath.size} images"
             it.setDisplayHomeAsUpEnabled(true)
         }
 
-        fragmentAdapter = ImageDetailAdapter(this, imagesPath!!.toList())
+        fragmentAdapter = ImageDetailAdapter(
+            this,
+            (imagesPath)
+        )
         binding.imgPager.adapter = fragmentAdapter
         binding.imgPager.currentItem = position
         binding.imgPager.registerOnPageChangeCallback(pageChangedCallback)
@@ -67,22 +71,22 @@ class ImageDetailActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        viewModel.deleteImageLiveData.observe(this@ImageDetailActivity) { resource ->
-            when (resource) {
+        viewModel.deleteImageLiveData.observe(this@ImageDetailActivity) {
+            when (it) {
                 is Resource.Loading -> {
 
                 }
                 is Resource.Success -> {
-                    val size = fragmentAdapter.itemCount
                     val position = binding.imgPager.currentItem
+                    val size = fragmentAdapter.itemCount
                     fragmentAdapter.removeAt(position)
-                    supportActionBar?.title = "$position of ${size - 1} images"
+                    supportActionBar?.title = "${position + 1} of ${size - 1} images"
                     if (size == 1) {
                         finish()
                     }
                 }
                 is Resource.Error -> {
-                    Toast.makeText(this@ImageDetailActivity, resource.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ImageDetailActivity, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -101,18 +105,17 @@ class ImageDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete_img -> {
-                val size = fragmentAdapter.itemCount
                 val position = binding.imgPager.currentItem
-                val noteId = intent.extras!!.getString(AppConstants.NOTE_ID)
-                val imageUrl = fragmentAdapter.getList().get(binding.imgPager.currentItem)
-
-                if (URLUtil.isNetworkUrl(imageUrl)) {
+                val url = fragmentAdapter.getList()[position]
+                if (URLUtil.isNetworkUrl(url)) {
+                    val note = intent.extras!!.getSerializable("note") as Note
                     lifecycleScope.launch(Dispatchers.IO) {
-                        viewModel.deleteImage(noteId?:"", imageUrl)
+                        viewModel.deleteImage(note.id, url)
                     }
                 } else {
+                    val size = fragmentAdapter.itemCount
                     fragmentAdapter.removeAt(position)
-                    supportActionBar?.title = "$position of ${size - 1} images"
+                    supportActionBar?.title = "${position + 1} of ${size - 1} images"
                     if (size == 1) {
                         finish()
                     }
@@ -130,36 +133,35 @@ class ImageDetailActivity : AppCompatActivity() {
                         AppConstants.WRITE_EXTERNAL_STORAGE_REQUEST
                     )
                 } else {
-                    intent.extras?.let { bundle ->
-                        val imagesPath = bundle.getStringArrayList(IMAGESPATH)
-                        imagesPath?.let { arr ->
-                            val position = bundle.getInt(POSITION)
-                            val downloadId = viewModel.download(arr[position])
-                            val downloadInfo = viewModel.getDownloadStatus(downloadId)
-                            viewModel.downloadProgress(downloadId) { bytesDownloaded, bytesTotal ->
-                                val title = "Download image from firebase storage"
-                                val text = if (bytesDownloaded == bytesTotal) {
-                                    "Download finished"
-                                } else {
-                                    "Progress: $bytesDownloaded/$bytesTotal bytes"
-                                }
-                                val icon = if (bytesDownloaded == bytesTotal) {
-                                    R.drawable.ic_download_done
-                                } else {
-                                    R.drawable.ic_downloading
-                                }
-                                val builder = NotificationCompat.Builder(
-                                    this,
-                                    AppConstants.DOWNLOAD_CHANNEL_ID
-                                )
-                                    .setSmallIcon(icon)
-                                    .setContentTitle(title)
-                                    .setContentText(text)
-                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                                with(NotificationManagerCompat.from(this)) {
-                                    // notificationId is a unique int for each notification that you must define
-                                    notify(AppConstants.DOWNLOAD_NOTIFICATION_ID, builder.build())
-                                }
+                    val note = intent.extras!!.getSerializable("note") as Note
+                    val imagesPath = note.images
+                    imagesPath?.let { arr ->
+                        val position = intent.extras!!.getInt(POSITION)
+                        val downloadId = viewModel.download(arr[position])
+                        val downloadInfo = viewModel.getDownloadStatus(downloadId)
+                        viewModel.downloadProgress(downloadId) { bytesDownloaded, bytesTotal ->
+                            val title = "Download image from firebase storage"
+                            val text = if (bytesDownloaded == bytesTotal) {
+                                "Download finished"
+                            } else {
+                                "Progress: $bytesDownloaded/$bytesTotal bytes"
+                            }
+                            val icon = if (bytesDownloaded == bytesTotal) {
+                                R.drawable.ic_download_done
+                            } else {
+                                R.drawable.ic_downloading
+                            }
+                            val builder = NotificationCompat.Builder(
+                                this,
+                                AppConstants.DOWNLOAD_CHANNEL_ID
+                            )
+                                .setSmallIcon(icon)
+                                .setContentTitle(title)
+                                .setContentText(text)
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            with(NotificationManagerCompat.from(this)) {
+                                // notificationId is a unique int for each notification that you must define
+                                notify(AppConstants.DOWNLOAD_NOTIFICATION_ID, builder.build())
                             }
                         }
                     }
@@ -179,6 +181,5 @@ class ImageDetailActivity : AppCompatActivity() {
 
     companion object {
         private const val POSITION = "position"
-        private const val IMAGESPATH = "imagesPath"
     }
 }

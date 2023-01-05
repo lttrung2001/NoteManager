@@ -2,13 +2,20 @@ package com.pnam.note.ui.imagedetail
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.pnam.note.throwable.NoConnectivityException
+import com.pnam.note.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.functions.Consumer
 import javax.inject.Inject
 
 @HiltViewModel
 class ImageDetailViewModel @Inject constructor(
     private val useCase: ImageDetailUseCase
 ) : ViewModel() {
+    private val _downloadIdValue: Long get() = _downloadId.value ?: -1
     private val _downloadId: MutableLiveData<Long> by lazy {
         MutableLiveData<Long>()
     }
@@ -41,7 +48,7 @@ class ImageDetailViewModel @Inject constructor(
             .subscribe(deleteImageObserver) { t ->
                 when (t) {
                     is NoConnectivityException -> {
-                        _deleteImageLiveData.postValue(Resource.Error(t.message))
+                        _deleteImageLiveData.postValue(Resource.Error("No internet connection"))
                     }
                     else -> {
                         _deleteImageLiveData.postValue(Resource.Error(t.message ?: "Unknown error"))
@@ -50,15 +57,15 @@ class ImageDetailViewModel @Inject constructor(
             }
     }
 
-    fun download(url: String): Long {
+    internal fun download(url: String): Long {
         return useCase.download(url)
     }
 
-    fun getDownloadStatus(id: Long): String {
+    internal fun getDownloadStatus(id: Long): String {
         return useCase.getDownloadStatus(_downloadIdValue)
     }
 
-    fun downloadProgress(
+    internal fun downloadProgress(
         id: Long,
         progressHandle: (bytesDownloaded: Long, bytesTotal: Long) -> Unit
     ) {

@@ -284,8 +284,8 @@ class DashboardFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            data?.extras.let { bundle ->
-                val note = bundle?.getSerializable(AppConstants.NOTE_CHANGE) as Note
+            data!!.extras.let { bundle ->
+                val note = bundle!!.getSerializable(AppConstants.NOTE_CHANGE) as Note
                 when (requestCode) {
                     ADD_NOTE_REQUEST -> {
                         notesAdapter?.let { adapter ->
@@ -313,8 +313,8 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         binding?.rcvNotes?.adapter = null
         binding = null
     }

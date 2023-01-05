@@ -37,6 +37,7 @@ class EditNoteViewModel @Inject constructor(
     private val _getNoteDetailLiveData: MutableLiveData<Resource<Note>> by lazy {
         MutableLiveData<Resource<Note>>()
     }
+
     internal val getNoteDetailLiveData: MutableLiveData<Resource<Note>> get() = _getNoteDetailLiveData
 
     private val composite: CompositeDisposable by lazy {
@@ -45,6 +46,7 @@ class EditNoteViewModel @Inject constructor(
     private var disposable: Disposable? = null
     private var imagesDisposable: Disposable? = null
     private var getNoteDetailDisposable: Disposable? = null
+    private var loadImagesDisposable: Disposable? = null
 
     private val observer: Consumer<Note> by lazy {
         Consumer<Note> { note ->
@@ -125,7 +127,11 @@ class EditNoteViewModel @Inject constructor(
                         }
                     }
                     else -> {
-                        _getNoteDetailLiveData.postValue(Resource.Error(t.message ?: "Unknown error"))
+                        _getNoteDetailLiveData.postValue(
+                            Resource.Error(
+                                t.message ?: "Unknown error"
+                            )
+                        )
                     }
                 }
             }
