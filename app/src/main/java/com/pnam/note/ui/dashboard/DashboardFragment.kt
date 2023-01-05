@@ -313,8 +313,8 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         binding?.rcvNotes?.adapter = null
         binding = null
     }

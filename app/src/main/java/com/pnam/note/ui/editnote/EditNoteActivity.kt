@@ -44,7 +44,7 @@ class EditNoteActivity : BaseActivity() {
         View.OnClickListener {
             val title = binding.inputNoteTitle.text.trim().toString()
             val desc = binding.inputNoteDesc.text.trim().toString()
-            if (title.isEmpty() && desc.isEmpty() || imageAdapter.currentList.isEmpty()) {
+            if (title.isEmpty() && desc.isEmpty() && imageAdapter.currentList.isEmpty()) {
                 Toast.makeText(
                     this@EditNoteActivity,
                     "Note must not be empty",
