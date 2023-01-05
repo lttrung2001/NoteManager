@@ -20,9 +20,7 @@ import com.pnam.note.ui.addimages.AddNoteImagesFragment
 import com.pnam.note.ui.base.BaseActivity
 import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppConstants.EDIT_NOTE_REQUEST
-import com.pnam.note.utils.AppConstants.IMAGES_PATH
 import com.pnam.note.utils.AppConstants.NOTE_CHANGE
-import com.pnam.note.utils.AppConstants.NOTE_ID
 import com.pnam.note.utils.AppConstants.NOTE_POSITION
 import com.pnam.note.utils.AppConstants.READ_EXTERNAL_STORAGE_REQUEST
 import com.pnam.note.utils.Resource
@@ -32,7 +30,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @ExperimentalCoroutinesApi
@@ -102,7 +99,6 @@ class EditNoteActivity : BaseActivity() {
                 )
                 bundle.putSerializable("note", note)
                 bundle.putInt("position", imageAdapter.currentList.indexOf(path))
-                bundle.putStringArrayList(IMAGES_PATH, ArrayList(imageAdapter.currentList))
                 intent.putExtras(bundle)
                 startActivity(intent)
             }

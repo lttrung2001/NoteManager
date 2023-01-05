@@ -1,4 +1,5 @@
 package com.pnam.note.database.data.networks.impl
+
 import com.pnam.note.database.data.models.APIResult
 import com.pnam.note.database.data.networks.ImageNetworks
 import com.pnam.note.utils.RetrofitUtils
@@ -20,6 +21,7 @@ class ImageRetrofitServiceImpl @Inject constructor(
             }
         }
     }
+
     interface Service {
         @DELETE("image/delete-image")
         fun deleteImage(
