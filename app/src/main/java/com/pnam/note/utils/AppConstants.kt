@@ -8,7 +8,6 @@ object AppConstants {
     const val NOTE_CHANGE = "com.pnam.note.notechange"
     const val NOTE_POSITION = "com.pnam.note.noteposition"
     const val NOTE_ID = "com.pnam.note.noteid"
-    const val IMAGES_PATH = "com.pnam.note.imagespath"
 
 
     const val ADD_NOTE_REQUEST = 1

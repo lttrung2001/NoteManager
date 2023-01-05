@@ -22,6 +22,7 @@ import com.pnam.note.ui.imagedetail.ImageDetailActivity
 import com.pnam.note.utils.AppConstants.EDIT_NOTE_REQUEST
 import com.pnam.note.utils.AppConstants.IMAGES_PATH
 import com.pnam.note.utils.AppConstants.NOTE_CHANGE
+import com.pnam.note.utils.AppConstants.NOTE_ID
 import com.pnam.note.utils.AppConstants.NOTE_POSITION
 import com.pnam.note.utils.AppConstants.READ_EXTERNAL_STORAGE_REQUEST
 import com.pnam.note.utils.Resource

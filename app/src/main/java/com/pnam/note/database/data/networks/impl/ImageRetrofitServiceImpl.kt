@@ -1,12 +1,10 @@
 package com.pnam.note.database.data.networks.impl
-
 import com.pnam.note.database.data.models.APIResult
 import com.pnam.note.database.data.networks.ImageNetworks
 import com.pnam.note.utils.RetrofitUtils
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Response
 import retrofit2.http.DELETE
-import retrofit2.http.GET
 import retrofit2.http.Query
 import javax.inject.Inject
 
@@ -22,7 +20,6 @@ class ImageRetrofitServiceImpl @Inject constructor(
             }
         }
     }
-
     interface Service {
         @DELETE("image/delete-image")
         fun deleteImage(
