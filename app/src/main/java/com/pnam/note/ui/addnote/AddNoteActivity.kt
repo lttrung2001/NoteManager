@@ -83,10 +83,8 @@ class AddNoteActivity : BaseActivity() {
             override fun onClick(path: String) {
                 val intent = Intent(this@AddNoteActivity, ImageDetailActivity::class.java)
                 val bundle = Bundle()
-                bundle.putStringArrayList(
-                    "imagesPath",
-                    imageAdapter.currentList.toList() as ArrayList<String>
-                )
+                val note = Note("", "", "", 0, 0, imageAdapter.currentList)
+                bundle.putSerializable("note", note)
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
@@ -145,12 +143,10 @@ class AddNoteActivity : BaseActivity() {
 
                 }
                 is Resource.Success -> {
-                    imageAdapter.let { adapter ->
-                        val currentList = adapter.currentList.toMutableList()
-                        currentList.removeAll(resource.data)
-                        currentList.addAll(resource.data)
-                        adapter.submitList(currentList)
-                    }
+                    val currentList = imageAdapter.currentList.toMutableList()
+                    currentList.removeAll(resource.data)
+                    currentList.addAll(resource.data)
+                    imageAdapter.submitList(currentList)
                 }
                 is Resource.Error -> {
                     Toast.makeText(this, resource.message, Toast.LENGTH_SHORT).show()

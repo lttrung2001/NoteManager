@@ -10,7 +10,8 @@ interface ImageDetailUseCase {
         id: Long,
         progressHandle: (bytesDownloaded: Long, bytesTotal: Long) -> Unit
     )
+
     fun download(url: String): Long
 
-    fun deleteImage(url: String): Single<String>
+    fun deleteImage(noteId: String, url: String): Single<String>
 }

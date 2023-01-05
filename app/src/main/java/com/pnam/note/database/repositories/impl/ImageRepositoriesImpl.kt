@@ -1,7 +1,6 @@
 package com.pnam.note.database.repositories.impl
 
 import android.content.Context
-import android.webkit.URLUtil
 import com.pnam.note.database.data.locals.ImageLocals
 import com.pnam.note.database.data.models.PagingList
 import com.pnam.note.database.data.networks.ImageNetworks
@@ -17,7 +16,7 @@ class ImageRepositoriesImpl @Inject constructor(
         return locals.findImages(context, page, limit)
     }
 
-    override fun deleteImage(url: String): Single<String> {
-        return networks.deleteImage(url)
+    override fun deleteImage(noteId: String, url: String): Single<String> {
+        return networks.deleteImage(noteId, url)
     }
 }

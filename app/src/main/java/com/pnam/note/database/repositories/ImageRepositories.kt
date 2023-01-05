@@ -12,5 +12,5 @@ interface ImageRepositories {
     val locals: ImageLocals
     val networks: ImageNetworks
     fun findImages(context: Context, page: Int, limit: Int): Single<PagingList<String>>
-    fun deleteImage(url: String): Single<String>
+    fun deleteImage(noteId: String, url: String): Single<String>
 }

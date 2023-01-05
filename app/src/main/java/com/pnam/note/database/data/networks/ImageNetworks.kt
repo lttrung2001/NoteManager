@@ -5,5 +5,5 @@ import javax.inject.Singleton
 
 @Singleton
 interface ImageNetworks {
-    fun deleteImage(url: String): Single<String>
+    fun deleteImage(noteId: String, url: String): Single<String>
 }

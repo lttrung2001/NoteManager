@@ -24,8 +24,8 @@ class ImageDetailUseCaseImpl @Inject constructor(
         return repositories.download(url)
     }
 
-    override fun deleteImage(url: String): Single<String> {
-        return imageRepositories.deleteImage(url)
+    override fun deleteImage(noteId: String, url: String): Single<String> {
+        return imageRepositories.deleteImage(noteId, url)
     }
 
 }

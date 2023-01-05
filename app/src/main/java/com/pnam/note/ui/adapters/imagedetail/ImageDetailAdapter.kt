@@ -8,7 +8,7 @@ import com.pnam.note.ui.imagedetail.ImageDetailFragment
 
 class ImageDetailAdapter(
     fragmentActivity: FragmentActivity,
-    private val imagesPath: MutableList<String>
+    private val imagesPath: ArrayList<String>
 ) :
     FragmentStateAdapter(fragmentActivity) {
 

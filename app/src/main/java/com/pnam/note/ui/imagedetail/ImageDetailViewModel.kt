@@ -37,18 +37,18 @@ class ImageDetailViewModel @Inject constructor(
 
     private var deleteImageDisposable: Disposable? = null
 
-    internal fun deleteImage(url: String) {
+    internal fun deleteImage(noteId: String, url: String) {
         _deleteImageLiveData.postValue(Resource.Loading())
         deleteImageDisposable?.let {
             composite.remove(it)
             it.dispose()
         }
-        deleteImageDisposable = useCase.deleteImage(url)
+        deleteImageDisposable = useCase.deleteImage(noteId, url)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(deleteImageObserver) { t ->
                 when (t) {
                     is NoConnectivityException -> {
-                        _deleteImageLiveData.postValue(Resource.Error(t.message))
+                        _deleteImageLiveData.postValue(Resource.Error("No internet connection"))
                     }
                     else -> {
                         _deleteImageLiveData.postValue(Resource.Error(t.message ?: "Unknown error"))
