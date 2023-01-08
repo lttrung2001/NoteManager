@@ -8,14 +8,13 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenStarted
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.pnam.note.R
@@ -37,15 +36,13 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
-    init {
-        lifecycleScope.launch {
-            whenStarted {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.getNotes()
-                }
-            }
-        }
-    }
+//    init {
+//        lifecycleScope.launchWhenStarted {
+//            launch(Dispatchers.IO) {
+//                viewModel.getNotes()
+//            }
+//        }
+//    }
 
     private var binding: FragmentDashboardBinding? = null
     private var notesAdapter: NoteAdapter? = null
@@ -168,13 +165,17 @@ class DashboardFragment : Fragment() {
     private fun initRecycleView() {
         notesAdapter = notesAdapter ?: NoteAdapter(noteClickListener)
         binding!!.rcvNotes.adapter = notesAdapter
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.getNotes()
+        }
     }
 
     private fun initObservers() {
         viewModel.dashboard.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    binding!!.loadMore.visibility = View.VISIBLE
+                    binding!!.swipeLayout.isRefreshing = true
                 }
                 is Resource.Success -> {
                     if (resource.data.data.isEmpty()) {
@@ -194,10 +195,10 @@ class DashboardFragment : Fragment() {
                     } else {
                         binding!!.rcvNotes.removeOnScrollListener(onScrollListener)
                     }
-                    binding!!.loadMore.visibility = View.GONE
+                    binding!!.swipeLayout.isRefreshing = false
                 }
                 is Resource.Error -> {
-                    binding!!.loadMore.visibility = View.GONE
+                    binding!!.swipeLayout.isRefreshing = false
                     Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -233,7 +234,7 @@ class DashboardFragment : Fragment() {
         viewModel.deleteNote.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    binding!!.loadMore.visibility = View.VISIBLE
+                    binding!!.swipeLayout.isRefreshing = true
                 }
                 is Resource.Success -> {
                     notesAdapter?.let { adapter ->
@@ -241,10 +242,10 @@ class DashboardFragment : Fragment() {
                         currentList.remove(resource.data)
                         adapter.submitList(currentList)
                     }
-                    binding!!.loadMore.visibility = View.GONE
+                    binding!!.swipeLayout.isRefreshing = false
                 }
                 is Resource.Error -> {
-                    binding!!.loadMore.visibility = View.GONE
+                    binding!!.swipeLayout.isRefreshing = false
                     Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -253,7 +254,7 @@ class DashboardFragment : Fragment() {
         viewModel.searchNotes.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    binding!!.loadMore.visibility = View.VISIBLE
+                    binding!!.swipeLayout.isRefreshing = true
                 }
                 is Resource.Success -> {
                     notesAdapter?.let { adapter ->
@@ -262,10 +263,10 @@ class DashboardFragment : Fragment() {
                         currentList.addAll(resource.data)
                         adapter.submitList(currentList)
                     }
-                    binding!!.loadMore.visibility = View.GONE
+                    binding!!.swipeLayout.isRefreshing = false
                 }
                 is Resource.Error -> {
-                    binding!!.loadMore.visibility = View.GONE
+                    binding!!.swipeLayout.isRefreshing = false
                     Toast.makeText(activity, resource.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -276,7 +277,6 @@ class DashboardFragment : Fragment() {
                 loadMore.visibility = View.GONE
                 swipeLayout.isRefreshing = false
             }
-            Toast.makeText(activity, viewModel.error.value, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -313,8 +313,9 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewLifecycleOwnerLiveData.removeObservers(viewLifecycleOwner)
         binding?.rcvNotes?.adapter = null
         binding = null
     }
