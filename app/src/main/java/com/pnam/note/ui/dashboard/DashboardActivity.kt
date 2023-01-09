@@ -17,8 +17,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.pnam.note.R
-import com.pnam.note.ui.base.BroadcastActivity
 import com.pnam.note.databinding.ActivityMainBinding
+import com.pnam.note.ui.base.BroadcastActivity
 import com.pnam.note.ui.login.LoginActivity
 import com.pnam.note.utils.AppConstants
 import com.pnam.note.utils.AppConstants.APP_NAME

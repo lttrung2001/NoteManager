@@ -13,7 +13,6 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -36,13 +35,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
-//    init {
-//        lifecycleScope.launchWhenStarted {
-//            launch(Dispatchers.IO) {
-//                viewModel.getNotes()
-//            }
-//        }
-//    }
 
     private var binding: FragmentDashboardBinding? = null
     private var notesAdapter: NoteAdapter? = null
@@ -139,6 +131,13 @@ class DashboardFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.getNotes()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -165,10 +164,6 @@ class DashboardFragment : Fragment() {
     private fun initRecycleView() {
         notesAdapter = notesAdapter ?: NoteAdapter(noteClickListener)
         binding!!.rcvNotes.adapter = notesAdapter
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            viewModel.getNotes()
-        }
     }
 
     private fun initObservers() {
@@ -190,6 +185,7 @@ class DashboardFragment : Fragment() {
                         currentList.addAll(resource.data.data)
                         adapter.submitList(currentList)
                     }
+
                     if (resource.data.hasNextPage) {
                         binding!!.rcvNotes.addOnScrollListener(onScrollListener)
                     } else {
@@ -291,8 +287,7 @@ class DashboardFragment : Fragment() {
                         notesAdapter?.let { adapter ->
                             val currentList = adapter.currentList.toMutableList()
                             currentList.add(0, note)
-                            adapter.submitList(currentList)
-                            binding!!.rcvNotes.smoothScrollToPosition(0)
+                            viewModel.updateDashboardLiveData(currentList)
                         }
                     }
                     EDIT_NOTE_REQUEST -> {
@@ -301,8 +296,7 @@ class DashboardFragment : Fragment() {
                             val currentList = adapter.currentList.toMutableList()
                             currentList.removeAt(position)
                             currentList.add(0, note)
-                            adapter.submitList(currentList)
-                            binding!!.rcvNotes.smoothScrollToPosition(0)
+                            viewModel.updateDashboardLiveData(currentList)
                         }
                     }
                     else -> {

@@ -59,7 +59,22 @@ class DashboardViewModel @Inject constructor(
 
     private val observerDashboard: Consumer<PagingList<Note>> by lazy {
         Consumer<PagingList<Note>> { paging ->
-            _dashboard.postValue(Resource.Success(paging))
+            val ls = if (dashboard.value != null && dashboard.value is Resource.Success) {
+                val ls = (dashboard.value as Resource.Success).data.data.toMutableList()
+                ls.addAll(paging.data)
+                ls
+            } else {
+                paging.data
+            }
+            _dashboard.postValue(
+                Resource.Success(
+                    PagingList(
+                        ls,
+                        paging.hasNextPage,
+                        paging.hasPrePage
+                    )
+                )
+            )
             if (paging.hasNextPage) {
                 page++
             }
@@ -185,6 +200,19 @@ class DashboardViewModel @Inject constructor(
                 }
             }
         deleteNoteDisposable?.let { composite.add(it) }
+    }
+
+    internal fun updateDashboardLiveData(ls: List<Note>) {
+        val pgList = (dashboard.value as Resource.Success).data
+        _dashboard.postValue(
+            Resource.Success(
+                PagingList(
+                    ls,
+                    pgList.hasNextPage,
+                    pgList.hasPrePage
+                )
+            )
+        )
     }
 
     internal fun searchNotes(keySearch: String) {
